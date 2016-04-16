@@ -154,7 +154,7 @@ public class Population{
 			textAlign(LEFT, BOTTOM);
 			text("generation " + int(this.GENERATION - (this.PREVIOUS_GENERATIONS.size() - i)), 10, yoff + 10);
 
-			yoff += 20;
+			yoff += 35;
 		}
 	}
 }

@@ -43,7 +43,7 @@ public class Organism{
 	}
 
 	boolean is_hover(int x, int y){
-		return (mouseX > x && mouseX < x + size && mouseY > y - this.FITNESS && mouseY < y + size);
+		return (mouseX > x && mouseX < x + size && mouseY > y - sqrt( map(this.FITNESS, 1, 100, 0, sq(75)) ) && mouseY < y + size);
 	}
 
 }
