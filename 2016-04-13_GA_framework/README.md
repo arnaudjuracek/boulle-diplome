@@ -1,10 +1,11 @@
 
 ![preview](preview.png?raw=true preview)
+![preview](preview.gif?raw=true preview)
 ---
 
 ##Usage
 ```java
-// create a new popuplation wrapper with a pool 
+// create a new population wrapper with a pool 
 // of 100 organisms, and a mutation rate of 0.1%
 population = new Population(100, 0.01);
 
