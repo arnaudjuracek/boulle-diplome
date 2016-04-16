@@ -1,16 +1,28 @@
 ![preview](preview.png?raw=true preview)
 
 ```java
-class Population
-    void Population.selection()
-    void Population.reproduction()
-    Organism[] Population.getOrganisms()
-    ArrayList<Organism> Population.getCurrentPool()
-    float Population.getMaxFitness()
+public class Population
+    public Organism[] ORGANISMS
+    public ArrayList<Organism> MATING_POOL
+    public int GENERATION
+    public float MUTATION_RATE
+
+    public void display()
+    public void selection()
+    public void reproduction()
 
 class Organism
-    Dna Organism.getDNA()
-    Organism.display()
+    public Dna DNA
+    public void display()
+
+public class Dna
+    public float[] Dna.GENES
+
+    public Dna()
+    private Dna(float[] new_genes)
+
+    public Dna recombinate(Dna partner)
+    public void mutate(float mutation_rate)
 ```
 -
 *Arnaud Juracek*, `GNU GENERAL PUBLIC LICENSE Version 3, June 2007`
