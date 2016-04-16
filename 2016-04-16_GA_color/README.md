@@ -1,5 +1,6 @@
 
 ![preview](preview.gif?raw=true preview)
+![preview](preview2.gif?raw=true preview)
 ---
 
 ##Usage
