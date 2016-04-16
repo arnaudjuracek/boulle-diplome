@@ -53,7 +53,7 @@ public class Population{
 		// A higher fitness = more entries to mating pool = more likely to be picked as a parent
 		// A lower fitness = fewer entries to mating pool = less likely to be picked as a parent
 		for(Organism o : this.ORGANISMS){
-			float fitnessNormal = map(o.fitness, 0, maxFitness, 0, 1);
+			float fitnessNormal = map(o.FITNESS, 0, maxFitness, 0, 1);
 			int n = (int) (fitnessNormal*100); // Arbitrary multiplier
 
 			for(int j=0; j<n; j++){
@@ -103,7 +103,7 @@ public class Population{
 	private float getMaxFitness(){
 		float record = 0;
 		for(Organism o : this.ORGANISMS){
-			if(o.fitness > record) record = o.fitness;
+			if(o.FITNESS > record) record = o.FITNESS;
 		}
 		return record;
 	}

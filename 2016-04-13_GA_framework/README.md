@@ -1,6 +1,32 @@
 
 ![preview](preview.png?raw=true preview)
 ---
+
+##Usage
+```java
+// create a new popuplation wrapper with a pool 
+// of 100 organisms, and a mutation rate of 0.1%
+population = new Population(100, 0.01);
+
+// handle the fitness of each organism in 
+// the population pool
+for(Organism o : population.ORGANISMS) o.FITNESS = newFitness;
+
+population.display();
+population.displayHistory();
+
+// evolve the population to the next generation with
+population.evolve();
+
+// ... or 
+population.pushHistory();
+population.populate_pool();
+population.reproduce();
+
+```
+
+
+##Reference
 ```java
 public class Population
     public Organism[] ORGANISMS
@@ -12,7 +38,7 @@ public class Population
     public void selection()
     public void reproduction()
 
-class Organism
+public class Organism
     public Dna DNA
     public void display()
 

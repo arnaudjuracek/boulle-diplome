@@ -19,11 +19,11 @@ void draw(){
 
 	// USER FITNESS ATTRIBUTION
 	if(mousePressed){
-		for(Organism o : population.ORGANISMS) if(o.hover) o.fitness++;
+		for(Organism o : population.ORGANISMS) if(o.hover) o.FITNESS++;
 	}
 
 	// // RANDOM FITNESS
-	// for(Organism o : population.ORGANISMS) o.fitness *= random(10);
+	// for(Organism o : population.ORGANISMS) o.FITNESS *= random(10);
 
 	// // TEND TO TARGET COLOR
 	// color TARGET_COLOR = color(255, 255, 255);
@@ -36,8 +36,8 @@ void draw(){
 	// 	float n_d_brightness = map(d_brightness, 0, 255, 0, 1);
 	// 	// float n_d_saturation = map(d_saturation, 0, 255, 0, 1);
 
-	// 	// o.fitness = n_d_hue - n_d_brightness - n_d_saturation;
-	// 	o.fitness = 1 - n_d_brightness;
+	// 	// o.FITNESS = n_d_hue - n_d_brightness - n_d_saturation;
+	// 	o.FITNESS = 1 - n_d_brightness;
 	// }
 
 	population.display();
