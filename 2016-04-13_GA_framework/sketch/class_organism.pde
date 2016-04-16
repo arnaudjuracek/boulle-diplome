@@ -4,6 +4,7 @@ public class Organism{
 
 	boolean hover;
 	color COLOR;
+	int size = 20;
 
 	// -------------------------------------------------------------------------
 	// Constructor :
@@ -29,18 +30,18 @@ public class Organism{
 		else stroke(this.COLOR);
 
 		fill(this.COLOR);
-		rect(x, y, 10, 10);
+		rect(x, y, size, size);
 	}
 
 	void displayFitness(int x, int y){
 		if(this.hover) fill(this.COLOR);
 		else fill(255);
 		textAlign(CENTER, TOP);
-		text(int(this.FITNESS), x + 5, y);
+		text(int(this.FITNESS), x + size/2, y);
 	}
 
 	boolean is_hover(int x, int y){
-		return (mouseX > x && mouseX < x + 10 && mouseY > y && mouseY < y + 10);
+		return (mouseX > x && mouseX < x + size && mouseY > y && mouseY < y + size);
 	}
 
 }
