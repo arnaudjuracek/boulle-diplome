@@ -5,6 +5,7 @@
 ##Usage
 + Click on your favorite colors to weight them.
 + Hit <kbd>space</kbd> to evolve the palette.
++ Hit <kbd>r</kbd> to reset.
 
 ##Reference
 See https://github.com/arnaudjuracek/diplome/tree/master/2016-04-13_GA_framework

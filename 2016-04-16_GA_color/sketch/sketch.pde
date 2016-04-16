@@ -26,10 +26,6 @@ void draw(){
 	population.displayHistory();
 }
 
-// void mouseReleased(){
-// 	population.evolve();
-// }
-
 void keyPressed(){
 	if(key == ' ') population.evolve();
 	if(key == 'r') setup();
