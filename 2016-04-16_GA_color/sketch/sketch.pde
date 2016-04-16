@@ -1,5 +1,5 @@
 /**
- * GA_framework
+ * GA_color
  * by Arnaud Juracek
  * 2016-04-16
  *
