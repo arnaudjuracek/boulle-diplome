@@ -129,7 +129,7 @@ public class Population{
 		// display generation index
 		fill(255);
 		textAlign(RIGHT, CENTER);
-		text("#" + (this.GENERATION), 40, 13);
+		text(this.GENERATION, 40, 13);
 	}
 
 	public void displayHistory(){
@@ -146,7 +146,7 @@ public class Population{
 			// display generation index
 			fill(255);
 			textAlign(RIGHT, CENTER);
-			text("#" + ( this.GENERATION - (this.PREVIOUS_GENERATIONS.size() - i) ), 40, yoff + 13);
+			text(this.GENERATION - (this.PREVIOUS_GENERATIONS.size() - i), 40, yoff + 13);
 
 			yoff+=11;
 		}
