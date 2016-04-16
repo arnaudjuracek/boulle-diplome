@@ -5,7 +5,7 @@ public class Population{
 
 	public int GENERATION;
 	public ArrayList<Organism[]> PREVIOUS_GENERATIONS;
-	public int MAX_HISTORY_STATES = 35;
+	public int MAX_HISTORY_STATES = 67;
 
 	// -------------------------------------------------------------------------
 	// Constructor :
@@ -121,15 +121,15 @@ public class Population{
 
 	public void display(){
 		for(int i=0; i<this.ORGANISMS.length; i++){
-			int x = 50 + i*21;
+			int x = 50 + i*11;
 			this.ORGANISMS[i].display(x, 10);
-			this.ORGANISMS[i].displayFitness(x, 10);
+			this.ORGANISMS[i].displayFitness(x, 24 + int(i%2==0)*15);
 		}
 
 		// display generation index
 		fill(255);
 		textAlign(RIGHT, CENTER);
-		text("#" + (this.GENERATION), 40, 20);
+		text("#" + (this.GENERATION), 40, 13);
 	}
 
 	public void displayHistory(){
@@ -138,7 +138,7 @@ public class Population{
 			Organism[] generation = this.PREVIOUS_GENERATIONS.get(i);
 
 			for(int j=0; j<generation.length; j++){
-				int x = 50 + j*21;
+				int x = 50 + j*11;
 				int y = 10 + yoff;
 				generation[j].display(x, y);
 			}
@@ -146,9 +146,9 @@ public class Population{
 			// display generation index
 			fill(255);
 			textAlign(RIGHT, CENTER);
-			text("#" + ( this.GENERATION - (this.PREVIOUS_GENERATIONS.size() - i) ), 40, yoff + 20);
+			text("#" + ( this.GENERATION - (this.PREVIOUS_GENERATIONS.size() - i) ), 40, yoff + 13);
 
-			yoff+=21;
+			yoff+=11;
 		}
 	}
 }

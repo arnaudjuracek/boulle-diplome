@@ -29,17 +29,18 @@ public class Organism{
 		else stroke(this.COLOR);
 
 		fill(this.COLOR);
-		rect(x, y, 20, 20);
+		rect(x, y, 10, 10);
 	}
 
 	void displayFitness(int x, int y){
-		fill(255);
+		if(this.hover) fill(this.COLOR);
+		else fill(255);
 		textAlign(CENTER, TOP);
-		text(int(this.FITNESS), x + 10, y + 30);
+		text(int(this.FITNESS), x + 5, y);
 	}
 
 	boolean is_hover(int x, int y){
-		return (mouseX > x && mouseX < x + 20 && mouseY > y && mouseY < y + 20);
+		return (mouseX > x && mouseX < x + 10 && mouseY > y && mouseY < y + 10);
 	}
 
 }
