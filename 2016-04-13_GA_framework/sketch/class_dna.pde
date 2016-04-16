@@ -1,12 +1,13 @@
 public class Dna{
 	public float[] GENES;
+	private int GENES_LENGTH = 3;
 
 	// -------------------------------------------------------------------------
 	// Constructor :
 	// Create a new DNA with random assigned genes
 	// used by class.Organism
 	public Dna(){
-		this.GENES = new float[3];
+		this.GENES = new float[GENES_LENGTH];
 		for(int i=0; i<this.GENES.length; i++) this.GENES[i] = random(0,1);
 	}
 
