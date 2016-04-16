@@ -122,7 +122,7 @@ public class Population{
 	public void display(){
 		int y = 100;
 		for(int i=0; i<this.ORGANISMS.length; i++){
-			int x = i*21;
+			int x = 5 + i*21;
 			this.ORGANISMS[i].display(x, y);
 			// this.ORGANISMS[i].displayFitness(x, y + 22 + int(i%2==0)*10);
 		}
@@ -144,7 +144,7 @@ public class Population{
 			yoff += max_height;
 
 			for(int j=0; j<generation.length; j++){
-				int x = j*21;
+				int x = 5 + j*21;
 				int y = 20 + yoff;
 				generation[j].display(x, y);
 			}
@@ -152,7 +152,7 @@ public class Population{
 			// display generation index
 			fill(255);
 			textAlign(LEFT, BOTTOM);
-			text("generation " + int(this.GENERATION - (this.PREVIOUS_GENERATIONS.size() - i)), 10, yoff + 10);
+			text("generation " + int(this.GENERATION - (this.PREVIOUS_GENERATIONS.size() - i)), 5, yoff + 10);
 
 			yoff += 35;
 		}

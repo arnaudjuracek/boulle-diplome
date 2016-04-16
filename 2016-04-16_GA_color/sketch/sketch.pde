@@ -10,8 +10,8 @@
 Population population;
 
 void setup(){
-	size(800, 600, P2D);
-	population = new Population(38, 0.01);
+	size(600, 800, P2D);
+	population = new Population(28, 0.01);
 }
 
 void draw(){
