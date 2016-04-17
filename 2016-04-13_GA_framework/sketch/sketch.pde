@@ -18,12 +18,12 @@ void draw(){
 	background(50);
 
 	// USER FITNESS ATTRIBUTION
-	if(mousePressed){
-		for(Organism o : population.ORGANISMS) if(o.hover) o.FITNESS++;
-	}
+	// if(mousePressed){
+	// 	for(Organism o : population.ORGANISMS) if(o.hover) o.FITNESS++;
+	// }
 
-	// // RANDOM FITNESS
-	// for(Organism o : population.ORGANISMS) o.FITNESS *= random(10);
+	// RANDOM FITNESS
+	for(Organism o : population.ORGANISMS) o.FITNESS *= random(10);
 
 	// // TEND TO TARGET COLOR
 	// color TARGET_COLOR = color(255, 255, 255);
@@ -39,7 +39,7 @@ void draw(){
 
 	population.display();
 	population.displayHistory();
-	// population.evolve();
+	population.evolve();
 
 	// if(population.GENERATION > 35){
 	// 	save("/Users/RNO/Dropbox/Emergence/mutation-rate-" + int(population.MUTATION_RATE*100) + "-percent" + ".png");
