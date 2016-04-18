@@ -78,7 +78,6 @@ public class Organism{
 	// -------------------------------------------------------------------------
 	// UI handling
 	float t_scale = 1, v_scale = 1, e_scale = .09;
-	float angle = 0;
 
 	void display(int x, int y){
 		this.HOVER = this.is_hover(x,y);
@@ -90,14 +89,11 @@ public class Organism{
 
 		pushMatrix();
 			translate(x,y);
-			if(this.HOVER){
-				angle+=.5;
-				t_scale = 2;
-			}else t_scale = 1;
+			if(this.HOVER) t_scale = 2;
+			else t_scale = 1;
 
 			v_scale += (t_scale - v_scale) * e_scale;
-			scale(v_scale);
-			rotate(radians(angle + map(v_scale, 1, 2, 0, 30)));
+			scale(v_scale + sin(frameCount*.03)*map(v_scale, 1, 2, 0, .2));
 			if(this.SHAPE!=null) shape(this.SHAPE, 0, 0);
 		popMatrix();
 
