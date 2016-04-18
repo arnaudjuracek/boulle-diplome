@@ -24,7 +24,6 @@ void draw(){
 	}
 
 	population.display();
-	// population.displayHistory();
 }
 
 void keyPressed(){

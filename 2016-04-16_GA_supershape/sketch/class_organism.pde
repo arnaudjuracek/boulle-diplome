@@ -16,11 +16,14 @@ public class Organism{
 		this.DNA = dna;
 		this.FITNESS = 1;
 
-		this.COLOR = color(
-			this.DNA.next_gene()*255,
-			this.DNA.next_gene()*255,
-			this.DNA.next_gene()*255
-		);
+		// map GENES to phenotype
+		// this.COLOR = color(
+		// 	this.DNA.next_gene()*255,
+		// 	this.DNA.next_gene()*255,
+		// 	this.DNA.next_gene()*255
+		// );
+
+		this.COLOR = color(255);
 		this.SHAPE = this.supershape();
 		this.SHAPE.disableStyle();
 	}
@@ -83,6 +86,7 @@ public class Organism{
 
 		// fill(this.COLOR, sqrt(map(this.FITNESS, 1, 100, 0, sq(255))));
 		stroke(this.COLOR);
+		strokeWeight(2);
 		noFill();
 
 		pushMatrix();
