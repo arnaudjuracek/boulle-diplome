@@ -23,6 +23,12 @@ void draw(){
 		for(Organism o : population.ORGANISMS) if(o.HOVER && o.FITNESS < 100) o.FITNESS++;
 	}
 
+	// // AUTO EVOLVE
+	// if(frameCount%30==0){
+	// 	population.evolve();
+	// 	for(Organism o : population.ORGANISMS) if(random(1)>.7) o.FITNESS = int(random(100));
+	// }
+
 	population.display();
 }
 

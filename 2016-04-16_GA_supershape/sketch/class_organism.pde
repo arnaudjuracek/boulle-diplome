@@ -3,7 +3,7 @@ public class Organism{
 	public float FITNESS;
 
 	boolean HOVER;
-	color COLOR;
+	color COLOR = color(255);
 	PShape SHAPE;
 	float SIZE = 50;
 
@@ -23,7 +23,6 @@ public class Organism{
 		// 	this.DNA.next_gene()*255
 		// );
 
-		this.COLOR = color(255);
 		this.SHAPE = this.supershape();
 		this.SHAPE.disableStyle();
 	}
@@ -106,10 +105,12 @@ public class Organism{
 	}
 
 	void displayFitness(int x, int y){
-		fill(0, map(v_scale, 1, 2, 255*.7, 255*.9));
-		noStroke();
-		float r = sqrt(map(this.FITNESS, 0, 100, sq(40 + v_scale*10), sq(60 + v_scale*20)));
-		ellipse(x,y,r,r);
+		pushStyle();
+			fill(0, map(v_scale, 1, 2, 255*.7, 255*.9));
+			noStroke();
+			float r = sqrt(map(this.FITNESS, 0, 100, sq(40 + v_scale*10), sq(60 + v_scale*20)));
+			ellipse(x,y,r,r);
+		popStyle();
 
 		fill(255, map(v_scale, 1, 2, 255*.6, 255*.9));
 		textAlign(CENTER, CENTER);
