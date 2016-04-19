@@ -55,4 +55,9 @@ public class Dna{
 	public float next_gene(){
 		return this.GENES[this.ITERATOR++];
 	}
+
+	// return next gene, mapped from a to b
+	public float next_gene(float a, float b){
+		return map(this.GENES[this.ITERATOR++], 0, 1, a, b);
+	}
 }
