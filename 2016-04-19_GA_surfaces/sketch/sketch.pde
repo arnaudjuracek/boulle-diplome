@@ -1,18 +1,22 @@
 /**
- * GA_supershape
+ * GA_surfaces
  * by Arnaud Juracek
- * 2016-04-16
+ * 2016-04-19
  *
  * based on The Nature of Code by Daniel Shiffman : http://natureofcode.com
+ * and AdditiveWaves demo in Toxiclibs
  */
 
+import processing.opengl.*;
+import toxi.math.waves.*;
 
 Population population;
 
 void setup(){
-	size(800, 800, P2D);
+	size(800, 800, OPENGL);
 	smooth();
-	population = new Population((int) sq(5), 0.01);
+	ortho();
+	population = new Population((int) sq(3), 0.0);
 }
 
 void draw(){
@@ -23,21 +27,18 @@ void draw(){
 		for(Organism o : population.ORGANISMS) if(o.HOVER && o.FITNESS < 100) o.FITNESS++;
 	}
 
-	// // AUTO EVOLVE
-	// if(frameCount%20==0){
-	// 	population.evolve();
-	// 	for(Organism o : population.ORGANISMS) if(random(1)>.7) o.FITNESS = int(random(100));
-	// }
-
+	lights();
 	population.display();
 
 	// DISPLAY INFOS
-	textAlign(LEFT, BOTTOM);
-	fill(255, 200);
-	text(
-		int(frameRate) + "fps" +
-		"\n" + "generation #" + population.GENERATION
-		, 10, height - 10);
+	hint(DISABLE_DEPTH_TEST);
+		textAlign(LEFT, BOTTOM);
+		fill(255, 200);
+		text(
+			int(frameRate) + "fps" +
+			"\n" + "generation #" + population.GENERATION
+			, 10, height - 10);
+	hint(ENABLE_DEPTH_TEST);
 }
 
 void keyPressed(){
