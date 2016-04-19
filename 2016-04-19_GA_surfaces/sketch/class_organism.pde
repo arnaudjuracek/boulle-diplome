@@ -5,7 +5,7 @@ public class Organism{
 	boolean HOVER;
 	color COLOR;
 	PShape SHAPE;
-	float SIZE = 300;
+	float SIZE = 600;
 
 
 	// -------------------------------------------------------------------------
@@ -61,7 +61,7 @@ public class Organism{
 						new SineWave(0, this.DNA.next_gene(0.005, 0.02), this.DNA.next_gene(0.1, 0.5), 0)
 					);
 
-		int STEP = int(sqrt(this.DNA.next_gene(1, sq(5)))),
+		int STEP = int(sqrt(this.DNA.next_gene(0, sq(10)))),
 			AMP = ceil( sqrt(this.DNA.next_gene())*50);
 
 		float prevY = waveY.update();
