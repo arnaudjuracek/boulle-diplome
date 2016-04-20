@@ -1,4 +1,4 @@
-public class Organism{
+upublic class Organism{
 	public Dna DNA;
 	public float FITNESS;
 
@@ -30,7 +30,6 @@ public class Organism{
 
 
 	// -------------------------------------------------------------------------
-	// create a supershape with the superformula
 	// see wave creation below
 	PShape create_shape(){
 		PShape s = createShape(GROUP);
