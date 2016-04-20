@@ -123,6 +123,7 @@ public class Population{
 
 	// -------------------------------------------------------------------------
 	// UI handling
+	public boolean VIEW_MODE_SOLO = false;
 
 	public void display(){
 		int
@@ -137,7 +138,12 @@ public class Population{
 					x = int(map(cols, 0, size-1, margin, width - margin)),
 					y = int(map(rows, 0, size-1, margin, height - margin));
 
-				o.display(x, y);
+
+				o.HOVER = o.is_hover(x,y);
+				if(!this.VIEW_MODE_SOLO || (this.VIEW_MODE_SOLO && o.HOVER)){
+					o.display(x,y);
+					if(!this.VIEW_MODE_SOLO && (o.HOVER || o.FITNESS > 1)) o.displayFitness(x,y);
+				}
 			}
 		}
 	}

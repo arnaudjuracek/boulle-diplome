@@ -61,7 +61,7 @@ public class Organism{
 						new SineWave(0, this.DNA.next_gene(0.005, 0.02), this.DNA.next_gene(0.1, 0.5), 0)
 					);
 
-		int STEP = int(sqrt(this.DNA.next_gene(0, sq(10)))),
+		int STEP = int(sqrt(this.DNA.next_gene(1, sq(10)))),
 			AMP = ceil( sqrt(this.DNA.next_gene())*50);
 
 		float prevY = waveY.update();
@@ -99,6 +99,49 @@ public class Organism{
 			waveX.pop();
 			prevY = valueY;
 		}
+
+		// s = createShape();
+		// s.beginShape(TRIANGLE_STRIP);
+
+		// float step = PI/50;
+
+		// float prevY = waveY.update();
+		// for(float theta=0; theta<PI; theta+=step){
+		// 	float valueY = waveY.update();
+		// 	waveX.push();
+
+		// 	for(float phi=0; phi<TWO_PI; phi+=step){
+		// 		float valueX = waveX.update();
+		// 		float
+		// 			r = this.SIZE/2 + 100*(valueX+valueY),
+		// 			x = r*sin(theta)*cos(phi),
+		// 			y = r*sin(theta)*sin(phi),
+		// 			z = r*cos(theta);
+		// 		float
+		// 			pr = this.SIZE/2 + 100*(valueX+prevY),
+		// 			px = pr*sin(theta - step)*cos(phi - step),
+		// 			py = pr*sin(theta - step)*sin(phi - step),
+		// 			pz = pr*cos(theta - step);
+
+		// 		s.fill(
+		// 			map(valueX, -1, 1, 200, 255),
+		// 			sqrt(map(theta, 0, PI, sq(100), sq(255))),
+		// 			map(prevY, -1, 1, 200, 255));
+		// 		s.vertex(px,py,pz);
+
+		// 		s.fill(
+		// 			map(valueX, -1, 1, 200, 255),
+		// 			sqrt(map(theta, 0, PI, sq(100), sq(255))),
+		// 			map(valueY, -1, 1, 200, 255));
+		// 		s.vertex(x,y,z);
+		// 	}
+
+		// 	waveX.pop();
+		// 	prevY = valueY;
+		// }
+
+		// s.endShape();
+
 		return s;
 	}
 
@@ -161,7 +204,7 @@ public class Organism{
 
 	// -------------------------------------------------------------------------
 	// UI handling
-	float tv = 1, v = 1, easing = .09, counter = 0;
+	float tv = 1, v = 1, easing = .09, counter = frameCount*.01;
 
 	void display(int x, int y){
 		this.HOVER =  this.is_hover(x,y);
@@ -171,7 +214,7 @@ public class Organism{
 		v += ((this.HOVER ? 2 : 1) - v)*easing;
 
 		pushMatrix();
-			translate(x,y, int(this.HOVER)*500);
+			translate(x,y, int(this.HOVER)*200);
 			rotateX(PI/3);
 			pushMatrix();
 				rotateZ(counter);
@@ -184,8 +227,6 @@ public class Organism{
 				if(this.SHAPE != null) shape(this.SHAPE, 0, 0);
 			popMatrix();
 		popMatrix();
-
-		if(this.HOVER || this.FITNESS > 1) this.displayFitness(x,y);
 	}
 
 	void displayFitness(int x, int y){

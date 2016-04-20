@@ -16,7 +16,7 @@ void setup(){
 	size(800, 800, OPENGL);
 	smooth();
 	ortho();
-	population = new Population((int) sq(3), 0.0);
+	population = new Population((int) sq(3), 0.01);
 }
 
 void draw(){
@@ -26,6 +26,12 @@ void draw(){
 	if(mousePressed){
 		for(Organism o : population.ORGANISMS) if(o.HOVER && o.FITNESS < 100) o.FITNESS++;
 	}
+
+	// // AUTO EVOLVE
+	// if(frameCount%20==0){
+	// 	population.evolve();
+	// 	for(Organism o : population.ORGANISMS) if(random(1)>.7) o.FITNESS = int(random(100));
+	// }
 
 	lights();
 	population.display();
@@ -44,4 +50,5 @@ void draw(){
 void keyPressed(){
 	if(key == ' ') population.evolve();
 	if(key == 'r') setup();
+	if(key == 's') population.VIEW_MODE_SOLO = !population.VIEW_MODE_SOLO;
 }
