@@ -46,4 +46,12 @@ void keyPressed(){
 	if(key == ' ') population.evolve();
 	if(key == 'r') setup();
 	if(key == 's') population.VIEW_MODE_SOLO = !population.VIEW_MODE_SOLO;
+	if(key == 'e'){
+		String filename = "disco_" + year() + month() + day() + hour() + minute();
+		population.VIEW_MODE_SOLO = true;
+		for(Organism o : population.ORGANISMS){
+			if(o.HOVER) o.export("/Users/RNO/Desktop/" + filename + ".png");
+		}
+		population.VIEW_MODE_SOLO = false;
+	}
 }

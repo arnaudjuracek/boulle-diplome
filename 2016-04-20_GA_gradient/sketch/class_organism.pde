@@ -146,6 +146,13 @@ public class Organism{
 		return wave;
 	}
 
+	// -------------------------------------------------------------------------
+	// export handling
+
+	boolean export(String path){
+		this.IMAGE.save(path);
+		return true;
+	}
 
 
 	// -------------------------------------------------------------------------
