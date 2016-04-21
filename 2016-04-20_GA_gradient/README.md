@@ -1,6 +1,5 @@
 
 ![preview](preview.png?raw=true preview)
-![preview1](preview1.png?raw=true preview)
 ---
 
 ##Usage
