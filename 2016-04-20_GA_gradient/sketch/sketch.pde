@@ -1,7 +1,7 @@
 /**
- * GA_surfaces
+ * GA_gradient
  * by Arnaud Juracek
- * 2016-04-19
+ * 2016-04-20
  *
  * based on The Nature of Code by Daniel Shiffman : http://natureofcode.com
  * and AdditiveWaves demo in Toxiclibs
