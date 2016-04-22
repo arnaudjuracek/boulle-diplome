@@ -32,8 +32,6 @@ public class Organism{
 	// -------------------------------------------------------------------------
 	// see wave creation below
 	PShape create_shape(){
-		PShape s = createShape(GROUP);
-
 		AbstractWave
 			waveX = this.create_wave(
 					// wave type
@@ -60,44 +58,48 @@ public class Organism{
 						new SineWave(0, this.DNA.next_gene(0.005, 0.02), this.DNA.next_gene(0.1, 0.5), 0)
 					);
 
-		int STEP = int(sqrt(this.DNA.next_gene(1, sq(10)))),
-			AMP = ceil( sqrt(this.DNA.next_gene())*50);
+		float
+			STEP = this.DNA.next_gene(PI/200, PI/50),
+			AMP = this.DNA.next_gene(0.5, 1.25);
+
+		PShape s = createShape();
+		s.beginShape(TRIANGLE_STRIP);
 
 		float prevY = waveY.update();
-		for(int y = 0; y < this.SIZE; y += STEP) {
+		for(float theta=0; theta<PI; theta+=STEP){
 			float valueY = waveY.update();
-
 			waveX.push();
 
-			PShape child = createShape();
-			child.beginShape(TRIANGLE_STRIP);
-			for(int x = 0; x < this.SIZE; x += STEP) {
-				float valueX = waveX.update();
+			for(float phi=0; phi<TWO_PI; phi+=STEP){
+				float
+					valueX = waveX.update(),
+					r = map(valueX+valueY, -2, 2, (this.SIZE/2), (this.SIZE/2)*AMP),
+					x = r*sin(theta)*cos(phi),
+					y = r*sin(theta)*sin(phi),
+					z = r*cos(theta),
+					pr = map(valueX+prevY, -2, 2, (this.SIZE/2), (this.SIZE/2)*AMP),
+					px = pr*sin(theta - STEP)*cos(phi - STEP),
+					py = pr*sin(theta - STEP)*sin(phi - STEP),
+					pz = pr*cos(theta - STEP);
 
-				child.fill(
+				s.fill(
 					map(valueX, -1, 1, 200, 255),
-					sqrt(map(x, 0, this.SIZE, sq(100), sq(255))),
+					sqrt(map(theta, 0, PI, sq(100), sq(255))),
 					map(prevY, -1, 1, 200, 255));
-				child.vertex(
-					x - (this.SIZE/2),
-					y - STEP - (this.SIZE/2),
-					(valueX + prevY) * AMP);
+				s.vertex(px,py,pz);
 
-				child.fill(
+				s.fill(
 					map(valueX, -1, 1, 200, 255),
-					sqrt(map(x, 0, this.SIZE, sq(100), sq(255))),
-					map(valueY ,-1 ,1, 200 , 255));
-				child.vertex(
-					x - (this.SIZE/2),
-					y - (this.SIZE/2), (valueX
-					 + valueY) * AMP);
+					sqrt(map(theta, 0, PI, sq(100), sq(255))),
+					map(valueY, -1, 1, 200, 255));
+				s.vertex(x,y,z);
 			}
-			child.endShape();
-			s.addChild(child);
 
 			waveX.pop();
 			prevY = valueY;
 		}
+
+		s.endShape();
 
 		return s;
 	}
@@ -178,9 +180,9 @@ public class Organism{
 
 				noFill();
 				stroke(255, map(v,1,2,0,100));
-				if(this.HOVER) box(map(v,1,2,150,300), map(v,1,2,150,300), map(v,1,2,150,300)*.5);
+				if(this.HOVER) box(map(v,1,2,150,500), map(v,1,2,150,500), map(v,1,2,150,500));
 
-				scale(map(v,1,2,150,300)/this.SIZE);
+				scale(map(v,1,2,150,500)/this.SIZE);
 				if(this.SHAPE != null) shape(this.SHAPE, 0, 0);
 			popMatrix();
 		popMatrix();
