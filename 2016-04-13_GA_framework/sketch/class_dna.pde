@@ -1,6 +1,8 @@
 public class Dna{
 	public float[] GENES;
-	private int GENES_LENGTH = 3;
+	private int
+		ITERATOR = 0,
+		GENES_LENGTH = 3;
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR :
@@ -43,5 +45,19 @@ public class Dna{
 		for(int i=0; i<this.GENES.length; i++){
 			if(random(1) < mutation_rate) this.GENES[i] = random(0,1);
 		}
+	}
+
+
+
+	// -------------------------------------------------------------------------
+	// GENE ITERATOR :
+	// return next gene
+	public float next_gene(){
+		return this.GENES[this.ITERATOR++];
+	}
+
+	// return next gene, mapped from a to b
+	public float next_gene(float a, float b){
+		return map(this.GENES[this.ITERATOR++], 0, 1, a, b);
 	}
 }
