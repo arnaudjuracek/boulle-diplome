@@ -24,6 +24,11 @@ public class Population{
 		for(int i=0; i<this.ORGANISMS.length; i++){
 			this.ORGANISMS[i] = new Organism(new Dna());
 		}
+
+		// throw warning if too many unecessary genes
+		int record = 0;
+		for(Organism o : this.ORGANISMS) if(o.DNA.ITERATOR > record) record = o.DNA.ITERATOR;
+		if(record < this.ORGANISMS[0].DNA.GENES_LENGTH) println("Max Genes needed : " + record);
 	}
 
 
