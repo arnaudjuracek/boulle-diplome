@@ -1,5 +1,6 @@
 public class Organism{
 	public Dna DNA;
+	public Organism[] PARENTS;
 	public float FITNESS;
 	public boolean HOVER;
 
@@ -7,12 +8,32 @@ public class Organism{
 	private WETriangleMesh MESH;
 
 	// -------------------------------------------------------------------------
-	// Constructor :
+	// CONSTRUCTOR :
 	// initialize fitness to 1
+	// set parents to null
 	// translate genotype onto phenotype
 	public Organism(Dna dna){
 		this.DNA = dna;
 		this.FITNESS = 1;
+
+		this.PARENTS = new Organism[2];
+		this.PARENTS[0] = null;
+		this.PARENTS[1] = null;
+
+		this.OPTS_define();
+		this.SHAPE = this.create_shape();
+	}
+
+	// CONSTRUCTOR :
+	// initialize fitness to 1
+	// define parents
+	// translate genotype onto phenotype
+	public Organism(Dna dna, Organism mom, Organism dad){
+		this.DNA = dna;
+		this.FITNESS = 1;
+		this.PARENTS = new Organism[2];
+		this.PARENTS[0] = mom;
+		this.PARENTS[1] = dad;
 
 		this.OPTS_define();
 		this.SHAPE = this.create_shape();
@@ -29,10 +50,16 @@ public class Organism{
 	private float
 		OPT_isoThreshold = 7;
 	private Vec3D
-		OPT_cAmp = new Vec3D(255, 255, 255);
+		OPT_cAmp = new Vec3D(255, 255, 255),
+		OPT_evolvingDirection = new Vec3D(0, 0, 0);
 
 	private void OPTS_define(){
 		this.OPT_resolution = (int) 20;
+		this.OPT_evolvingDirection = new Vec3D(
+										this.DNA.next_gene(-this.OPT_size, this.OPT_size),
+										this.DNA.next_gene(-this.OPT_size, this.OPT_size),
+										this.DNA.next_gene(-this.OPT_size, this.OPT_size)
+									);
 		// this.OPT_resolution = (int) this.DNA.next_gene(10, 30);
 		// this.OPT_isoThreshold = (float) this.DNA.next_gene(1, 20); //7;
 	}
@@ -43,17 +70,26 @@ public class Organism{
 	// mesh casted in a defined volumetric space, then convert this mesh into
 	// a 3D PShape, and return this PShape.
 	private PShape create_shape(){
-		ArrayList<Vec3D> particles = new ArrayList<Vec3D>();
-		for(int i=0; i<this.OPT_numParticles; i++){
-			// particles.add(Vec3D.randomVector().scale(this.OPT_size/3));
-			Vec3D v = new Vec3D(
-							this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3),
-							this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3),
-							this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3)
-						);
-			particles.add(v);
-		}
+		// PARTICLES SYSTEM
+			ArrayList<Vec3D> particles = new ArrayList<Vec3D>();
+			for(int i=0; i<this.OPT_numParticles; i++){
+				Vec3D v = Vec3D.randomVector().scale(this.OPT_size/3);
+				// Vec3D v = new Vec3D(
+				// 				this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3),
+				// 				this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3),
+				// 				this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3)
+				// 			);
+				particles.add(v);
+			}
 
+
+			int newParticlesLength = int(this.DNA.next_gene(0, 100));
+			for(int i=0; i<newParticlesLength; i++){
+				Vec3D v = new Vec3D(0,0,0).interpolateTo(OPT_evolvingDirection, norm(i, 0, this.DNA.next_gene(0, 30)));
+				particles.add(v);
+			}
+
+		// ISOSURFACE COMPUTATION
 		WETriangleMesh mesh = this.computeSurfaceMesh(
 								particles,
 								new VolumetricSpaceArray(
@@ -65,6 +101,7 @@ public class Organism{
 								this.OPT_isoThreshold
 							);
 
+		// ISOSURFACE CONVERSION
 		this.MESH = mesh;
 		return this.meshToPShape(mesh);
 	}

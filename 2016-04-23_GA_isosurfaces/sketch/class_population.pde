@@ -85,7 +85,8 @@ public class Population{
 			childDNA.mutate(this.MUTATION_RATE);
 
 			// Fill the new population with the new child
-			this.ORGANISMS[i] = new Organism(childDNA);
+			// the child know who its dad and mom are
+			this.ORGANISMS[i] = new Organism(childDNA, mom, dad);
 		}
 		this.GENERATION++;
 	}
