@@ -125,6 +125,7 @@ public class Population{
 	// -------------------------------------------------------------------------
 	// UI handling
 	public boolean VIEW_MODE_SOLO = false;
+	public boolean SHOW_INFO = false;
 
 	public void display(){
 		int
@@ -145,6 +146,8 @@ public class Population{
 					o.display(x,y);
 					if(!this.VIEW_MODE_SOLO && (o.HOVER || o.FITNESS > 1)) o.displayFitness(x,y);
 				}
+
+				if(this.SHOW_INFO && o.HOVER) o.displayInformations(x,y);
 			}
 		}
 	}

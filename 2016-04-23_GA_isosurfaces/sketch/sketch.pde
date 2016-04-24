@@ -36,7 +36,7 @@ void draw(){
 	}
 
 	// // AUTO EVOLVE
-	// if(frameCount%20==0){
+	// if(frameCount%100==0){
 	// 	population.evolve();
 	// 	for(Organism o : population.ORGANISMS) if(random(1)>.7) o.FITNESS = int(random(100));
 	// }
@@ -61,6 +61,7 @@ void keyPressed(){
 	if(key == ' ') population.evolve();
 	if(key == 'r') setup();
 	if(key == 's') population.VIEW_MODE_SOLO = !population.VIEW_MODE_SOLO;
+	if(key == 'i') population.SHOW_INFO = !population.SHOW_INFO;
 	if(key == 'e'){
 		String filename = "disco_" + year() + month() + day() + hour() + minute();
 		population.VIEW_MODE_SOLO = true;
