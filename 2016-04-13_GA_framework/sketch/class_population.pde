@@ -8,7 +8,7 @@ public class Population{
 	public int MAX_HISTORY_STATES = 35;
 
 	// -------------------------------------------------------------------------
-	// Constructor :
+	// CONSTRUCTOR :
 	// Create a new population of *num* organisms
 	// with an assigned mutation_rate
 	public Population(int num, float mutation_rate){
@@ -28,7 +28,7 @@ public class Population{
 
 
 	// -------------------------------------------------------------------------
-	// Population evolution :
+	// POPULATION EVOLUTION :
 	// Push the current population into the history,
 	// then evolve the current generation by populating a mating pool based on each
 	// organism's fitness, and finally mate the organisms in the mating pool
@@ -40,7 +40,7 @@ public class Population{
 
 
 	// -------------------------------------------------------------------------
-	// Mating Pool population :
+	// MATING POOL POPULATION :
 	// create a mating pool populated from current generation
 	// the mating pool is based on fitness of each organism
 	private void populate_pool(){
@@ -64,7 +64,7 @@ public class Population{
 
 
 	// -------------------------------------------------------------------------
-	// Mating Pool reproduction :
+	// MATING POOL REPRODUCTION :
 	// reproduce the organisms placed in the mating pool between each others,
 	// thus creating a new generation of the population
 	private void reproduce() {
@@ -80,7 +80,7 @@ public class Population{
 			childDNA.mutate(this.MUTATION_RATE);
 
 			// Fill the new population with the new child
-			this.ORGANISMS[i] = new Organism(childDNA);
+			this.ORGANISMS[i] = new Organism(childDNA, mom, dad);
 		}
 		this.GENERATION++;
 	}
@@ -97,7 +97,7 @@ public class Population{
 
 
 	// -------------------------------------------------------------------------
-	// Helpers
+	// HELPERS :
 	// Find highest fintess for the population
 	// used by Population.reproduce()
 	private float getMaxFitness(){

@@ -3,7 +3,7 @@ public class Dna{
 	private int GENES_LENGTH = 3;
 
 	// -------------------------------------------------------------------------
-	// Constructor :
+	// CONSTRUCTOR :
 	// Create a new DNA with random assigned genes
 	// used by class.Organism
 	public Dna(){
@@ -11,7 +11,7 @@ public class Dna{
 		for(int i=0; i<this.GENES.length; i++) this.GENES[i] = random(0,1);
 	}
 
-	// Constructor :
+	// CONSTRUCTOR :
 	// Create a new DNA with the genes passed in parameter
 	// used by class.Dna.recombinate
 	private Dna(float[] new_genes){ this.GENES = new_genes; }
@@ -19,7 +19,7 @@ public class Dna{
 
 
 	// -------------------------------------------------------------------------
-	// DNA recombination :
+	// DNA RECOMBINATION :
 	// Cross this DNA with a partner's one and
 	// return the crossed DNA as a new child
 	public Dna recombinate(Dna partner){
@@ -37,7 +37,7 @@ public class Dna{
 
 
 	// -------------------------------------------------------------------------
-	// DNA mutation :
+	// DNA MUTATION :
 	// replace randomly picked genes (based on mutation_rates) with new random ones
 	public void mutate(float mutation_rate){
 		for(int i=0; i<this.GENES.length; i++){
