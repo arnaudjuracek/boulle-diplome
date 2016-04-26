@@ -61,18 +61,10 @@ void draw(){
 	// surface.setTitle("[" + int(frameRate) + " fps]" + " [GEN#" + population.GENERATION + "]");
 	surface.setTitle("#" + (population.GENERATION < 10 ? "0" : "") + population.GENERATION + " — " + int(frameRate) + "fps");
 
-	if(RECORDING){
-		if(frameCount%10==0){
-			saveFrame("/Users/RNO/Desktop/tmp-gif/####_frame.tiff");
-			if(frameCount>TWO_PI*100){
-				RECORDING = false;
-				println("Frames saved to /Users/RNO/Desktop/tmp-gif/");
-			}
-		}
-	}
+	// Handle GIF recording (see fn_record)
+	if(RECORDING) record();
 }
 
-boolean RECORDING = false;
 void keyPressed(){
 	if(key == ' ') population.evolve();
 	if(key == 'r') setup();
@@ -86,9 +78,5 @@ void keyPressed(){
 		}
 		population.VIEW_MODE_SOLO = false;
 	}
-	if(key == 'e'){
-		RECORDING = true;
-		frameCount = 0;
-		println("Starting to record frames...");
-	}
+	if(key == 'e') start_recording(); // see fn_record
 }

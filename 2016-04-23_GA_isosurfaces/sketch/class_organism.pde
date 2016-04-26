@@ -91,21 +91,36 @@ public class Organism{
 									this.P_isoThreshold
 								);
 
-			float m = this.DNA.next_gene();
-			if(m < .5){
-				// HEM_Lattice mod = new HEM_Lattice();
-				// 	mod.setDepth(1);
-				// 	mod.setWidth(m*10);
-				HEM_Twist mod = new HEM_Twist();
-					mod.setAngleFactor(radians(m*45));
-					mod.setTwistAxis(new WB_Line(0,0,0, 0,0,1));
+			// // sphere substraction ?
+			// // Vec3D sphereCenterPoint = new Vec3D(random(this.P_size/2), random(this.P_size/2), random(this.P_size/2));
+			// Vec3D sphereCenterPoint = new Vec3D(0,0,0);
+			// float sphereRadius = 200; //random(this.P_size);
+			// Sphere sphere = new Sphere(sphereCenterPoint, sphereRadius);
+			// // ArrayList<Vec3D> vertices = new ArrayList<Vec3D>();
+			// for(Vec3D v : mesh.vertices.values()){
+			// 	if(sphere.containsPoint(v)){
+			// 		float d = norm(v.distanceTo(sphereCenterPoint), 0, sphereRadius);
+			// 		v.interpolateToSelf(sphereCenterPoint, d-1);
+			// 		// v.clear();
+			// 	}
+    		// }
 
-			// 	HEM_Stretch mod2 = new HEM_Stretch();
-			// 			mod2.setGroundPlane(0,0,0, 0,0,1);
-			// 			mod2.setStretchFactor(2);
-			// 			mod2.setCompressionFactor(1);
-				mesh = hemeshToToxi( toxiToHemesh(mesh).modify(mod) ).toWEMesh();
-			}
+
+			// float m = this.DNA.next_gene();
+			// if(m < .5){
+			// 	// HEM_Lattice mod = new HEM_Lattice();
+			// 	// 	mod.setDepth(1);
+			// 	// 	mod.setWidth(m*10);
+			// 	HEM_Twist mod = new HEM_Twist();
+			// 		mod.setAngleFactor(radians(m*45));
+			// 		mod.setTwistAxis(new WB_Line(0,0,0, 0,0,1));
+
+			// // 	HEM_Stretch mod2 = new HEM_Stretch();
+			// // 			mod2.setGroundPlane(0,0,0, 0,0,1);
+			// // 			mod2.setStretchFactor(2);
+			// // 			mod2.setCompressionFactor(1);
+			// 	mesh = hemeshToToxi( toxiToHemesh(mesh).modify(mod) ).toWEMesh();
+			// }
 
 		// ISOSURFACE CONVERSION
 			this.MESH = mesh;
@@ -124,33 +139,43 @@ public class Organism{
 
 		if(this.PARENTS[0] == null || this.PARENTS[1] == null){
 			// Create a whole new array of particles
-			Vec3D spreader = new Vec3D(
-								this.DNA.next_gene(0, this.P_size/2),
-								this.DNA.next_gene(0, this.P_size/2),
-								this.DNA.next_gene(0, this.P_size/2)
-							);
+				Vec3D spreader = new Vec3D(
+									this.DNA.next_gene(0, this.P_size/2),
+									this.DNA.next_gene(0, this.P_size/2),
+									this.DNA.next_gene(0, this.P_size/2)
+								);
 
-			for(int i=0; i<this.P_numParticles; i++){
-				Vec3D v = Vec3D.randomVector().scale(spreader);
-				// Vec3D v = new Vec3D( this.DNA.next_gene(-this.P_size/3, this.P_size/3), this.DNA.next_gene(-this.P_size/3, this.P_size/3), this.DNA.next_gene(-this.P_size/3, this.P_size/3) );
-				particles.add(v);
-			}
+				for(int i=0; i<this.P_numParticles; i++){
+					Vec3D v = Vec3D.randomVector().scale(spreader);
+					// Vec3D v = new Vec3D( this.DNA.next_gene(-this.P_size/3, this.P_size/3), this.DNA.next_gene(-this.P_size/3, this.P_size/3), this.DNA.next_gene(-this.P_size/3, this.P_size/3) );
+					particles.add(v);
+				}
 		}else{
 			// Mix the particles of this organism's two parents
 			// using a segment swapping technic
-			int r = int(random(this.P_numParticles));
-			for(int i=0; i<this.PARENTS[0].P_particles.size(); i++){
-				if(i>r) particles.add(this.PARENTS[0].P_particles.get(i));
-				else particles.add(this.PARENTS[1].P_particles.get(i));
-			}
+				int r = int(random(this.P_numParticles));
+				for(int i=0; i<this.PARENTS[0].P_particles.size(); i++){
+					if(i>r) particles.add(this.PARENTS[0].P_particles.get(i));
+					else particles.add(this.PARENTS[1].P_particles.get(i));
+				}
 
-			// // Add new particles based on Vec3D P_evolvingDirection
-			int newParticlesLength = int(this.DNA.next_gene(0, 100));
-			Vec3D from = particles.get(int(random(particles.size())));
-			for(int i=0; i<newParticlesLength; i++){
-				Vec3D v = from.interpolateTo(P_evolvingDirection, norm(i, 0, this.DNA.next_gene(0, 10)));
-				particles.add(v);
-			}
+			// Create a line of particles from Vec3D from to Vec3D P_evolvingDirection
+				Vec3D centroid = new Vec3D(0,0,0);
+				for(Vec3D v : particles) centroid.addSelf(v);
+				centroid.scaleSelf(1/particles.size());
+
+				if(centroid.distanceTo(P_evolvingDirection) > this.P_size/2){
+
+					Vec3D from = particles.get(int(random(particles.size())));
+					float dist = from.distanceTo(P_evolvingDirection);
+					float jitter = sqrt(this.DNA.next_gene(0, sq(20)));
+					for(int i=0; i<dist; i+=20){
+						Vec3D v = from.interpolateTo(P_evolvingDirection, norm(i, 0, from.distanceTo(P_evolvingDirection)));
+						particles.add(v);
+						v.jitter(jitter);
+					}
+
+				}
 
 			// int start = int(this.DNA.next_gene(0, particles.size())),
 			// 	end = int(this.DNA.next_gene(start, particles.size()));
