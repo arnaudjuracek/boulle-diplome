@@ -6,11 +6,24 @@
  * based on The Nature of Code by Daniel Shiffman : http://natureofcode.com
  */
 
+import java.util.Iterator;
+import java.util.List;
+
 import toxi.geom.*;
 import toxi.geom.mesh.*;
+import toxi.math.*;
 import toxi.math.waves.*;
 import toxi.processing.*;
 import toxi.volume.*;
+
+import wblut.core.*;
+import wblut.geom.*;
+import wblut.hemesh.*;
+import wblut.processing.*;
+
+import toxi.geom.*;
+import toxi.geom.mesh.*;
+import toxi.processing.*;
 
 import processing.opengl.*;
 
@@ -45,29 +58,37 @@ void draw(){
 	population.display();
 
 	// DISPLAY INFOS
-	hint(DISABLE_DEPTH_TEST);
-		textAlign(LEFT, BOTTOM);
-		fill(255, 200);
-		text(
-			int(frameRate) + "fps" +
-			"\n" + "generation #" + population.GENERATION
-			, 10, height - 10);
-	hint(ENABLE_DEPTH_TEST);
+	// surface.setTitle("[" + int(frameRate) + " fps]" + " [GEN#" + population.GENERATION + "]");
+	surface.setTitle("#" + (population.GENERATION < 10 ? "0" : "") + population.GENERATION + " — " + int(frameRate) + "fps");
+
+	if(RECORDING){
+		if(frameCount%10==0){
+			saveFrame("/Users/RNO/Desktop/tmp-gif/####_frame.tiff");
+			if(frameCount>TWO_PI*100){
+				RECORDING = false;
+				println("Frames saved to /Users/RNO/Desktop/tmp-gif/");
+			}
+		}
+	}
 }
 
-
-
+boolean RECORDING = false;
 void keyPressed(){
 	if(key == ' ') population.evolve();
 	if(key == 'r') setup();
 	if(key == 's') population.VIEW_MODE_SOLO = !population.VIEW_MODE_SOLO;
 	if(key == 'i') population.SHOW_INFO = !population.SHOW_INFO;
-	if(key == 'e'){
-		String filename = "disco_" + year() + month() + day() + hour() + minute();
+	if(key == 'p'){
+		String filename = "export_" + year() + month() + day() + hour() + minute();
 		population.VIEW_MODE_SOLO = true;
 		for(Organism o : population.ORGANISMS){
 			if(o.HOVER) o.export("/Users/RNO/Desktop/" + filename);
 		}
 		population.VIEW_MODE_SOLO = false;
+	}
+	if(key == 'e'){
+		RECORDING = true;
+		frameCount = 0;
+		println("Starting to record frames...");
 	}
 }

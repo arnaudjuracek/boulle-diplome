@@ -20,8 +20,7 @@ public class Organism{
 		this.PARENTS[0] = null;
 		this.PARENTS[1] = null;
 
-		this.OPTS_define();
-		this.SHAPE = this.create_shape();
+		this.P_define();
 	}
 
 	// CONSTRUCTOR :
@@ -31,12 +30,12 @@ public class Organism{
 	public Organism(Dna dna, Organism mom, Organism dad){
 		this.DNA = dna;
 		this.FITNESS = 1;
+
 		this.PARENTS = new Organism[2];
 		this.PARENTS[0] = mom;
 		this.PARENTS[1] = dad;
 
-		this.OPTS_define();
-		this.SHAPE = this.create_shape();
+		this.P_define();
 	}
 
 
@@ -44,24 +43,33 @@ public class Organism{
 	// PHENOTYPE :
 	// Define options for this organism specific instance
 	private int
-		OPT_numParticles = 200,
-		OPT_size = 600,
-		OPT_resolution = 20;
+		P_numParticles = 200,
+		P_size = 600,
+		P_resolution = 20;
 	private float
-		OPT_isoThreshold = 7;
+		P_isoThreshold = 7,
+		P_volumetricSpaceScale = 1.25;
 	private Vec3D
-		OPT_cAmp = new Vec3D(255, 255, 255),
-		OPT_evolvingDirection = new Vec3D(0, 0, 0);
+		P_cAmp = new Vec3D(300, 255, 300),
+		P_evolvingDirection = new Vec3D(0, 0, 0);
+	private ArrayList<Vec3D>
+		P_particles = new ArrayList<Vec3D>(),
+		P_neg_particles = new ArrayList<Vec3D>();
 
-	private void OPTS_define(){
-		this.OPT_resolution = (int) 20;
-		this.OPT_evolvingDirection = new Vec3D(
-										this.DNA.next_gene(-this.OPT_size, this.OPT_size),
-										this.DNA.next_gene(-this.OPT_size, this.OPT_size),
-										this.DNA.next_gene(-this.OPT_size, this.OPT_size)
+	private void P_define(){
+		this.P_evolvingDirection = new Vec3D(
+										this.DNA.next_gene(-this.P_size, this.P_size),
+										this.DNA.next_gene(-this.P_size, this.P_size),
+										this.DNA.next_gene(-this.P_size, this.P_size)
 									);
-		// this.OPT_resolution = (int) this.DNA.next_gene(10, 30);
-		// this.OPT_isoThreshold = (float) this.DNA.next_gene(1, 20); //7;
+		// this.P_resolution = (int) this.DNA.next_gene(10, 50);
+		this.P_resolution *= this.P_volumetricSpaceScale;
+		// fix weird bug with ODD resolutions
+		if(this.P_resolution%2!=0) this.P_resolution++;
+
+		// this.P_isoThreshold = (float) this.DNA.next_gene(5, 20);
+
+		this.SHAPE = this.buildShape();
 	}
 
 	// -------------------------------------------------------------------------
@@ -69,41 +77,91 @@ public class Organism{
 	// populate an array of particles, then compute this array as an isosurface
 	// mesh casted in a defined volumetric space, then convert this mesh into
 	// a 3D PShape, and return this PShape.
-	private PShape create_shape(){
+	private PShape buildShape(){
 		// PARTICLES SYSTEM
-			ArrayList<Vec3D> particles = new ArrayList<Vec3D>();
-			for(int i=0; i<this.OPT_numParticles; i++){
-				Vec3D v = Vec3D.randomVector().scale(this.OPT_size/3);
-				// Vec3D v = new Vec3D(
-				// 				this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3),
-				// 				this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3),
-				// 				this.DNA.next_gene(-this.OPT_size/3, this.OPT_size/3)
-				// 			);
-				particles.add(v);
-			}
-
-
-			int newParticlesLength = int(this.DNA.next_gene(0, 100));
-			for(int i=0; i<newParticlesLength; i++){
-				Vec3D v = new Vec3D(0,0,0).interpolateTo(OPT_evolvingDirection, norm(i, 0, this.DNA.next_gene(0, 30)));
-				particles.add(v);
-			}
+			this.P_particles = this.spawnParticles();
 
 		// ISOSURFACE COMPUTATION
-		WETriangleMesh mesh = this.computeSurfaceMesh(
-								particles,
-								new VolumetricSpaceArray(
-									new Vec3D(this.OPT_size, this.OPT_size, this.OPT_size),
-									this.OPT_resolution,
-									this.OPT_resolution,
-									this.OPT_resolution
-								),
-								this.OPT_isoThreshold
-							);
+			WETriangleMesh mesh = this.computeSurfaceMesh(
+									this.P_particles,
+									new VolumetricSpaceArray(
+										new Vec3D(this.P_size*this.P_volumetricSpaceScale, this.P_size*this.P_volumetricSpaceScale, this.P_size*this.P_volumetricSpaceScale),
+										this.P_resolution, this.P_resolution, this.P_resolution
+									),
+									this.P_isoThreshold
+								);
+
+			float m = this.DNA.next_gene();
+			if(m < .5){
+				// HEM_Lattice mod = new HEM_Lattice();
+				// 	mod.setDepth(1);
+				// 	mod.setWidth(m*10);
+				HEM_Twist mod = new HEM_Twist();
+					mod.setAngleFactor(radians(m*45));
+					mod.setTwistAxis(new WB_Line(0,0,0, 0,0,1));
+
+			// 	HEM_Stretch mod2 = new HEM_Stretch();
+			// 			mod2.setGroundPlane(0,0,0, 0,0,1);
+			// 			mod2.setStretchFactor(2);
+			// 			mod2.setCompressionFactor(1);
+				mesh = hemeshToToxi( toxiToHemesh(mesh).modify(mod) ).toWEMesh();
+			}
 
 		// ISOSURFACE CONVERSION
-		this.MESH = mesh;
+			this.MESH = mesh;
+
 		return this.meshToPShape(mesh);
+	}
+
+
+
+	// -------------------------------------------------------------------------
+	// PARTICLES HANDLING :
+	// take this organism's parent's particles, mix them together
+	// using a segment swapping technic, then add some new particles
+	private ArrayList<Vec3D> spawnParticles(){
+		ArrayList<Vec3D> particles = new ArrayList<Vec3D>();
+
+		if(this.PARENTS[0] == null || this.PARENTS[1] == null){
+			// Create a whole new array of particles
+			Vec3D spreader = new Vec3D(
+								this.DNA.next_gene(0, this.P_size/2),
+								this.DNA.next_gene(0, this.P_size/2),
+								this.DNA.next_gene(0, this.P_size/2)
+							);
+
+			for(int i=0; i<this.P_numParticles; i++){
+				Vec3D v = Vec3D.randomVector().scale(spreader);
+				// Vec3D v = new Vec3D( this.DNA.next_gene(-this.P_size/3, this.P_size/3), this.DNA.next_gene(-this.P_size/3, this.P_size/3), this.DNA.next_gene(-this.P_size/3, this.P_size/3) );
+				particles.add(v);
+			}
+		}else{
+			// Mix the particles of this organism's two parents
+			// using a segment swapping technic
+			int r = int(random(this.P_numParticles));
+			for(int i=0; i<this.PARENTS[0].P_particles.size(); i++){
+				if(i>r) particles.add(this.PARENTS[0].P_particles.get(i));
+				else particles.add(this.PARENTS[1].P_particles.get(i));
+			}
+
+			// // Add new particles based on Vec3D P_evolvingDirection
+			int newParticlesLength = int(this.DNA.next_gene(0, 100));
+			Vec3D from = particles.get(int(random(particles.size())));
+			for(int i=0; i<newParticlesLength; i++){
+				Vec3D v = from.interpolateTo(P_evolvingDirection, norm(i, 0, this.DNA.next_gene(0, 10)));
+				particles.add(v);
+			}
+
+			// int start = int(this.DNA.next_gene(0, particles.size())),
+			// 	end = int(this.DNA.next_gene(start, particles.size()));
+
+			// for(int i=start; i<end; i++){
+			// 	Vec3D p = particles.get(i);
+			// 	p.shuffle(3);
+			// }
+		}
+
+		return particles;
 	}
 
 
@@ -115,23 +173,24 @@ public class Organism{
 	// and takes place in a predefined volumetric space array (aka voxels)
 	private WETriangleMesh computeSurfaceMesh(ArrayList<Vec3D> particles, VolumetricSpaceArray volume, float isoThreshold){
 		WETriangleMesh mesh = new WETriangleMesh();
-		IsoSurface surface = new ArrayIsoSurface(volume);
+		IsoSurface surface = new HashIsoSurface(volume);
 
-		float voxelsize = this.OPT_size/this.OPT_resolution;
+		float voxelsize = (float) (this.P_size/this.P_resolution)*this.P_volumetricSpaceScale;
 		Vec3D pos = new Vec3D();
 		float[] volumeData = volume.getData();
 
-		for(int z=int(-this.OPT_resolution/2), index=0; z<(this.OPT_resolution/2); z++, pos.z = z*voxelsize){
-			for(int y=int(-this.OPT_resolution/2); y<(this.OPT_resolution/2); y++, pos.y = y*voxelsize){
-				for(int x=int(-this.OPT_resolution/2); x<(this.OPT_resolution/2); x++, pos.x = x*voxelsize){
+		for(int z=int(-this.P_resolution/2), index=0; z<(this.P_resolution/2); z++){
+			pos.z = z*voxelsize;
+			for(int y=int(-this.P_resolution/2); y<(this.P_resolution/2); y++){
+				pos.y = y*voxelsize;
+				for(int x=int(-this.P_resolution/2); x<(this.P_resolution/2); x++){
+					pos.x = x*voxelsize;
+
 					float val = 0;
-					for(int i=0; i<particles.size(); i++){
-						Vec3D p = (Vec3D) particles.get(i);
+					for(Vec3D p : particles){
 						float mag = pos.distanceToSquared(p) + .00001;
 						val += 1/mag;
-						if((1/mag)>val) val = 1/mag;
 					}
-
 					volumeData[index++] = val;
 				}
 			}
@@ -149,7 +208,7 @@ public class Organism{
 	// -------------------------------------------------------------------------
 	// MESH TO PSHAPE CONVERSION :
 	// Take a mesh and return a 3D PShape with normals
-	PShape meshToPShape(WETriangleMesh mesh){
+	private PShape meshToPShape(WETriangleMesh mesh){
 		int num = mesh.getNumFaces();
 		mesh.computeVertexNormals();
 		mesh.computeFaceNormals();
@@ -159,17 +218,17 @@ public class Organism{
 		s.stroke(255, 10);
 		for(int i=0; i<num; i++){
 			Face f = mesh.faces.get(i);
-			Vec3D c = f.a.add(this.OPT_cAmp);
+			Vec3D c = f.a.add(this.P_cAmp);
 				s.fill(c.x,c.y,c.z);
 				s.normal(f.a.normal.x, f.a.normal.y, f.a.normal.z);
 				s.vertex(f.a.x, f.a.y, f.a.z);
 
-			c = f.b.add(this.OPT_cAmp);
+			c = f.b.add(this.P_cAmp);
 				s.fill(c.x,c.y,c.z);
 				s.normal(f.b.normal.x, f.b.normal.y, f.b.normal.z);
 				s.vertex(f.b.x, f.b.y, f.b.z);
 
-			c = f.c.add(this.OPT_cAmp);
+			c = f.c.add(this.P_cAmp);
 				s.fill(c.x,c.y,c.z);
 				s.normal(f.c.normal.x, f.c.normal.y, f.c.normal.z);
 				s.vertex(f.c.x, f.c.y, f.c.z);
@@ -181,9 +240,38 @@ public class Organism{
 
 
 	// -------------------------------------------------------------------------
+	// TOXICLIBS / HEMESH CONVERTERS
+	// see https://gist.github.com/arnaudjuracek/8766cde42b0a4e3f7c88fd3dce1e64f3
+	private TriangleMesh hemeshToToxi(HE_Mesh m){
+		m.triangulate();
+
+		TriangleMesh tmesh = new TriangleMesh();
+
+		Iterator<HE_Face> fItr = m.fItr();
+		HE_Face f;
+		while(fItr.hasNext()){
+			f = fItr.next();
+			List<HE_Vertex> v = f.getFaceVertices();
+			tmesh.addFace(
+				new Vec3D(v.get(0).xf(), v.get(0).yf(), v.get(0).zf()),
+				new Vec3D(v.get(1).xf(), v.get(1).yf(), v.get(1).zf()),
+				new Vec3D(v.get(2).xf(), v.get(2).yf(), v.get(2).zf()));
+		}
+		return tmesh;
+	}
+
+	private HE_Mesh toxiToHemesh(TriangleMesh m){
+		String path = "/tmp/processing_toxiToHemesh";
+		m.saveAsOBJ(path);
+		return new HE_Mesh(new HEC_FromOBJFile(path));
+	}
+
+
+
+	// -------------------------------------------------------------------------
 	// EXPORT HANDLING
 	// save the mesh as OBJ and STL on a specified path
-	boolean export(String path){
+	public boolean export(String path){
 		this.MESH.saveAsOBJ(path + ".obj");
 		this.MESH.saveAsSTL(path + ".stl");
 		return true;
@@ -221,7 +309,7 @@ public class Organism{
 				if(this.HOVER) box(map(v,1,2,0,300), map(v,1,2,0,300), map(v,1,2,0,300));
 
 				// shape
-				scale(map(v,1,2,150,300)/this.OPT_size);
+				scale(map(v,1,2,150,300)/this.P_size);
 				if(this.SHAPE != null) shape(this.SHAPE, 0, 0);
 			popMatrix();
 		popMatrix();
@@ -239,6 +327,23 @@ public class Organism{
 			fill(255, map(v, 1, 2, 255*.6, 255*.9));
 			textAlign(CENTER, CENTER);
 			text(int(this.FITNESS) + "%", x, y-1);
+		hint(ENABLE_DEPTH_TEST);
+	}
+
+	public void displayInformations(int x, int y){
+		hint(DISABLE_DEPTH_TEST);
+			pushStyle();
+				fill(0, map(v, 1, 2, 255*.4, 255*.9));
+				noStroke();
+				rect(x-this.P_size/4,y-this.P_size/4,this.P_size/2, this.P_size/2);
+			popStyle();
+
+			fill(255, map(v, 1, 2, 255*.6, 255*.9));
+			textAlign(CENTER, CENTER);
+			text(
+				"r:" + this.P_resolution + "\n" +
+				"t:" + this.P_isoThreshold + "\n",
+				x, y-1);
 		hint(ENABLE_DEPTH_TEST);
 	}
 
