@@ -41,6 +41,7 @@ public class Dna{
 	// -------------------------------------------------------------------------
 	// DNA MUTATION :
 	// replace randomly picked genes (based on mutation_rate) with new random ones
+	// Dna.mutate(m) == Dna.mutate(m, 1)
 	public void mutate(float mutation_rate){
 		for(int i=0; i<this.GENES.length; i++){
 			if(random(1) < mutation_rate) this.GENES[i] = random(0,1);
@@ -48,6 +49,7 @@ public class Dna{
 	}
 
 	// add a random mutation constrained within a mutation amplitute on randomly picked (based on mutation_rate) genes
+	// Dna.mutate(m) == Dna.mutate(m, 1)
 	public void mutate(float mutation_rate, float mutation_amp){
 		for(int i=0; i<this.GENES.length; i++){
 			if(random(1) < mutation_rate) this.GENES[i] = constrain(this.GENES[i] + random(-mutation_amp, mutation_amp), 0, 1);
