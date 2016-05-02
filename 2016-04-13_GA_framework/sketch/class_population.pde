@@ -1,7 +1,7 @@
 public class Population{
 	public Organism[] ORGANISMS;
 	public ArrayList<Organism> MATING_POOL;
-	public float MUTATION_RATE;
+	public float MUTATION_RATE, MUTATION_AMP;
 
 	public int GENERATION;
 	public ArrayList<Organism[]> PREVIOUS_GENERATIONS;
@@ -11,9 +11,10 @@ public class Population{
 	// CONSTRUCTOR :
 	// Create a new population of *num* organisms
 	// with an assigned mutation_rate
-	public Population(int num, float mutation_rate){
+	public Population(int num, float mutation_rate, float mutation_amp){
 		this.ORGANISMS = new Organism[num];
 		this.MUTATION_RATE = mutation_rate;
+		this.MUTATION_AMP = mutation_amp;
 		this.MATING_POOL = new ArrayList<Organism>();
 
 		this.GENERATION = 0;
@@ -82,7 +83,8 @@ public class Population{
 
 			// Mate their genes into a child, then mutate it
 			Dna childDNA = mom.DNA.recombinate(dad.DNA);
-			childDNA.mutate(this.MUTATION_RATE);
+			// childDNA.mutate(this.MUTATION_RATE);
+			childDNA.mutate(this.MUTATION_RATE, this.MUTATION_AMP);
 
 			// Fill the new population with the new child
 			this.ORGANISMS[i] = new Organism(childDNA, mom, dad);

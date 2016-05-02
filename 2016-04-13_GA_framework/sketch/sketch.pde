@@ -11,7 +11,7 @@ Population population;
 
 void setup(){
 	size(800, 800, P2D);
-	population = new Population(35, 0.01);
+	population = new Population(35, 0.5, .1);
 }
 
 void draw(){
