@@ -338,6 +338,12 @@ public class Organism{
 				if(this.SHAPE != null) shape(this.SHAPE, 0, 0);
 			popMatrix();
 		popMatrix();
+
+
+		// if(this.HOVER){
+		// 	if(PARENTS[0]!=null) PARENTS[0].display(x-100, y-100);
+		// 	if(PARENTS[1]!=null) PARENTS[1].display(x+100, y-100);
+		// }
 	}
 
 	public void displayFitness(int x, int y){
