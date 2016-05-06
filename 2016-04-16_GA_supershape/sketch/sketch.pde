@@ -12,7 +12,7 @@ Population population;
 void setup(){
 	size(800, 800, P2D);
 	smooth();
-	population = new Population((int) sq(5), 0.01);
+	population = new Population((int) sq(5), .01, .1);
 }
 
 void draw(){
