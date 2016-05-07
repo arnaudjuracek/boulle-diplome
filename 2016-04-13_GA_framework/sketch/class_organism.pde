@@ -46,9 +46,9 @@ public class Organism{
 
 	private void P_define(){
 		this.P_color = color(
-				(int) this.DNA.next_gene(0,255),
-				(int) this.DNA.next_gene(0,255),
-				(int) this.DNA.next_gene(0,255)
+				(int) this.DNA.nextGene(0,255),
+				(int) this.DNA.nextGene(0,255),
+				(int) this.DNA.nextGene(0,255)
 			);
 	}
 
