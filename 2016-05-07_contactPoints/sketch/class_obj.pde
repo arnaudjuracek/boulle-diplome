@@ -10,8 +10,7 @@
  * the possible contact points of the *.obj.
  *
  * The *.obj file is read as both a HE_Mesh mesh and a
- * TriangleMesh (ToxicLibs) mesh, making use of the
- * toxi<>hemesh converters https://gist.github.com/arnaudjuracek/8766cde42b0a4e3f7c88fd3dce1e64f3
+ * TriangleMesh (ToxicLibs) mesh.
  *
  * The contact points are stored as both ToxicLibs Vec3D and
  * Processing PVector.
