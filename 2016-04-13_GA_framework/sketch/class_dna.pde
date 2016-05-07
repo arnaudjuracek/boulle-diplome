@@ -20,10 +20,11 @@ public class Dna{
 	// return the crossed DNA as a new child
 	public Dna recombinate(Dna partner){
 		FloatList child = new FloatList();
-		int r = int(random(this.GENES.size()));
+		int r = int(random(this.GENES.size())); // segment swapping method
 
 		for(int i=0; i<this.GENES.size(); i++){
-			if(i>r) child.append(GENES.get(i));
+			if(i>r) child.append(GENES.get(i)); // segment swapping method
+			// if(random(1)>.5) child.append(GENES.get(i)); // gene swapping method
 			else child.append(partner.GENES.get(i));
 		}
 
