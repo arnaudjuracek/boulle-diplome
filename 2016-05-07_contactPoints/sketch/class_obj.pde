@@ -12,11 +12,10 @@
  * The *.obj file is read as both a HE_Mesh mesh and a
  * TriangleMesh (ToxicLibs) mesh.
  *
- * The contact points are stored as both ToxicLibs Vec3D and
- * Processing PVector.
+ * The contact points are stored as ToxicLibs Vec3D.
  *
- * nb : if using Rhino for the creating the *.cpoints file, make sure
- * you export the contacts points as a NURBS .obj, otherwise Rhino
+ * nb : if using Rhino to create the *.cpoints file, make sure
+ * you export the contact points as a NURBS .obj, otherwise Rhino
  * will throw an error.
  */
 
@@ -35,8 +34,7 @@ public class Obj{
 
 	private String PATH, FILENAME;
 	private File MESH_FILE, CPOINTS_FILE;
-	private ArrayList<Vec3D> VEC3D_CPOINTS;
-	private ArrayList<PVector> PVECTOR_CPOINTS;
+	private ArrayList<Vec3D> CPOINTS;
 	private HE_Mesh HEMESH;
 	private TriangleMesh TOXIMESH;
 
@@ -57,9 +55,7 @@ public class Obj{
 
 		// Find the matchin *.cpoints file and parse it
 		this.CPOINTS_FILE = new File(mesh.getAbsolutePath().replaceFirst("[.][^.]+$", ".cpoints"));
-		this.PVECTOR_CPOINTS = this.parseCPointsFile(this.CPOINTS_FILE);
-		this.VEC3D_CPOINTS = new ArrayList<Vec3D>();;
-			for(PVector v : this.PVECTOR_CPOINTS) this.VEC3D_CPOINTS.add(new Vec3D(v.x, v.y, v.z));
+		this.CPOINTS = this.parseCPointsFile(this.CPOINTS_FILE);
 	}
 
 
@@ -68,8 +64,8 @@ public class Obj{
 	// CPOINTS parser
 	// create a BufferedReader with the given file, and read each line
 	// if the line is beginning with a 'v', that means it describes a vertex
-	private ArrayList<PVector> parseCPointsFile(File f){
-		ArrayList<PVector> cpoints = new ArrayList<PVector>();
+	private ArrayList<Vec3D> parseCPointsFile(File f){
+		ArrayList<Vec3D> cpoints = new ArrayList<Vec3D>();
 		BufferedReader reader = createReader(f.getAbsolutePath());
 
 		String line = "";
@@ -78,7 +74,7 @@ public class Obj{
 				line = reader.readLine();
 				if(line != null && line.length() > 0 && line.charAt(0) == 'v'){
 					String[] parts = split(line, ' ');
-					cpoints.add( new PVector(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])) );
+					cpoints.add( new Vec3D(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])) );
 				}
 			}catch (IOException e){
 				e.printStackTrace();
@@ -131,12 +127,8 @@ public class Obj{
 	public TriangleMesh getToxiMesh(){ return this.TOXIMESH; }
 	public HE_Mesh getHemesh(){ return this.HEMESH; }
 
-	public ArrayList<Vec3D> getContactPoints_Vec3D(){ return this.VEC3D_CPOINTS; }
-	public Vec3D getContactPoint_Vec3D(int index){ return this.VEC3D_CPOINTS.get(index); }
-	public Vec3D getRandomContactPoint_Vec3D(){ return this.VEC3D_CPOINTS.get(int(random(this.VEC3D_CPOINTS.size()))); }
-
-	public ArrayList<PVector> getContactPoints_PVector(){ return this.PVECTOR_CPOINTS; }
-	public PVector getContactPoint_PVector(int index){ return this.PVECTOR_CPOINTS.get(index); }
-	public PVector getRandomContactPoint_PVector(){ return this.PVECTOR_CPOINTS.get(int(random(this.PVECTOR_CPOINTS.size()))); }
+	public ArrayList<Vec3D> getContactPoints(){ return this.CPOINTS; }
+	public Vec3D getContactPoint(int index){ return this.CPOINTS.get(index); }
+	public Vec3D getRandomContactPoint(){ return this.CPOINTS.get(int(random(this.CPOINTS.size()))); }
 
 }
