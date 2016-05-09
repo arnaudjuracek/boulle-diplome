@@ -43,7 +43,7 @@ public class Tree{
 	public ArrayList<Node> getNodes(){ return this.NODES; }
 	public Node getNode(int index){ return this.NODES.get(index); }
 	public Node getFirstNode(){ return this.NODES.get(0); }
-	public Node getLastNode(){ return this.NODES.get(this.NODES.size()-1); }
+	public Node getLastNode(){ return this.NODES.size()>0 ? this.NODES.get(this.NODES.size()-1) : null; }
 	public Node getRandomNode(){ return this.NODES.get(int(random(this.NODES.size()))); }
 
 	public ArrayList<Vec3D> getContactPoints(){ return this.CPOINTS; }

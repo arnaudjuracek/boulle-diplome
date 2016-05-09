@@ -35,9 +35,10 @@ public class Obj{
 	private String PATH, FILENAME;
 	private File MESH_FILE, CPOINTS_FILE;
 	private ArrayList<Vec3D> CPOINTS;
+
 	private HE_Mesh HEMESH;
 	private TriangleMesh TOXIMESH;
-
+	private PShape PSHAPE;
 
 
 	// -------------------------------------------------------------------------
@@ -52,6 +53,7 @@ public class Obj{
 		this.MESH_FILE = mesh;
 		this.HEMESH = new HE_Mesh(new HEC_FromOBJFile(mesh.getAbsolutePath()));
 		this.TOXIMESH = this.hemeshToToxi(this.HEMESH);
+		this.PSHAPE = this.toxiToPShape(this.TOXIMESH);
 
 		// Find the matchin *.cpoints file and parse it
 		this.CPOINTS_FILE = new File(mesh.getAbsolutePath().replaceFirst("[.][^.]+$", ".cpoints"));
@@ -114,6 +116,38 @@ public class Obj{
 		return new HE_Mesh(new HEC_FromOBJFile(path));
 	}
 
+	private PShape toxiToPShape(TriangleMesh m){
+		Vec3D cAmp = new Vec3D(300, 255, 300);
+		WETriangleMesh mesh = m.toWEMesh();
+
+		int num = mesh.getNumFaces();
+		mesh.computeVertexNormals();
+		mesh.computeFaceNormals();
+
+		PShape s = createShape();
+			s.beginShape(TRIANGLE);
+			s.stroke(255, 10);
+			for(int i=0; i<num; i++){
+				Face f = mesh.faces.get(i);
+				Vec3D c = f.a.add(cAmp);
+					s.fill(c.x,c.y,c.z);
+					s.normal(f.a.normal.x, f.a.normal.y, f.a.normal.z);
+					s.vertex(f.a.x, f.a.y, f.a.z);
+
+				c = f.b.add(cAmp);
+					s.fill(c.x,c.y,c.z);
+					s.normal(f.b.normal.x, f.b.normal.y, f.b.normal.z);
+					s.vertex(f.b.x, f.b.y, f.b.z);
+
+				c = f.c.add(cAmp);
+					s.fill(c.x,c.y,c.z);
+					s.normal(f.c.normal.x, f.c.normal.y, f.c.normal.z);
+					s.vertex(f.c.x, f.c.y, f.c.z);
+			}
+			s.endShape();
+		return s;
+	}
+
 
 
 	// -------------------------------------------------------------------------
@@ -126,6 +160,7 @@ public class Obj{
 
 	public TriangleMesh getToxiMesh(){ return this.TOXIMESH; }
 	public HE_Mesh getHemesh(){ return this.HEMESH; }
+	public PShape getPShape(){ return this.PSHAPE; }
 
 	public ArrayList<Vec3D> getContactPoints(){ return this.CPOINTS; }
 	public Vec3D getContactPoint(int index){ return this.CPOINTS.get(index); }
