@@ -34,7 +34,7 @@ public class Obj{
 
 	private String PATH, FILENAME;
 	private File MESH_FILE, CPOINTS_FILE;
-	private ArrayList<Vec3D> CPOINTS;
+	private ArrayList<CPoint> CPOINTS;
 
 	private HE_Mesh HEMESH;
 	private TriangleMesh TOXIMESH;
@@ -66,23 +66,41 @@ public class Obj{
 	// CPOINTS parser
 	// create a BufferedReader with the given file, and read each line
 	// if the line is beginning with a 'v', that means it describes a vertex
-	private ArrayList<Vec3D> parseCPointsFile(File f){
-		ArrayList<Vec3D> cpoints = new ArrayList<Vec3D>();
+	// if the line is beginning with a 'g', that means it describes a group
+	private ArrayList<CPoint> parseCPointsFile(File f){
+		ArrayList<CPoint> cpoints = new ArrayList<CPoint>();
+		ArrayList<Vec3D> surface_points = null;
+
 		BufferedReader reader = createReader(f.getAbsolutePath());
 
 		String line = "";
 		while(line != null){
 			try{
 				line = reader.readLine();
-				if(line != null && line.length() > 0 && line.charAt(0) == 'v'){
-					String[] parts = split(line, ' ');
-					cpoints.add( new Vec3D(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])) );
+				if(line != null && line.length() > 0){
+
+					if(line.charAt(0) == 'g'){
+						if(surface_points != null) cpoints.add(new CPoint(surface_points));
+						surface_points = new ArrayList<Vec3D>();
+					}
+
+					if(line.charAt(0) == 'v' && line.charAt(1) == ' '){
+						String[] parts = split(line, ' ');
+						Vec3D v = new Vec3D( parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3]) );
+						if(surface_points != null)
+							surface_points.add(v);
+						else
+							cpoints.add( new CPoint(v) );
+					}
+
 				}
-			}catch (IOException e){
+			}catch(IOException e){
 				e.printStackTrace();
 				line = null;
 			}
 		}
+
+		if(surface_points != null) cpoints.add(new CPoint(surface_points));
 
 		return cpoints;
 	}
@@ -162,8 +180,10 @@ public class Obj{
 	public HE_Mesh getHemesh(){ return this.HEMESH; }
 	public PShape getPShape(){ return this.PSHAPE; }
 
-	public ArrayList<Vec3D> getContactPoints(){ return this.CPOINTS; }
-	public Vec3D getContactPoint(int index){ return this.CPOINTS.get(index); }
-	public Vec3D getRandomContactPoint(){ return this.CPOINTS.get(int(random(this.CPOINTS.size()))); }
+	public ArrayList<CPoint> getContactPoints(){ return this.CPOINTS; }
+	public CPoint getContactPoint(int index){ return this.CPOINTS.get(index); }
+	public CPoint getRandomContactPoint(){ return this.CPOINTS.get(int(random(this.CPOINTS.size()))); }
+
+	public AABB getAABB(){ return this.getToxiMesh().getBoundingBox(); }
 
 }
