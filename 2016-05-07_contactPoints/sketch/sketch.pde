@@ -7,28 +7,36 @@ Tree TREE;
 ToxiclibsSupport gfx;
 PeasyCam cam;
 
+// void settings(){
+// 	fullScreen(OPENGL);
+// }
+
 void setup(){
 	size(1000, 800, OPENGL);
 		smooth();
 
-	OBJECTS = new ObjLoader("data/set1/");
-		OBJECTS
-			.weightObj(OBJECTS.get("cube.obj"), 1)
-			.weightObj(OBJECTS.get("stick.obj"), 99)
-			.weightObj(OBJECTS.get("bowl.obj"), 1);
+	OBJECTS = new ObjLoader("data/debug/");
+		// OBJECTS
+		// 	.weightObj(OBJECTS.get("ecrou.obj"), 10)
+		// 	.weightObj(OBJECTS.get("grille.obj"), 0)
+		// 	.weightObj(OBJECTS.get("gros_potar.obj"), 10)
+		// 	.weightObj(OBJECTS.get("paraP.obj"), 0)
+		// 	.weightObj(OBJECTS.get("petit_potar.obj"), 10)
+		// 	.weightObj(OBJECTS.get("pietement.obj"), 10)
+		// 	.weightObj(OBJECTS.get("vis.obj"), 10);
 
- 	cam = new PeasyCam(this, 1000);
+ 	cam = new PeasyCam(this, 500);
 	gfx = new ToxiclibsSupport(this);
 
 	TREE = new Tree();
-	for (int i=0; i<20; i++) {
-		Obj o = OBJECTS.getRandom();
-		if(i==0) o = OBJECTS.get("bowl.obj");
-		// Obj o = OBJECTS.get("cube.obj");
-		// Obj o = OBJECTS.get(int(i%2==0));
+	for (int i=0; i<1; i++) {
 
-		Vec3D p = TREE.getRandomContactPoint();
-		// if(TREE.getNodes().size()>0) p = TREE.getLastNode().getLastContactPoint();
+		// if(i==0) o = OBJECTS.get("bowl.obj");
+		// Obj o = OBJECTS.get("cube.obj");
+		Obj o = OBJECTS.get(0);
+		// if(i>0) o = OBJECTS.getRandom();
+
+		CPoint p = TREE.getRandomContactPoint();
 		TREE.add(o, p);
 	}
 
@@ -39,51 +47,73 @@ void setup(){
 void draw(){
 	background(50);
 
+	// rotateX(radians(45));
+	// rotateY(radians(45));
+
 	cam.beginHUD();
 		rotateX(PI*1.5);
 		lights();
 	cam.endHUD();
 
-	// DRAW TOXIMESH
-		// strokeWeight(2);
-		// int c = 0;
-		// for(Node n : TREE.getNodes()){
-		// 	if(n.getObj().getFilename().equals("stick.obj")){ stroke(255, 0, 100, 100); fill(200, 0, 100, 100); }
-		// 	else{ stroke(0, 255, 100, 100); fill(0, 200, 100, 100); }
-		// 	TriangleMesh m = n.getToxiMesh();
-		// 	gfx.mesh(m, false);
-		// }
-
-	// DRAW LAST NODE
-		// stroke(255); noFill();
-		// gfx.mesh(TREE.getLastNode().getToxiMesh(), false);
-
 	// DRAW PSHAPES
-		for(Node n : TREE.getNodes()) shape(n.getPShape(), 0, 0);
+		// for(Node n : TREE.getNodes()) shape(n.getPShape(), 0, 0);
+
+	// DRAW TOXIMESH
+		strokeWeight(1); stroke(255); noFill();
+		for(Node n : TREE.getNodes()) gfx.mesh(n.getToxiMesh());
+
+		stroke(0, 100, 200);
+		gfx.mesh(TREE.getLastNode().getToxiMesh());
 
 	// DRAW CONTACT POINTS
-		// strokeWeight(10);
-		// stroke(255);
-		// for(Vec3D v : TREE.getContactPoints()) point(v.x, v.y, v.z);
+		if(SHOW_CPOINTS){
+			int sphere_size = 4;
+			noLights();
+			for(CPoint c : TREE.getContactPoints()){
+				Vec3D v = c.getPosition();
+				pushMatrix();
+					fill(200, 0, 50);
+					noStroke();
+					translate(v.x, v.y, v.z);
+					pushMatrix();
+						sphere(sphere_size);
+
+						stroke(200, 0, 50);
+						strokeWeight(4);
+						line(0,0,0, c.getNormal().scale(100).x, c.getNormal().scale(100).y, c.getNormal().scale(100).z);
+					popMatrix();
+				popMatrix();
+			}
+			fill(0, 200, 50);
+			noStroke();
+			pushMatrix();
+				translate(TREE.getFirstContactPoint().getPosition().x, TREE.getFirstContactPoint().getPosition().y, TREE.getFirstContactPoint().getPosition().z);
+				sphere(sphere_size);
+			popMatrix();
+			lights();
+		}
 
 
 	// DISPLAY INFOS
 		surface.setTitle(TREE.getContactPoints().size() + " / " + int(frameRate) + "fps");
 }
 
+boolean SHOW_CPOINTS = true;
+
 void keyPressed(){
+	if(key == 'c') SHOW_CPOINTS = !SHOW_CPOINTS;
 	if(key == 'r') setup();
 	if(key == 'a'){
 		Obj o = OBJECTS.getRandom();
 		// Obj o = OBJECTS.get(1);
-		Vec3D p = TREE.getRandomContactPoint();
+		CPoint p = TREE.getLastNode().getRandomContactPoint();
 		TREE.add(o, p);
 	}
 	if(key == ' '){
 		for (int i=0; i<10; i++) {
 			Obj o = OBJECTS.getRandom();
 			// Vec3D p = TREE.getRandomContactPoint();
-			Vec3D p = TREE.getLastNode().getLastContactPoint();
+			CPoint p = TREE.getLastNode().getLastContactPoint();
 			TREE.add(o, p);
 		}
 	}
