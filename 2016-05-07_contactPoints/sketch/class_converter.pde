@@ -1,4 +1,12 @@
 public class Converter{
+
+	// convert a Toxiclib Vec3D into a Processing PVector
+	public PVector vec3dToPvector(Vec3D v){ return new PVector(v.x, v.y, v.z); }
+
+	// convert a Processing PVector into a Toxiclib Vec3D
+	public Vec3D pvectorToVec3d(PVector v){ return new Vec3D(v.x, v.y, v.z); }
+
+	// convert a Toxiclib TriangleMesh into a Processing PShape
 	public PShape toxiToPShape(TriangleMesh m){
 		Vec3D cAmp = new Vec3D(255, 200, 255);
 		WETriangleMesh mesh = m.toWEMesh();
@@ -34,7 +42,9 @@ public class Converter{
 	// -------------------------------------------------------------------------
 	// TOXICLIBS / HEMESH CONVERTERS
 	// see https://gist.github.com/arnaudjuracek/8766cde42b0a4e3f7c88fd3dce1e64f3
-	public	TriangleMesh hemeshToToxi(HE_Mesh m){
+
+	// convert an HE_Mesh into a Toxixlib TriangleMesh
+	public TriangleMesh hemeshToToxi(HE_Mesh m){
 		m.triangulate();
 
 		TriangleMesh tmesh = new TriangleMesh();
@@ -52,7 +62,8 @@ public class Converter{
 		return tmesh;
 	}
 
-	public	 HE_Mesh toxiToHemesh(TriangleMesh m){
+	// convert a Toxixlib TriangleMesh into an HE_Mesh
+	public HE_Mesh toxiToHemesh(TriangleMesh m){
 		String path = "/tmp/processing_toxiToHemesh";
 		m.saveAsOBJ(path);
 		return new HE_Mesh(new HEC_FromOBJFile(path));
