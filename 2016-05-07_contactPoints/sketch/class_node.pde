@@ -5,11 +5,14 @@ public class Node{
 	private ArrayList<CPoint> CPOINTS;
 
 	private CPoint ORIGIN;
-	private Vec3D POSITION, ROTATION;
+	private Vec3D POSITION;
+	private Vec2D ROTATION;
 	private Matrix4x4 MATRIX;
 
 	private TriangleMesh TOXIMESH;
 	private PShape PSHAPE;
+	private color COLOR = -1;
+	private PImage TEXTURE = null;
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
@@ -17,40 +20,32 @@ public class Node{
 		this.PARENT = parent;
 		this.OBJ = o;
 
+		// this.COLOR = color(random(255),random(255),random(255));
+		// this.TEXTURE = debug_tex;
+
 		// draw the Node from one of its OBJ's contact points
 			this.ORIGIN = o.getRandomContactPoint();
 
 		// compute the rotation of the Node based on its origin CPoint and the sourceCPoint
 	 	// or create a new random rotation
 			this.ROTATION = this.computeRotation(sourceCPoint);
-			if(this.ROTATION == null) this.ROTATION = this.randomRotation(0);
-			println(degrees(this.ROTATION.x)+", "+degrees(this.ROTATION.y)+", "+degrees(this.ROTATION.z));
+				if(this.ROTATION == null) this.ROTATION = this.randomRotation(9);
 
 		// create transformation matrix for this given state
 			this.MATRIX = new Matrix4x4()
 				.translate(sourceCPoint.getPosition())
 				.rotateX(this.getRotation().x)
-				.rotateY(this.getRotation().y)
-				.rotateZ(this.getRotation().z)
-				// .rotateAroundAxis(sourceCPoint.heading)
+				// .rotateY(this.getRotation().y)
 				.scale(1, 1, 1)
 				.translate(-this.getPosition().x, -this.getPosition().y, -this.getPosition().z);
 
 		// apply matrix to the Node's contactpoints, and register them in its parent Tree
 			this.CPOINTS = this.registerCPoints(this.transformCPoints(o.getContactPoints(), this.getMatrix()));
 
-		// apply matrix to this Node's mesh
+		// apply matrix to the Node's mesh
 			this.TOXIMESH = this.OBJ.getToxiMesh().copy();
-			this.TOXIMESH.transform(this.MATRIX);
+			this.TOXIMESH.transform(this.getMatrix());
 	}
-
-
-
-	// -------------------------------------------------------------------------
-	// SETTER
-	// private Node setToximesh(){
-	// 	return this;
-	// }
 
 
 
@@ -60,12 +55,17 @@ public class Node{
 	public Obj getObj(){ return this.OBJ; }
 	public TriangleMesh getToxiMesh(){ return this.TOXIMESH; }
 	public PShape getPShape(){
-		if(this.PSHAPE==null) this.PSHAPE = new Converter().toxiToPShape(this.getToxiMesh());
+		if(this.PSHAPE == null){
+			if(this.getColor() != -1) this.PSHAPE = new Converter().toxiToPShape(this.getToxiMesh(), this.getColor());
+			else this.PSHAPE = new Converter().toxiToPShape(this.getToxiMesh());
+		}
 		return this.PSHAPE;
 	}
+	public color getColor(){ return this.COLOR; }
+	public PImage getTexture(){ return this.TEXTURE; }
 
 	public CPoint getOrigin(){ return this.ORIGIN; }
-	public Vec3D getRotation(){ return this.ROTATION; }
+	public Vec2D getRotation(){ return this.ROTATION; }
 	public Vec3D getPosition(){ return this.getOrigin().getPosition(); }
 	public Matrix4x4 getMatrix(){ return this.MATRIX; }
 
@@ -79,13 +79,17 @@ public class Node{
 
 	// -------------------------------------------------------------------------
 	// HELPER
-	// compute the Node orientation and return it as a new Vec3D
+	// compute the Node orientation and return it as a new Vec2D
 	// based on the rotation of the source contact point
-	private Vec3D computeRotation(CPoint source){
-		if(source.computeRotation() != null){
-			Vec3D o = this.getOrigin().computeRotation();
-			Vec3D s = source.computeRotation();
-			return s;
+	private Vec2D computeRotation(CPoint source){
+		Vec2D s = source.computeRotation();
+		if(s != null){
+			Vec2D o = this.getOrigin().computeRotation();
+			println("s:" + degrees(s.x) + ", " + degrees(s.y));
+			return new Vec2D(
+							PI + o.x - s.x,
+							TWO_PI - s.y
+						);
 		}else return null;
 	}
 
@@ -102,21 +106,22 @@ public class Node{
 	// register the Node's contact points to its parent Tree
 	private ArrayList<CPoint> registerCPoints(ArrayList<CPoint> cpoints){
 		for(CPoint cp : cpoints){
-			if(!this.getParent().getContactPoints().contains(cp)){
+			cp.setParent(this);
+			// if(!this.getParent().getContactPoints().contains(cp))
 				this.getParent().getContactPoints().add(cp);
-			}
 		}
 		return cpoints;
 	}
 
 	// generate a new random rotation, returned as a new Vec3D
-	private Vec3D randomRotation(int rotationType){
-		Vec3D r = null;
+	private Vec2D randomRotation(int rotationType){
+		Vec2D r = null;
 		switch(rotationType){
-			case 0 : r = new Vec3D(); break;
-			case 1 : r = new Vec3D(radians(random(360)%45), radians(random(360)%45), radians(random(360)%45));
-			case 2 : r = new Vec3D(radians(random(360)%90), radians(random(360)%90), radians(random(360)%90));
-			case 3 : r = Vec3D.randomVector().scale(360); break;
+			case 0 : r = new Vec2D(); break;
+			case 1 : r = new Vec2D(radians(int(random(8))*45), radians(int(random(8))*45));
+			case 2 : r = new Vec2D(radians(int(random(4))*90), radians(int(random(4))*90));
+			case 3 : r = Vec2D.randomVector().scale(TWO_PI); break;
+			case 9 : r = new Vec2D(map(mouseX, 0, width, 0, 1) * TWO_PI, map(mouseY, 0, height, 0, 1) * TWO_PI); break;
 			default : r = null;
 		}
 		return r;

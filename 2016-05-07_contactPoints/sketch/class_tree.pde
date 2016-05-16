@@ -16,10 +16,21 @@ public class Tree{
 
 	// -------------------------------------------------------------------------
 	// SETTER
+	// add to the Tree a new Node at the CPoint with the Obj o
+	// then remove the CPoint from the Tree's list
 	public Tree add(Obj o, CPoint p){
 		Node n = new Node(this, p, o);
 		this.NODES.add(n);
-		this.CPOINTS.remove(p);
+		this.getContactPoints().remove(p);
+		return this;
+	}
+
+	// add to the Tree a new Node at the CPoint with the Obj o
+	// then remove the CPoint from the Tree's list if removeP is true
+	public Tree add(Obj o, CPoint p, boolean removeP){
+		Node n = new Node(this, p, o);
+		this.NODES.add(n);
+		if(removeP) this.getContactPoints().remove(p);
 		return this;
 	}
 

@@ -182,6 +182,8 @@ public class Obj{
 
 	public ArrayList<CPoint> getContactPoints(){ return this.CPOINTS; }
 	public CPoint getContactPoint(int index){ return this.CPOINTS.get(index); }
+	public CPoint getFirstContactPoint(){ return this.CPOINTS.get(0); }
+	public CPoint getLastContactPoint(){ return this.CPOINTS.get(this.CPOINTS.size()-1); }
 	public CPoint getRandomContactPoint(){ return this.CPOINTS.get(int(random(this.CPOINTS.size()))); }
 
 	public AABB getAABB(){ return this.getToxiMesh().getBoundingBox(); }
