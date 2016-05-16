@@ -6,6 +6,11 @@ ObjLoader OBJECTS;
 Tree TREE;
 ToxiclibsSupport gfx;
 PeasyCam cam;
+PImage debug_tex;
+
+boolean
+	DRAW_CPOINTS = false,
+	DRAW_MESH = false;
 
 // void settings(){
 // 	fullScreen(OPENGL);
@@ -15,7 +20,9 @@ void setup(){
 	size(1000, 800, OPENGL);
 		smooth();
 
-	OBJECTS = new ObjLoader("data/debug/");
+	debug_tex = loadImage("data/tex.png");
+
+	OBJECTS = new ObjLoader("data/rams/");
 		// OBJECTS
 		// 	.weightObj(OBJECTS.get("ecrou.obj"), 10)
 		// 	.weightObj(OBJECTS.get("grille.obj"), 0)
@@ -25,96 +32,128 @@ void setup(){
 		// 	.weightObj(OBJECTS.get("pietement.obj"), 10)
 		// 	.weightObj(OBJECTS.get("vis.obj"), 10);
 
- 	cam = new PeasyCam(this, 500);
+ 	cam = new PeasyCam(this, 300);
 	gfx = new ToxiclibsSupport(this);
 
 	TREE = new Tree();
 	for (int i=0; i<1; i++) {
-
-		// if(i==0) o = OBJECTS.get("bowl.obj");
-		// Obj o = OBJECTS.get("cube.obj");
-		Obj o = OBJECTS.get(0);
-		// if(i>0) o = OBJECTS.getRandom();
-
-		CPoint p = TREE.getRandomContactPoint();
-		TREE.add(o, p);
+		TREE.add(
+			OBJECTS.get(1),
+			TREE.getLastContactPoint(),
+			false
+		);
 	}
 
 }
 
 
+// void mouseMoved(){
+// 	if(frameCount%1==0){
+// 		TREE = new Tree();
+// 		for (int i=0; i<2; i++) {
+// 			TREE.add(
+// 				OBJECTS.getRandom(),
+// 				TREE.getLastContactPoint(),
+// 				false
+// 			);
+// 		}
+// 	}
+// }
+
 
 void draw(){
 	background(50);
-
-	// rotateX(radians(45));
-	// rotateY(radians(45));
 
 	cam.beginHUD();
 		rotateX(PI*1.5);
 		lights();
 	cam.endHUD();
 
-	// DRAW PSHAPES
-		// for(Node n : TREE.getNodes()) shape(n.getPShape(), 0, 0);
-
-	// DRAW TOXIMESH
-		strokeWeight(1); stroke(255); noFill();
-		for(Node n : TREE.getNodes()) gfx.mesh(n.getToxiMesh());
-
-		stroke(0, 100, 200);
-		gfx.mesh(TREE.getLastNode().getToxiMesh());
-
-	// DRAW CONTACT POINTS
-		if(SHOW_CPOINTS){
-			int sphere_size = 4;
-			noLights();
-			for(CPoint c : TREE.getContactPoints()){
-				Vec3D v = c.getPosition();
-				pushMatrix();
-					fill(200, 0, 50);
-					noStroke();
-					translate(v.x, v.y, v.z);
-					pushMatrix();
-						sphere(sphere_size);
-
-						stroke(200, 0, 50);
-						strokeWeight(4);
-						line(0,0,0, c.getNormal().scale(100).x, c.getNormal().scale(100).y, c.getNormal().scale(100).z);
-					popMatrix();
-				popMatrix();
+	if(DRAW_MESH){
+		for(int i=0; i<TREE.getNodes().size(); i++){
+			Node n = TREE.getNode(i);
+			if(n.getTexture()!=null){
+				noFill(); noStroke();
+				gfx.texturedMesh(n.getToxiMesh(), n.getTexture(), true);
+			}else{
+				strokeWeight(1); stroke(255, 255*.2); noFill();
+				if(i==TREE.getNodes().size()-1) stroke(0, 100, 200);
+				gfx.mesh(n.getToxiMesh());
 			}
-			fill(0, 200, 50);
-			noStroke();
-			pushMatrix();
-				translate(TREE.getFirstContactPoint().getPosition().x, TREE.getFirstContactPoint().getPosition().y, TREE.getFirstContactPoint().getPosition().z);
-				sphere(sphere_size);
-			popMatrix();
-			lights();
 		}
+	}else{
+		for(Node n : TREE.getNodes()) shape(n.getPShape(), 0, 0);
+	}
+
+	if(DRAW_CPOINTS){
+		int sphere_size = 4;
+		noLights();
+		for(CPoint c : TREE.getContactPoints()){
+			Vec3D v = c.getPosition();
+			pushMatrix();
+				fill(200, 0, 50);
+				noStroke();
+				translate(v.x, v.y, v.z);
+				pushMatrix();
+					sphere(sphere_size);
+
+					stroke(200, 0, 50);
+					strokeWeight(4);
+					if(c.getNormal()!=null){
+						line(0,0,0, c.getNormal().scale(100).x, c.getNormal().scale(100).y, c.getNormal().scale(100).z);
+
+						// draw GIZMO
+						strokeWeight(2);
+						stroke(255, 0, 0); line(0,0,0, c.getNormal().X_AXIS.scale(50).x, c.getNormal().X_AXIS.scale(50).y, c.getNormal().X_AXIS.scale(50).z);
+						stroke(0, 255, 0); line(0,0,0, c.getNormal().Y_AXIS.scale(-50).x, c.getNormal().Y_AXIS.scale(-50).y, c.getNormal().Y_AXIS.scale(-50).z);
+						stroke(0, 0, 255); line(0,0,0, c.getNormal().Z_AXIS.scale(50).x, c.getNormal().Z_AXIS.scale(50).y, c.getNormal().Z_AXIS.scale(50).z);
+					}
+				popMatrix();
+			popMatrix();
+		}
+
+		for(CPoint c : TREE.getContactPoints()){
+			Vec3D v = c.getPosition();
+			pushMatrix();
+				fill(0, 200, 50);
+				noStroke();
+				translate(v.x, v.y, v.z);
+				pushMatrix();
+					sphere(sphere_size);
+
+					stroke(0, 200, 50);
+					strokeWeight(4);
+					if(c.getNormal()!=null) line(0,0,0, c.getNormal().scale(100).x, c.getNormal().scale(100).y, c.getNormal().scale(100).z);
+				popMatrix();
+			popMatrix();
+		}
+
+		lights();
+	}
 
 
 	// DISPLAY INFOS
 		surface.setTitle(TREE.getContactPoints().size() + " / " + int(frameRate) + "fps");
 }
 
-boolean SHOW_CPOINTS = true;
 
 void keyPressed(){
-	if(key == 'c') SHOW_CPOINTS = !SHOW_CPOINTS;
+	if(key == 'c') DRAW_CPOINTS = !DRAW_CPOINTS;
+	if(key == 'm') DRAW_MESH = !DRAW_MESH;
 	if(key == 'r') setup();
 	if(key == 'a'){
-		Obj o = OBJECTS.getRandom();
-		// Obj o = OBJECTS.get(1);
-		CPoint p = TREE.getLastNode().getRandomContactPoint();
-		TREE.add(o, p);
+		TREE.add(
+			OBJECTS.getRandom(),
+			TREE.getLastNode().getRandomContactPoint(),
+			false
+		);
 	}
 	if(key == ' '){
-		for (int i=0; i<10; i++) {
-			Obj o = OBJECTS.getRandom();
-			// Vec3D p = TREE.getRandomContactPoint();
-			CPoint p = TREE.getLastNode().getLastContactPoint();
-			TREE.add(o, p);
+		for(int i=0; i<10; i++) {
+			TREE.add(
+				OBJECTS.getRandom(),
+				TREE.getRandomContactPoint()
+			);
 		}
 	}
 }
