@@ -15,6 +15,24 @@ public class Tree{
 
 
 	// -------------------------------------------------------------------------
+	// EXPORT
+	public void saveAsOBJ(String path){
+		TriangleMesh m = new TriangleMesh();
+		for(Node n : this.getNodes()) m.addMesh(n.getToxiMesh());
+		m.saveAsOBJ(path);
+		println("Current tree saved as " + path);
+	}
+
+	public void saveAsSTL(String path){
+		TriangleMesh m = new TriangleMesh();
+		for(Node n : this.getNodes()) m.addMesh(n.getToxiMesh());
+		m.saveAsSTL(path);
+		println("Current tree saved as " + path);
+	}
+
+
+
+	// -------------------------------------------------------------------------
 	// SETTER
 	// add to the Tree a new Node at the CPoint with the Obj o
 	// then remove the CPoint from the Tree's list

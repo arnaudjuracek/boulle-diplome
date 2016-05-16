@@ -22,7 +22,7 @@ void setup(){
 
 	debug_tex = loadImage("data/tex.png");
 
-	OBJECTS = new ObjLoader("data/rams/");
+	OBJECTS = new ObjLoader("data/set1/");
 		// OBJECTS
 		// 	.weightObj(OBJECTS.get("ecrou.obj"), 10)
 		// 	.weightObj(OBJECTS.get("grille.obj"), 0)
@@ -78,6 +78,7 @@ void draw(){
 			}else{
 				strokeWeight(1); stroke(255, 255*.2); noFill();
 				if(i==TREE.getNodes().size()-1) stroke(0, 100, 200);
+				// gfx.meshNormalMapped(n.getToxiMesh(), true, 1);
 				gfx.mesh(n.getToxiMesh());
 			}
 		}
@@ -141,6 +142,7 @@ void keyPressed(){
 	if(key == 'c') DRAW_CPOINTS = !DRAW_CPOINTS;
 	if(key == 'm') DRAW_MESH = !DRAW_MESH;
 	if(key == 'r') setup();
+	if(key == 'e') TREE.saveAsOBJ("/Users/RNO/Desktop/export.obj");
 	if(key == 'a'){
 		TREE.add(
 			OBJECTS.getRandom(),
