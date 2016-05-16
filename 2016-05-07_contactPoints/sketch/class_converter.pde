@@ -39,6 +39,33 @@ public class Converter{
 		return s;
 	}
 
+	public PShape toxiToPShape(TriangleMesh m, color c){
+		WETriangleMesh mesh = m.toWEMesh();
+
+		int num = mesh.getNumFaces();
+		mesh.computeVertexNormals();
+		mesh.computeFaceNormals();
+
+		PShape s = createShape();
+			s.beginShape(TRIANGLE);
+			s.noStroke();
+			for(int i=0; i<num; i++){
+				Face f = mesh.faces.get(i);
+				s.fill(c);
+				s.normal(f.a.normal.x, f.a.normal.y, f.a.normal.z);
+				s.vertex(f.a.x, f.a.y, f.a.z);
+
+				s.normal(f.b.normal.x, f.b.normal.y, f.b.normal.z);
+				s.vertex(f.b.x, f.b.y, f.b.z);
+
+				s.normal(f.c.normal.x, f.c.normal.y, f.c.normal.z);
+				s.vertex(f.c.x, f.c.y, f.c.z);
+			}
+			s.endShape();
+		return s;
+	}
+
+
 	// -------------------------------------------------------------------------
 	// TOXICLIBS / HEMESH CONVERTERS
 	// see https://gist.github.com/arnaudjuracek/8766cde42b0a4e3f7c88fd3dce1e64f3
