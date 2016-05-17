@@ -79,7 +79,7 @@ public class Obj{
 				line = reader.readLine();
 				if(line != null && line.length() > 0){
 
-					if(line.charAt(0) == 'g'){
+					if(line.charAt(0) == 'g' || line.charAt(0) == 'o'){
 						if(surface_points != null) cpoints.add(new CPoint(surface_points));
 						surface_points = new ArrayList<Vec3D>();
 					}
