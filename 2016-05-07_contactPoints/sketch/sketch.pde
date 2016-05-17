@@ -2,19 +2,21 @@ import processing.opengl.*;
 import toxi.processing.*;
 import peasy.*;
 
-ObjLoader OBJECTS;
-Tree TREE;
-ToxiclibsSupport gfx;
-PeasyCam cam;
-PImage debug_tex;
+public static float EPSILON = 0.0001f;
 
-boolean
+public ObjLoader OBJECTS;
+public Tree TREE;
+public ToxiclibsSupport gfx;
+public PeasyCam cam;
+public PImage debug_tex;
+
+public boolean
 	DRAW_CPOINTS = false,
 	DRAW_MESH = false;
 
-// void settings(){
-// 	fullScreen(OPENGL);
-// }
+void settings(){
+	fullScreen(OPENGL);
+}
 
 void setup(){
 	size(1000, 800, OPENGL);
@@ -22,24 +24,27 @@ void setup(){
 
 	debug_tex = loadImage("data/tex.png");
 
-	OBJECTS = new ObjLoader("data/set1/");
-		// OBJECTS
-		// 	.weightObj(OBJECTS.get("ecrou.obj"), 10)
-		// 	.weightObj(OBJECTS.get("grille.obj"), 0)
-		// 	.weightObj(OBJECTS.get("gros_potar.obj"), 10)
-		// 	.weightObj(OBJECTS.get("paraP.obj"), 0)
-		// 	.weightObj(OBJECTS.get("petit_potar.obj"), 10)
-		// 	.weightObj(OBJECTS.get("pietement.obj"), 10)
-		// 	.weightObj(OBJECTS.get("vis.obj"), 10);
+	String[] dir = {
+		"data/memphis/carlton/",
+		"data/memphis/kristall/",
+		"data/memphis/flamingo/"
+	};
 
- 	cam = new PeasyCam(this, 300);
+	OBJECTS = new ObjLoader(dir);
+		// OBJECTS
+		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_box.obj"), 0)
+		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_body.obj"), 0)
+		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_table.obj"), 10)
+		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_foot.obj"), 10);
+
+ 	cam = new PeasyCam(this, 1200);
 	gfx = new ToxiclibsSupport(this);
 
 	TREE = new Tree();
-	for (int i=0; i<1; i++) {
+	for (int i=0; i<random(10); i++) {
 		TREE.add(
-			OBJECTS.get(1),
-			TREE.getLastContactPoint(),
+			OBJECTS.getRandom(),
+			TREE.getRandomContactPoint(),
 			false
 		);
 	}
@@ -104,10 +109,10 @@ void draw(){
 						line(0,0,0, c.getNormal().scale(100).x, c.getNormal().scale(100).y, c.getNormal().scale(100).z);
 
 						// draw GIZMO
-						strokeWeight(2);
-						stroke(255, 0, 0); line(0,0,0, c.getNormal().X_AXIS.scale(50).x, c.getNormal().X_AXIS.scale(50).y, c.getNormal().X_AXIS.scale(50).z);
-						stroke(0, 255, 0); line(0,0,0, c.getNormal().Y_AXIS.scale(-50).x, c.getNormal().Y_AXIS.scale(-50).y, c.getNormal().Y_AXIS.scale(-50).z);
-						stroke(0, 0, 255); line(0,0,0, c.getNormal().Z_AXIS.scale(50).x, c.getNormal().Z_AXIS.scale(50).y, c.getNormal().Z_AXIS.scale(50).z);
+						// strokeWeight(2);
+						// stroke(255, 0, 0); line(0,0,0, c.getNormal().X_AXIS.scale(50).x, c.getNormal().X_AXIS.scale(50).y, c.getNormal().X_AXIS.scale(50).z);
+						// stroke(0, 255, 0); line(0,0,0, c.getNormal().Y_AXIS.scale(-50).x, c.getNormal().Y_AXIS.scale(-50).y, c.getNormal().Y_AXIS.scale(-50).z);
+						// stroke(0, 0, 255); line(0,0,0, c.getNormal().Z_AXIS.scale(50).x, c.getNormal().Z_AXIS.scale(50).y, c.getNormal().Z_AXIS.scale(50).z);
 					}
 				popMatrix();
 			popMatrix();

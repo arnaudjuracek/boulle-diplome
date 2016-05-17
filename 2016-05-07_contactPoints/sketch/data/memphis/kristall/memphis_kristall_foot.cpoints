@@ -1,0 +1,10 @@
+# Rhino
+
+mtllib memphis_kristall_foot.cpoints.mtl
+g object_1
+usemtl Default
+v 713.2903 -173.2384 -794.4373
+v 713.2903 -173.2384 -784.4373
+v 713.2903 -163.2384 -794.4373
+v 713.2903 -163.2384 -784.4373
+f 4 3 1 2
