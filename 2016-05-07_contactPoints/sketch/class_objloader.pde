@@ -16,6 +16,21 @@ public class ObjLoader{
 		this.WEIGHTED_LIST = (ArrayList<Obj>) this.LIST.clone();
 	}
 
+	// Recursively check the specified directories and create new Obj with their
+	// matching *.cpoints file
+	public ObjLoader(String[] directories){
+		this.LIST = new ArrayList<Obj>();
+
+		FilenameFilter filter = new FilenameFilter() { @Override public boolean accept(File dir, String name) { return name.endsWith(".obj"); } };
+
+		for(String directory : directories){
+			File[] files = new File(sketchPath(directory)).listFiles(filter);
+			for(File f : files) this.load(f);
+		}
+
+		this.WEIGHTED_LIST = (ArrayList<Obj>) this.LIST.clone();
+	}
+
 
 
 	// -------------------------------------------------------------------------
