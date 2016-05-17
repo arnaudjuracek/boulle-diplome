@@ -5,9 +5,10 @@ public class ObjLoader{
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
-	// Recursively check a specified directory and create new Obj with their
-	// matching *.cpoints file
-	public ObjLoader(String directory){
+	// Check a specified directory, create a list of materials with .mtl files
+	// and new Obj with their matching *.cpoints file
+	// search recursively if ObjLoader(dir, true);
+	public ObjLoader(String directory, boolean... listRecursive){
 		this.LIST = new ArrayList<Obj>();
 		this.MATERIALS = new ArrayList<Mtl>();
 
@@ -15,7 +16,7 @@ public class ObjLoader{
 		for(File f : this.listFiles(directory, ".mtl", false)) this.parseMTLFile(f);
 
 		// .obj loading
-		for(File f : this.listFiles(directory, ".obj", true)) this.load(f);
+		for(File f : this.listFiles(directory, ".obj", (listRecursive.length>0 && listRecursive[0]))) this.load(f);
 
 		this.WEIGHTED_LIST = (ArrayList<Obj>) this.LIST.clone();
 
@@ -72,6 +73,10 @@ public class ObjLoader{
 							this.getLastMaterial().setSpecularColor(parseInt(parts[1])*255, parseInt(parts[2])*255, parseInt(parts[3])*255 );
 						}
 					}
+
+					// else if(line.startsWith("texture")){
+
+					// }
 
 				}
 			}catch(IOException e){
@@ -143,6 +148,16 @@ public class ObjLoader{
 
 	public ArrayList<Mtl> getMaterials(){ return this.MATERIALS; }
 	public Mtl getMaterial(int index){ return this.MATERIALS.get(index); }
+	public Mtl getMaterial(String name){
+		Mtl match = null;
+		for(Mtl m : this.getMaterials()){
+			if(m.getName().equals(name)){
+				match = m;
+				break;
+			}
+		}
+		return match;
+	}
 	public Mtl getFirstMaterial(){ return this.MATERIALS.get(0); }
 	public Mtl getLastMaterial(){ return this.MATERIALS.get(this.MATERIALS.size()-1); }
 	public Mtl getRandomMaterial(){ return this.MATERIALS.get(int(random(this.MATERIALS.size()))); }
