@@ -8,34 +8,37 @@ public ObjLoader OBJECTS;
 public Tree TREE;
 public ToxiclibsSupport gfx;
 public PeasyCam cam;
-public PImage debug_tex;
+public PGraphics bg_gradient;
+public PShape bg_grid;
 
 public boolean
 	DRAW_CPOINTS = false,
 	DRAW_MESH = false;
 
-void settings(){
-	fullScreen(OPENGL);
-}
+// void settings(){
+// 	fullScreen(OPENGL);
+// }
 
 void setup(){
 	size(1000, 800, OPENGL);
 		smooth();
+		bg_gradient = createGradient(color(255, 246, 255), color(187, 255, 255));
+		bg_grid = createGrid(width, height, 20);
 
-	debug_tex = loadImage("data/tex.png");
-
-	String[] dir = {
-		"data/memphis/carlton/",
-		"data/memphis/kristall/",
-		"data/memphis/flamingo/"
-	};
-
-	OBJECTS = new ObjLoader(dir);
+	OBJECTS = new ObjLoader("data/_debug/", false);
 		// OBJECTS
 		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_box.obj"), 0)
 		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_body.obj"), 0)
 		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_table.obj"), 10)
 		// 	.weightObj(OBJECTS.get("data/kristall/memphis_kristall_foot.obj"), 10);
+
+	// for(Mtl m : OBJECTS.getMaterials()){
+	// 	println("---------");
+	// 	println(m.getName());
+	// 	println(m.getAmbientColor());
+	// 	println(m.getDiffuseColor());
+	// 	println(m.getSpecularColor());
+	// }
 
  	cam = new PeasyCam(this, 1200);
 	gfx = new ToxiclibsSupport(this);
@@ -67,12 +70,19 @@ void setup(){
 
 
 void draw(){
-	background(50);
+	if(DRAW_MESH) background(50);
+	else background(bg_gradient);
 
 	cam.beginHUD();
 		rotateX(PI*1.5);
 		lights();
 	cam.endHUD();
+
+	// pushMatrix();
+	// 	translate(0, height/2);
+	// 	rotateX(PI/3);
+	// 	shape(bg_grid, 0, -height/2);
+	// popMatrix();
 
 	if(DRAW_MESH){
 		for(int i=0; i<TREE.getNodes().size(); i++){
@@ -163,4 +173,41 @@ void keyPressed(){
 			);
 		}
 	}
+}
+
+
+// -------------------------------------------------------------------------
+// GOODIES
+
+PShape createGrid(int w, int h, int scl){
+	PShape grid = createShape(GROUP);
+
+	int cols = w / scl,
+		rows = h / scl;
+
+  	for (int y = 0; y < rows - 1; y++) {
+  		PShape s = createShape();
+    	s.beginShape(TRIANGLE_STRIP);
+    	s.noFill();
+    	s.stroke(255, 100);
+    	s.strokeWeight(1);
+    	for (int x = 0; x < cols; x++) {
+      		s.vertex(x*scl, y*scl);
+      		s.vertex(x*scl, (y+1)*scl);
+    	}
+    	s.endShape(CLOSE);
+    	grid.addChild(s);
+  	}
+  	return grid;
+}
+
+PGraphics createGradient(color c1, color c2){
+	PGraphics gradient = createGraphics(width, height);
+	gradient.beginDraw();
+	for(int y=0; y<height; y++){
+		gradient.stroke(lerpColor(c1, c2, sq(norm(y, 0, height))));
+		gradient.line(0, y, width, y);
+	}
+	gradient.endDraw();
+	return gradient;
 }
