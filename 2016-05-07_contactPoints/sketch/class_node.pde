@@ -20,23 +20,24 @@ public class Node{
 		this.PARENT = parent;
 		this.OBJ = o;
 
-		// this.COLOR = color(random(255),random(255),random(255));
+		this.COLOR = o.getMaterial().getAmbientColor();
 		// this.TEXTURE = debug_tex;
 
 		// draw the Node from one of its OBJ's contact points
 			this.ORIGIN = o.getRandomContactPoint();
+			// this.ORIGIN = o.getFirstContactPoint();
 
 		// compute the rotation of the Node based on its origin CPoint and the sourceCPoint
 	 	// or create a new random rotation
 			this.ROTATION = this.computeRotation(sourceCPoint);
-				if(this.ROTATION == null) this.ROTATION = this.randomRotation(9);
+				if(this.ROTATION == null) this.ROTATION = this.randomRotation(1);
 
 		// create transformation matrix for this given state
 			this.MATRIX = new Matrix4x4()
 				.translate(sourceCPoint.getPosition())
 				.rotateX(this.getRotation().x)
 				// .rotateY(this.getRotation().y)
-				.scale(1, 1, 1)
+				.scale(1)
 				.translate(-this.getPosition().x, -this.getPosition().y, -this.getPosition().z);
 
 		// apply matrix to the Node's contactpoints, and register them in its parent Tree
@@ -85,7 +86,7 @@ public class Node{
 		Vec2D s = source.computeRotation();
 		if(s != null){
 			Vec2D o = this.getOrigin().computeRotation();
-			println("s:" + degrees(s.x) + ", " + degrees(s.y));
+			// println("s:" + degrees(s.x) + ", " + degrees(s.y));
 			return new Vec2D(
 							PI + o.x - s.x,
 							TWO_PI - s.y
@@ -117,11 +118,12 @@ public class Node{
 	private Vec2D randomRotation(int rotationType){
 		Vec2D r = null;
 		switch(rotationType){
+			case -1 : r = new Vec2D(map(mouseX, 0, width, 0, 1) * TWO_PI, map(mouseY, 0, height, 0, 1) * TWO_PI); break;
+
 			case 0 : r = new Vec2D(); break;
 			case 1 : r = new Vec2D(radians(int(random(8))*45), radians(int(random(8))*45));
 			case 2 : r = new Vec2D(radians(int(random(4))*90), radians(int(random(4))*90));
 			case 3 : r = Vec2D.randomVector().scale(TWO_PI); break;
-			case 9 : r = new Vec2D(map(mouseX, 0, width, 0, 1) * TWO_PI, map(mouseY, 0, height, 0, 1) * TWO_PI); break;
 			default : r = null;
 		}
 		return r;

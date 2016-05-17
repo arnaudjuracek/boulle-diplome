@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Obj{
+	private ObjLoader OBJLOADER;
 
 	private String PATH, FILENAME;
 	private File MESH_FILE, CPOINTS_FILE;
@@ -40,14 +41,22 @@ public class Obj{
 	private TriangleMesh TOXIMESH;
 	private PShape PSHAPE;
 
+	private Mtl MATERIAL;
+
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
 	// load dir/filename.obj as hemesh and wblut mesh
 	// load dir/filename_c.obj as contact points
-	public Obj(File mesh){
+	public Obj(ObjLoader parent, File mesh, File cpoints){
+		this.OBJLOADER = parent;
+
 		this.PATH = mesh.getAbsolutePath();
 		this.FILENAME = mesh.getName();
+
+		// Find the material
+		this.MATERIAL = this.extractMaterial(mesh);
+		println(this.getMaterial().getName());
 
 		// Handle the *.obj file
 		this.MESH_FILE = mesh;
@@ -55,12 +64,40 @@ public class Obj{
 		this.TOXIMESH = this.hemeshToToxi(this.HEMESH);
 		this.PSHAPE = this.toxiToPShape(this.TOXIMESH);
 
-		// Find the matchin *.cpoints file and parse it
-		this.CPOINTS_FILE = new File(mesh.getAbsolutePath().replaceFirst("[.][^.]+$", ".cpoints"));
+		// Parse the matching *.cpoints file
+		this.CPOINTS_FILE = cpoints;
 		this.CPOINTS = this.parseCPointsFile(this.CPOINTS_FILE);
 	}
 
 
+
+	// -------------------------------------------------------------------------
+	// OBJ parser
+	// quickly parse the *.obj file and get the material
+	private Mtl extractMaterial(File f){
+		Mtl material = null;
+		if(f!=null && f.isFile()){
+			BufferedReader reader = createReader(f.getAbsolutePath());
+			String line = "";
+			while(line != null){
+				try{
+					line = reader.readLine();
+					if(line != null && line.length() > 0){
+						if(line.startsWith("usemtl")){
+							String[] parts = split(line, ' ');
+							material = this.getObjLoader().getMaterial(parts[1]);
+							break;
+						}
+					}
+				}catch(IOException e){
+					e.printStackTrace();
+					line = null;
+				}
+			}
+		}
+
+		return material;
+	}
 
 	// -------------------------------------------------------------------------
 	// CPOINTS parser
@@ -69,39 +106,40 @@ public class Obj{
 	// if the line is beginning with a 'g', that means it describes a group
 	private ArrayList<CPoint> parseCPointsFile(File f){
 		ArrayList<CPoint> cpoints = new ArrayList<CPoint>();
-		ArrayList<Vec3D> surface_points = null;
+		if(f!=null && f.isFile()){
+			ArrayList<Vec3D> surface_points = null;
 
-		BufferedReader reader = createReader(f.getAbsolutePath());
+			BufferedReader reader = createReader(f.getAbsolutePath());
 
-		String line = "";
-		while(line != null){
-			try{
-				line = reader.readLine();
-				if(line != null && line.length() > 0){
+			String line = "";
+			while(line != null){
+				try{
+					line = reader.readLine();
+					if(line != null && line.length() > 0){
 
-					if(line.charAt(0) == 'g' || line.charAt(0) == 'o'){
-						if(surface_points != null) cpoints.add(new CPoint(surface_points));
-						surface_points = new ArrayList<Vec3D>();
+						if(line.charAt(0) == 'g' || line.charAt(0) == 'o'){
+							if(surface_points != null) cpoints.add(new CPoint(surface_points));
+							surface_points = new ArrayList<Vec3D>();
+						}
+
+						if(line.charAt(0) == 'v' && line.charAt(1) == ' '){
+							String[] parts = split(line, ' ');
+							Vec3D v = new Vec3D( parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3]) );
+							if(surface_points != null)
+								surface_points.add(v);
+							else
+								cpoints.add( new CPoint(v) );
+						}
+
 					}
-
-					if(line.charAt(0) == 'v' && line.charAt(1) == ' '){
-						String[] parts = split(line, ' ');
-						Vec3D v = new Vec3D( parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3]) );
-						if(surface_points != null)
-							surface_points.add(v);
-						else
-							cpoints.add( new CPoint(v) );
-					}
-
+				}catch(IOException e){
+					e.printStackTrace();
+					line = null;
 				}
-			}catch(IOException e){
-				e.printStackTrace();
-				line = null;
 			}
+
+			if(surface_points != null) cpoints.add(new CPoint(surface_points));
 		}
-
-		if(surface_points != null) cpoints.add(new CPoint(surface_points));
-
 		return cpoints;
 	}
 
@@ -170,6 +208,8 @@ public class Obj{
 
 	// -------------------------------------------------------------------------
 	// GETTERS
+	public ObjLoader getObjLoader(){ return this.OBJLOADER; }
+
 	public File getMeshFile(){ return this.MESH_FILE; }
 	public File getCPointsFile(){ return this.CPOINTS_FILE; }
 
@@ -179,6 +219,7 @@ public class Obj{
 	public TriangleMesh getToxiMesh(){ return this.TOXIMESH; }
 	public HE_Mesh getHemesh(){ return this.HEMESH; }
 	public PShape getPShape(){ return this.PSHAPE; }
+	public Mtl getMaterial(){ return this.MATERIAL; }
 
 	public ArrayList<CPoint> getContactPoints(){ return this.CPOINTS; }
 	public CPoint getContactPoint(int index){ return this.CPOINTS.get(index); }

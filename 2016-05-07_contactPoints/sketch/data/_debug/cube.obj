@@ -1,5 +1,8 @@
 # Rhino
 
+mtllib materials.mtl
+
+usemtl Blue
 g object_1
 v 0 0 0
 v 0 0 100
