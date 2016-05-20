@@ -1,6 +1,8 @@
 # Rhino
 
 g object_1
+usemtl bleuClair
+usemtl bleuFonce
 v 637.4577 -168.2384 -969.2101
 v 675.374 -168.2384 -865.0359
 v 637.4577 -168.2384 -969.2101

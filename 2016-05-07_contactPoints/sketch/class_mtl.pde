@@ -2,11 +2,18 @@ public class Mtl{
 
 	private String NAME;
 	private color AMBIANT, DIFFUSE, SPECULAR;
+	private PImage TEXTURE;
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
 	public Mtl(String name){ this.NAME = name; }
 
+	public Mtl(){
+		this.NAME = "nullTex";
+		this.setAmbientColor(color(255));
+		this.setDiffuseColor(color(255));
+		this.setSpecularColor(color(255));
+	}
 
 
 	// -------------------------------------------------------------------------
@@ -15,11 +22,11 @@ public class Mtl{
 	public Mtl setDiffuseColor(color c){ this.DIFFUSE = c; return this; }
 	public Mtl setSpecularColor(color c){ this.SPECULAR = c; return this; }
 
-	public Mtl setAmbientColor(int r, int g, int b){ this.AMBIANT = color(r,g,b); return this; }
-	public Mtl setDiffuseColor(int r, int g, int b){ this.DIFFUSE = color(r,g,b); return this; }
-	public Mtl setSpecularColor(int r, int g, int b){ this.SPECULAR = color(r,g,b); return this; }
+	public Mtl setAmbientColor(float r, float g, float b){ this.AMBIANT = color(r,g,b); return this; }
+	public Mtl setDiffuseColor(float r, float g, float b){ this.DIFFUSE = color(r,g,b); return this; }
+	public Mtl setSpecularColor(float r, float g, float b){ this.SPECULAR = color(r,g,b); return this; }
 
-
+	public Mtl setTexture(PImage tex){ this.TEXTURE = tex; return this;}
 
 	// -------------------------------------------------------------------------
 	// GETTER
@@ -29,4 +36,5 @@ public class Mtl{
 	public color getDiffuseColor(){ return this.DIFFUSE; }
 	public color getSpecularColor(){ return this.SPECULAR; }
 
+	public PImage getTexture(){ return this.TEXTURE; }
 }

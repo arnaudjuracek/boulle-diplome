@@ -96,12 +96,13 @@ public class CPoint{
 	}
 
 	// compute the direction of the contact point normal
-	public Vec2D computeRotation(){
+	public Vec3D computeRotation(){
 		Vec3D n = this.getNormal();
 		return (n == null) ? null :
-			new Vec2D(
-				(n.headingXZ() > 1 ? -1 : 1) * acos(n.y / n.magnitude()),
-				(this.getParent()==null) ? 0 : this.getParent().getRotation().y
+			new Vec3D(
+				acos(n.x / n.magnitude()),
+				acos(n.y / n.magnitude()),
+				acos(n.z / n.magnitude())
 			);
 	}
 }

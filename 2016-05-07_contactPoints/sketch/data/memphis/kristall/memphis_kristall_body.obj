@@ -2,7 +2,9 @@
 
 mtllib memphis_kristall_body.mtl
 g object_1
-usemtl Default material
+usemtl rouge
+usemtl vert
+usemtl marron
 v 916.9899 -168.2384 -969.2101
 v 954.9062 -168.2384 -865.0359
 v 916.9899 -168.2384 -969.2101

@@ -41,7 +41,7 @@ public class Obj{
 	private TriangleMesh TOXIMESH;
 	private PShape PSHAPE;
 
-	private Mtl MATERIAL;
+	private ArrayList<Mtl> MATERIALS = new ArrayList<Mtl>();
 
 
 	// -------------------------------------------------------------------------
@@ -55,8 +55,8 @@ public class Obj{
 		this.FILENAME = mesh.getName();
 
 		// Find the material
-		this.MATERIAL = this.extractMaterial(mesh);
-		println(this.getMaterial().getName());
+		this.MATERIALS = this.extractMaterials(mesh);
+		// println(this.getMaterial().getName());
 
 		// Handle the *.obj file
 		this.MESH_FILE = mesh;
@@ -74,8 +74,8 @@ public class Obj{
 	// -------------------------------------------------------------------------
 	// OBJ parser
 	// quickly parse the *.obj file and get the material
-	private Mtl extractMaterial(File f){
-		Mtl material = null;
+	private ArrayList<Mtl> extractMaterials(File f){
+		ArrayList<Mtl> materials = new ArrayList<Mtl>();
 		if(f!=null && f.isFile()){
 			BufferedReader reader = createReader(f.getAbsolutePath());
 			String line = "";
@@ -85,8 +85,7 @@ public class Obj{
 					if(line != null && line.length() > 0){
 						if(line.startsWith("usemtl")){
 							String[] parts = split(line, ' ');
-							material = this.getObjLoader().getMaterial(parts[1]);
-							break;
+							materials.add( this.getObjLoader().getMaterial(parts[1]) );
 						}
 					}
 				}catch(IOException e){
@@ -96,7 +95,7 @@ public class Obj{
 			}
 		}
 
-		return material;
+		return materials;
 	}
 
 	// -------------------------------------------------------------------------
@@ -219,7 +218,12 @@ public class Obj{
 	public TriangleMesh getToxiMesh(){ return this.TOXIMESH; }
 	public HE_Mesh getHemesh(){ return this.HEMESH; }
 	public PShape getPShape(){ return this.PSHAPE; }
-	public Mtl getMaterial(){ return this.MATERIAL; }
+
+	public ArrayList<Mtl> getMaterials(){ return this.MATERIALS; }
+	public Mtl getMaterial(int index){ return this.MATERIALS.get(index); }
+	public Mtl getFirstMaterial(){ return this.MATERIALS.get(0); }
+	public Mtl getLastMaterial(){ return this.MATERIALS.get(this.MATERIALS.size()-1); }
+	public Mtl getRandomMaterial(){ return this.MATERIALS.size()>0 ? this.MATERIALS.get(int(random(this.MATERIALS.size()))) : null; }
 
 	public ArrayList<CPoint> getContactPoints(){ return this.CPOINTS; }
 	public CPoint getContactPoint(int index){ return this.CPOINTS.get(index); }

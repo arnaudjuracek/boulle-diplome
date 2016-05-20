@@ -13,7 +13,7 @@ public class ObjLoader{
 		this.MATERIALS = new ArrayList<Mtl>();
 
 		// .mtl parsing
-		for(File f : this.listFiles(directory, ".mtl", false)) this.parseMTLFile(f);
+		for(File f : this.listFiles(directory, ".mtl", (listRecursive.length>0 && listRecursive[0]))) this.parseMTLFile(f);
 
 		// .obj loading
 		for(File f : this.listFiles(directory, ".obj", (listRecursive.length>0 && listRecursive[0]))) this.load(f);
@@ -62,21 +62,22 @@ public class ObjLoader{
 					else if(line.charAt(0) == 'K'){
 						if(line.charAt(1) == 'a'){
 							String[] parts = split(line, ' ');
-							this.getLastMaterial().setAmbientColor(parseInt(parts[1])*255, parseInt(parts[2])*255, parseInt(parts[3])*255 );
+							this.getLastMaterial().setAmbientColor(parseFloat(parts[1])*255, parseFloat(parts[2])*255, parseFloat(parts[3])*255 );
 						}
 						else if(line.charAt(1) == 'd'){
 							String[] parts = split(line, ' ');
-							this.getLastMaterial().setDiffuseColor(parseInt(parts[1])*255, parseInt(parts[2])*255, parseInt(parts[3])*255 );
+							this.getLastMaterial().setDiffuseColor(parseFloat(parts[1])*255, parseFloat(parts[2])*255, parseFloat(parts[3])*255 );
 						}
 						else if(line.charAt(1) == 's'){
 							String[] parts = split(line, ' ');
-							this.getLastMaterial().setSpecularColor(parseInt(parts[1])*255, parseInt(parts[2])*255, parseInt(parts[3])*255 );
+							this.getLastMaterial().setSpecularColor(parseFloat(parts[1])*255, parseFloat(parts[2])*255, parseFloat(parts[3])*255 );
 						}
 					}
 
-					// else if(line.startsWith("texture")){
-
-					// }
+					else if(line.startsWith("map_Kd")){
+						String[] parts = split(line, ' ');
+						this.getLastMaterial().setTexture( (PImage) loadImage(parts[1]) );
+					}
 
 				}
 			}catch(IOException e){

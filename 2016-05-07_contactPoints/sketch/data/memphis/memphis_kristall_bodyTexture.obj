@@ -1,8 +1,8 @@
 # Rhino
 
+mtllib memphis.mtl
 g object_1
-usemtl orangeClair
-usemtl bleuFonce
+usemtl piedPoule
 v 313.3137 -293.2384 -849.0616
 v 313.3137 -43.23845 -849.0616
 v 313.3137 -293.2384 -499.0617
