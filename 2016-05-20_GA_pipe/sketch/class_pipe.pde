@@ -3,17 +3,17 @@ public class Pipe{
 
 	private Vec3D[] path, original_path;
 	private float[] radiuses;
-	private PShape pshape;
+	private TriangleMesh mesh;
 
 	// -------------------------------------------------------------------------
 	public Pipe(Vec3D[] path, Curve radiuses, int n_slices){
 		this.path = path;
 		this.original_path = path;
 
-		this.radiuses = radiuses.interpolate(n_slices).getValues();
+		this.radiuses = radiuses.interpolate(n_slices).smooth(0.3).getValues();
 
 		Slice[] slices = this.slicer(n_slices);
-		this.setPShape(this.triangulate(slices));
+		this.setMesh(this.triangulate(slices));
 	}
 
 
@@ -43,24 +43,34 @@ public class Pipe{
 		return slices;
 	}
 
-	private PShape triangulate(Slice[] slices){
-		PShape shape = createShape(GROUP);
+	private TriangleMesh triangulate(Slice[] slices){
+		TriangleMesh mesh = new TriangleMesh();
 
-		for(int u=0; u<MAX_SIDES_LENGTH; u++){
-			PShape child = createShape();
-			child.beginShape(TRIANGLE_STRIP);
-			for(int v=0; v<slices.length; v++){
-				Vec3D b = slices[v].getVertex(u);
-				Vec3D c = slices[v].getVertex((u+1)%MAX_SIDES_LENGTH);
+		for(int u=0; u<MAX_SIDES_LENGTH-1; u++){
 
-				child.vertex(b.x, b.y, b.z);
-				child.vertex(c.x, c.y, c.z);
+			for(int v=0; v<slices.length-1; v++){
+
+				Vec3D
+					a = slices[v].getVertex(u),
+					b = slices[v].getVertex(u+1),
+					c = slices[v+1].getVertex(u+1),
+					d = slices[v+1].getVertex(u);
+
+				Vec2D
+					uvA = new Vec2D(norm(u, 0, MAX_SIDES_LENGTH), norm(v, 0, slices.length)),
+					uvB = new Vec2D(norm(u+1, 0, MAX_SIDES_LENGTH), norm(v, 0, slices.length)),
+					uvC = new Vec2D(norm(u+1, 0, MAX_SIDES_LENGTH), norm(v+1, 0, slices.length)),
+					uvD = new Vec2D(norm(u, 0, MAX_SIDES_LENGTH), norm(v+1, 0, slices.length));
+
+				mesh.addFace(a, b, c, uvA, uvB, uvC);
+				mesh.addFace(c, d, a, uvC, uvD, uvA);
 			}
-
-			child.endShape();
-			shape.addChild(child);
 		}
-		return shape;
+
+		mesh.computeFaceNormals();
+		mesh.computeVertexNormals();
+
+		return mesh;
 	}
 
 
@@ -98,7 +108,7 @@ public class Pipe{
 	// -------------------------------------------------------------------------
 	// SETTERS
 	public Pipe setPath(Vec3D[] path){ this.path = path; return this; }
-	public Pipe setPShape(PShape shape){ this.pshape = shape; return this; }
+	public Pipe setMesh(TriangleMesh mesh){ this.mesh = mesh; return this; }
 	public Pipe setRadiuses(float[] radiuses){ this.radiuses = radiuses; return this; }
 
 
@@ -110,7 +120,6 @@ public class Pipe{
 	public float[] getRadiuses(){ return this.radiuses; }
 	public float getRadius(int index){ return this.radiuses[index]; }
 
-	public TriangleMesh getMesh(){ return null; }
-	public PShape getPShape(){ return this.pshape; }
+	public TriangleMesh getMesh(){ return this.mesh; }
 
 }
