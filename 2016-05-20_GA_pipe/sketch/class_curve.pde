@@ -58,11 +58,26 @@ public class Curve{
 		return this.interpolate(resolution);
 	}
 
+	public Curve smooth(float coef){
+		// exponential smoothing algorithm implementation
+		// @see https://en.wikipedia.org/wiki/Exponential_smoothing
+
+		float[] values = this.getValues();
+		float[] smoothed = new float[values.length];
+
+		smoothed[0] = values[0];
+		for(int i=1; i<values.length; i++)
+			smoothed[i] = (1-coef)*values[i] + coef*smoothed[i-1];
+
+		return this.setValues(smoothed);
+	}
+
 
 
 	// -------------------------------------------------------------------------
 	// SETTERS
 	public Curve setValues(float[] values){ this.values = values; return this; }
+	public Curve setOriginalValues(float[] values){ this.original_values = values; return this; }
 	public Curve setInterpolation(InterpolateStrategy itrp){ this.interpolation = itrp; return this; }
 
 
@@ -93,7 +108,7 @@ public class Curve{
 	// -------------------------------------------------------------------------
 	// DEBUG
 	public void debug_draw(){
-		this.interpolate(int(map(mouseX, 0, width, 0, 1) * 100));
+		// this.interpolate(int(map(mouseX, 0, width, 0, 1) * 100));
 
 		for(int i=0; i<this.getOriginalValues().length-1; i++){
 			Vec2D
