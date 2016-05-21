@@ -20,34 +20,26 @@ public class Pipe{
 	// -------------------------------------------------------------------------
 	// GENERATORS
 	private Slice[] slicer(int n){
-		ArrayList<Slice> slices = new ArrayList<Slice>();
-		Vec3D[] path = this.getPath();
-
-		float step = 1/float(n/path.length);
-		println(n);
-		println(step);
-
+		Vec3D[] path = this.interpolatePath(n+1);
+		Slice[] slices = new Slice[n];
 
 
 		// slice once at the begining of each segment of the path
-		for(int index=0, i=0; i<path.length-1; i++){
+		for(int i=0; i<path.length-1; i++){
 			Vec3D a = path[i], b = path[i+1];
 
-			// slice each segment
-			for(float t=0; t<1; t+=step){
-				// create the slice,
-				// turn it to face the direction of the current segment
-				// and move it to its right interpolate position
-				Slice s = new Slice(random(DEBUG_RADIUS), DEBUG_N_SIDES);
-					s.lookAt(a.interpolateTo(b, t), b);
-					s.moveTo(a.interpolateTo(b, t));
+			// create the slice,
+			// turn it to face the direction of the current segment
+			// and move it to its right interpolate position
+			Slice s = new Slice(random(DEBUG_RADIUS), DEBUG_N_SIDES);
+				s.lookAt(a, b);
+				s.moveTo(a);
 
-				slices.add(s.computeVertices());
-			}
+			slices[i] = s.computeVertices();
 
 		}
 
-		return slices.toArray(new Slice[slices.size()]);
+		return slices;
 	}
 
 	private PShape triangulate(Slice[] slices){

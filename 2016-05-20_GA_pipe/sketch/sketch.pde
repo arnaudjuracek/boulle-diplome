@@ -35,16 +35,8 @@ void draw(){
 	noFill(); stroke(100); strokeWeight(1);
 	box(width*2, height*2, width*2);
 
-	pipe.setPath(pipe.interpolatePath(int(map(mouseX, 0, width, 1, 100))));
-
-	strokeWeight(3);
-	Vec3D[] points = pipe.getPath();
-	for(int i=0; i<points.length-1; i++){
-		line(points[i].x, points[i].y, points[i].z, points[i+1].x, points[i+1].y, points[i+1].z);
-	}
-
-	// fill(255); stroke(0); strokeWeight(1);
-	// shape(pipe.getPShape(), 0, 0);
+	fill(255); stroke(0); strokeWeight(1);
+	shape(pipe.getPShape(), 0, 0);
 }
 
 void keyPressed(){
