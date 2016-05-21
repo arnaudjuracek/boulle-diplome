@@ -1,6 +1,6 @@
 public class Pipe{
 
-	private Vec3D[] path;
+	private Vec3D[] path, original_path;
 	private PShape pshape;
 
 	int DEBUG_N_SIDES = 40;
@@ -9,6 +9,7 @@ public class Pipe{
 	// -------------------------------------------------------------------------
 	public Pipe(Vec3D[] path, int n_slices){
 		this.path = path;
+		this.original_path = path;
 
 		Slice[] slices = this.slicer(n_slices);
 		this.setPShape(this.triangulate(slices));
@@ -72,6 +73,36 @@ public class Pipe{
 
 
 	// -------------------------------------------------------------------------
+	// DATA MANIPULATION
+	public Vec3D[] interpolatePath(int resolution){
+		// create an array of 3 curves for each Vec3D components
+		Curve[] curve = new Curve[3];
+
+		Vec3D[] path = this.getOriginalPath();
+		float[][] curves_values = new float[curve.length][path.length];
+		for(int i=0; i<path.length; i++){
+			Vec3D v = path[i];
+			curves_values[0][i] = v.x;
+			curves_values[1][i] = v.y;
+			curves_values[2][i] = v.z;
+		}
+
+		for(int i=0; i<curve.length; i++){
+			curve[i] = new Curve(curves_values[i]);
+			curve[i].interpolate(resolution);
+		}
+
+		Vec3D[] interpolated_path = new Vec3D[curve[0].size()];
+		for(int i=0; i<interpolated_path.length; i++){
+			interpolated_path[i] = new Vec3D(curve[0].getValue(i), curve[1].getValue(i), curve[2].getValue(i));
+		}
+
+		return interpolated_path;
+	}
+
+
+
+	// -------------------------------------------------------------------------
 	// SETTERS
 	public Pipe setPath(Vec3D[] path){this.path = path; return this; }
 	public Pipe setPShape(PShape shape){this.pshape = shape; return this; }
@@ -81,6 +112,7 @@ public class Pipe{
 	// -------------------------------------------------------------------------
 	// GETTERS
 	public Vec3D[] getPath(){ return this.path; }
+	public Vec3D[] getOriginalPath(){ return this.original_path; }
 
 	public TriangleMesh getMesh(){ return null; }
 	public PShape getPShape(){ return this.pshape; }
