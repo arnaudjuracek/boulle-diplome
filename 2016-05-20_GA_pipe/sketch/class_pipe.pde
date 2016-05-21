@@ -1,9 +1,9 @@
 public class Pipe{
+	public final int MAX_SIDES_LENGTH = 10;
 
 	private Vec3D[] path, original_path;
 	private PShape pshape;
 
-	int DEBUG_N_SIDES = 40;
 	int DEBUG_RADIUS = 200;
 
 	// -------------------------------------------------------------------------
@@ -31,11 +31,11 @@ public class Pipe{
 			// create the slice,
 			// turn it to face the direction of the current segment
 			// and move it to its right interpolate position
-			Slice s = new Slice(random(DEBUG_RADIUS), DEBUG_N_SIDES);
+			Slice s = new Slice(DEBUG_RADIUS, int(random(3, MAX_SIDES_LENGTH)));
 				s.lookAt(a, b);
 				s.moveTo(a);
 
-			slices[i] = s.computeVertices();
+			slices[i] = s.computeVertices().interpolateVertices(MAX_SIDES_LENGTH);
 
 		}
 
@@ -45,12 +45,12 @@ public class Pipe{
 	private PShape triangulate(Slice[] slices){
 		PShape shape = createShape(GROUP);
 
-		for(int u=0; u<DEBUG_N_SIDES; u++){
+		for(int u=0; u<MAX_SIDES_LENGTH; u++){
 			PShape child = createShape();
 			child.beginShape(TRIANGLE_STRIP);
 			for(int v=0; v<slices.length; v++){
 				Vec3D b = slices[v].getVertex(u);
-				Vec3D c = slices[v].getVertex((u+1)%DEBUG_N_SIDES);
+				Vec3D c = slices[v].getVertex((u+1)%MAX_SIDES_LENGTH);
 
 				child.vertex(b.x, b.y, b.z);
 				child.vertex(c.x, c.y, c.z);

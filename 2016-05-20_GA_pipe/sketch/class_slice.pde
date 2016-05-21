@@ -1,6 +1,6 @@
 public class Slice{
 
-	private Vec3D[] vertices;
+	private Vec3D[] vertices, original_vertices;
 	private Vec3D position;
 	private Matrix4x4 matrix;
 	private int sidesLength;
@@ -40,17 +40,44 @@ public class Slice{
 	// -------------------------------------------------------------------------
 	// VERTICES COMPUTATION
 	public Slice computeVertices(){
-		Vec3D[] vertices = new Vec3D[this.getSidesLength()];
+		ArrayList<Vec3D> vertices = new ArrayList<Vec3D>(this.getSidesLength());
 
-		for(float theta=0, i=0; theta<TWO_PI; theta+=TWO_PI/vertices.length){
+		for(float theta=0, i=0; theta<TWO_PI; theta+=TWO_PI/this.getSidesLength()){
 			float x = cos(theta)*radius, y = sin(theta)*radius;
 			Vec3D v = new Vec3D(x, y, 0);
 				v = this.getMatrix().applyTo(v);
 				v = v.addSelf(this.getPosition());
-			vertices[(int) i++] = v;
+			vertices.add(v);
 		}
 
-		return this.setVertices(vertices);
+		this.original_vertices = vertices.toArray(new Vec3D[vertices.size()]);
+		return this.setVertices(this.original_vertices);
+	}
+
+	public Slice interpolateVertices(int n){
+		// create an array of 3 curves for each Vec3D components
+		Curve[] curve = new Curve[3];
+
+		Vec3D[] vertices = this.getOriginalVertices();
+		float[][] curves_values = new float[curve.length][vertices.length];
+		for(int i=0; i<vertices.length; i++){
+			Vec3D v = vertices[i];
+			curves_values[0][i] = v.x;
+			curves_values[1][i] = v.y;
+			curves_values[2][i] = v.z;
+		}
+
+		for(int i=0; i<curve.length; i++){
+			curve[i] = new Curve(curves_values[i]);
+			curve[i].interpolate(n);
+		}
+
+		Vec3D[] interpolated_vertices = new Vec3D[curve[0].size()];
+		for(int i=0; i<interpolated_vertices.length; i++){
+			interpolated_vertices[i] = new Vec3D(curve[0].getValue(i), curve[1].getValue(i), curve[2].getValue(i));
+		}
+
+		return this.setVertices(interpolated_vertices);
 	}
 
 
@@ -64,6 +91,8 @@ public class Slice{
 
 	// -------------------------------------------------------------------------
 	// GETTERS
+	public Vec3D[] getOriginalVertices(){ return this.original_vertices; }
+
 	public Vec3D[] getVertices(){ return this.vertices; }
 	public Vec3D getVertex(int index){ return this.vertices[index]; }
 
