@@ -88,16 +88,16 @@ public class Curve{
 	// -------------------------------------------------------------------------
 	// DEBUG
 	public void debug_draw(){
-		curve.interpolate(int(map(mouseX, 0, width, 0, 1) * 100));
+		this.interpolate(int(map(mouseX, 0, width, 0, 1) * 100));
 
-		for(int i=0; i<curve.getOriginalValues().length-1; i++){
+		for(int i=0; i<this.getOriginalValues().length-1; i++){
 			Vec2D
 				a = new Vec2D(
-					map(i, 0, curve.getOriginalValues().length-1, 20, width-20),
-					curve.getOriginalValues()[i]),
+					map(i, 0, this.getOriginalValues().length-1, 20, width-20),
+					this.getOriginalValues()[i]),
 				b = new Vec2D(
-					map(i+1, 0, curve.getOriginalValues().length-1, 20, width-20),
-					curve.getOriginalValues()[i+1]);
+					map(i+1, 0, this.getOriginalValues().length-1, 20, width-20),
+					this.getOriginalValues()[i+1]);
 
 			stroke(200, 0, 100, 100);
 			strokeWeight(1);
@@ -106,14 +106,14 @@ public class Curve{
 			point(a.x, a.y);
 		}
 
-		for(int i=0; i<curve.size()-1; i++){
+		for(int i=0; i<this.size()-1; i++){
 			Vec2D
 				a = new Vec2D(
-					map(i, 0, curve.size()-1, 20, width-20),
-					curve.getValue(i)),
+					map(i, 0, this.size()-1, 20, width-20),
+					this.getValue(i)),
 				b = new Vec2D(
-					map(i+1, 0, curve.size()-1, 20, width-20),
-					curve.getValue(i+1));
+					map(i+1, 0, this.size()-1, 20, width-20),
+					this.getValue(i+1));
 
 			stroke(0);
 			strokeWeight(1);

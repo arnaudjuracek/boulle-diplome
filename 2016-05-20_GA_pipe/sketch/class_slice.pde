@@ -50,8 +50,7 @@ public class Slice{
 			vertices[(int) i++] = v;
 		}
 
-		this.setVertices(vertices);
-		return this;
+		return this.setVertices(vertices);
 	}
 
 
