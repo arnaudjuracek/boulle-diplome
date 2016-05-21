@@ -42,7 +42,7 @@ public class Slice{
 	public Slice computeVertices(){
 		ArrayList<Vec3D> vertices = new ArrayList<Vec3D>(this.getSidesLength());
 
-		for(float theta=0, i=0; theta<TWO_PI; theta+=TWO_PI/this.getSidesLength()){
+		for(float theta=0, i=0; theta<TWO_PI+(TWO_PI/this.getSidesLength()); theta+=TWO_PI/this.getSidesLength()){
 			float x = cos(theta)*radius, y = sin(theta)*radius;
 			Vec3D v = new Vec3D(x, y, 0);
 				v = this.getMatrix().applyTo(v);
