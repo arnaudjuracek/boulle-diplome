@@ -1,15 +1,16 @@
 public class Pipe{
-	public final int MAX_SIDES_LENGTH = 10;
+	public final int MAX_SIDES_LENGTH = 40;
 
 	private Vec3D[] path, original_path;
+	private float[] radiuses;
 	private PShape pshape;
 
-	int DEBUG_RADIUS = 200;
-
 	// -------------------------------------------------------------------------
-	public Pipe(Vec3D[] path, int n_slices){
+	public Pipe(Vec3D[] path, Curve radiuses, int n_slices){
 		this.path = path;
 		this.original_path = path;
+
+		this.radiuses = radiuses.interpolate(n_slices).getValues();
 
 		Slice[] slices = this.slicer(n_slices);
 		this.setPShape(this.triangulate(slices));
@@ -31,7 +32,7 @@ public class Pipe{
 			// create the slice,
 			// turn it to face the direction of the current segment
 			// and move it to its right interpolate position
-			Slice s = new Slice(DEBUG_RADIUS, int(random(3, MAX_SIDES_LENGTH)));
+			Slice s = new Slice(this.getRadius(i), 100);
 				s.lookAt(a, b);
 				s.moveTo(a);
 
@@ -96,15 +97,18 @@ public class Pipe{
 
 	// -------------------------------------------------------------------------
 	// SETTERS
-	public Pipe setPath(Vec3D[] path){this.path = path; return this; }
-	public Pipe setPShape(PShape shape){this.pshape = shape; return this; }
-
+	public Pipe setPath(Vec3D[] path){ this.path = path; return this; }
+	public Pipe setPShape(PShape shape){ this.pshape = shape; return this; }
+	public Pipe setRadiuses(float[] radiuses){ this.radiuses = radiuses; return this; }
 
 
 	// -------------------------------------------------------------------------
 	// GETTERS
 	public Vec3D[] getPath(){ return this.path; }
 	public Vec3D[] getOriginalPath(){ return this.original_path; }
+
+	public float[] getRadiuses(){ return this.radiuses; }
+	public float getRadius(int index){ return this.radiuses[index]; }
 
 	public TriangleMesh getMesh(){ return null; }
 	public PShape getPShape(){ return this.pshape; }
