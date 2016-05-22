@@ -48,25 +48,28 @@ public class Curve{
 	// CURVE MANIPULATION
 	public Curve interpolate(int resolution){
 		float[] values = this.getOriginalValues();
-		float[] interpolated = new float[resolution];
 
-		if(values.length>1){
-			for(int i=0; i<interpolated.length-1; i++){
-				int ax = int( norm(i,0,interpolated.length-1) * (values.length-1) );
-				int bx = ax + 1;
+		if(values.length != resolution){
+			float[] interpolated = new float[resolution];
 
-				float a = values[ax], b = values[bx];
-				float t = norm(map(i, 0, interpolated.length-1, 0, values.length-1), ax, bx);
-				interpolated[i] = this.getInterpolation().interpolate(a, b, t);
+			if(values.length>1){
+				for(int i=0; i<interpolated.length-1; i++){
+					int ax = int( norm(i,0,interpolated.length-1) * (values.length-1) );
+					int bx = ax + 1;
+
+					float a = values[ax], b = values[bx];
+					float t = norm(map(i, 0, interpolated.length-1, 0, values.length-1), ax, bx);
+					interpolated[i] = this.getInterpolation().interpolate(a, b, t);
+				}
+
+				if(interpolated.length>0) interpolated[interpolated.length-1] = values[values.length-1]; // ¯\_(ツ)_/¯
+			}else{
+				for(int i=0; i<interpolated.length; i++){
+					interpolated[i] = values[0];
+				}
 			}
-
-			if(interpolated.length>0) interpolated[interpolated.length-1] = values[values.length-1]; // ¯\_(ツ)_/¯
-		}else{
-			for(int i=0; i<interpolated.length; i++){
-				interpolated[i] = values[0];
-			}
-		}
-		return this.setValues(interpolated);
+			return this.setValues(interpolated);
+		}else return this;
 	}
 
 	public Curve interpolate(int resolution, InterpolateStrategy interpolation){
