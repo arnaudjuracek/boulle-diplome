@@ -5,17 +5,13 @@ public class Pipe{
 	public final int MAX_SIDES_LENGTH = 40;
 
 	private Path path;
-	private float[] radiuses;
+	private Curve radiuses;
 	private TriangleMesh mesh;
 
 	// -------------------------------------------------------------------------
 	public Pipe(Path path, Curve radiuses, int n_slices){
 		this.path = path.interpolatePath(n_slices+1).smooth(.9);
-
-		this.radiuses = radiuses
-							.interpolate(n_slices)
-							.smooth(0.3)
-							.getValues();
+		this.radiuses = radiuses.interpolate(n_slices).smooth(0.3);
 
 		this.setMesh(
 			this.triangulate(
@@ -107,15 +103,15 @@ public class Pipe{
 	// SETTERS
 	public Pipe setPath(Path path){ this.path = path; return this; }
 	public Pipe setMesh(TriangleMesh mesh){ this.mesh = mesh; return this; }
-	public Pipe setRadiuses(float[] radiuses){ this.radiuses = radiuses; return this; }
 
 
 	// -------------------------------------------------------------------------
 	// GETTERS
 	public Path getPath(){ return this.path; }
 
-	public float[] getRadiuses(){ return this.radiuses; }
-	public float getRadius(int index){ return this.radiuses[index]; }
+	public Curve getRadiusesCurve(){ return this.radiuses; }
+	public float[] getRadiuses(){ return this.radiuses.getValues(); }
+	public float getRadius(int index){ return this.radiuses.getValue(index); }
 
 	public TriangleMesh getMesh(){ return this.mesh; }
 
