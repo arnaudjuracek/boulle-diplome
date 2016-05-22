@@ -53,16 +53,19 @@ public class Curve{
 			float[] interpolated = new float[resolution];
 
 			if(values.length>1){
+
 				for(int i=0; i<interpolated.length-1; i++){
-					int ax = int( norm(i,0,interpolated.length-1) * (values.length-1) );
-					int bx = ax + 1;
+					int ax = int(map(i, 0, interpolated.length-1, 0, values.length-1) );
+					int bx = ax+1;
 
 					float a = values[ax], b = values[bx];
 					float t = norm(map(i, 0, interpolated.length-1, 0, values.length-1), ax, bx);
 					interpolated[i] = this.getInterpolation().interpolate(a, b, t);
 				}
 
-				if(interpolated.length>0) interpolated[interpolated.length-1] = values[values.length-1]; // ¯\_(ツ)_/¯
+				// add last point, which is not interpolated
+				if(interpolated.length>0) interpolated[interpolated.length-1] = values[values.length-1];
+
 			}else{
 				for(int i=0; i<interpolated.length; i++){
 					interpolated[i] = values[0];
@@ -148,6 +151,7 @@ public class Curve{
 			strokeWeight(5);
 			point(a.x, a.y);
 		}
+		point(width-20, this.getOriginalValues()[this.getOriginalValues().length-1]);
 
 		for(int i=0; i<this.size()-1; i++){
 			Vec2D
@@ -164,5 +168,7 @@ public class Curve{
 			strokeWeight(5);
 			point(a.x, a.y);
 		}
+		point(width-20, this.getValue(this.size()-1));
+
 	}
 }
