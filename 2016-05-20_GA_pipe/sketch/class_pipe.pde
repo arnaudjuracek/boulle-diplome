@@ -77,12 +77,11 @@ public class Pipe{
 		}
 
 		if(closeEnds.length>0 && closeEnds[0]){
-			for(Slice end : new Slice[]{slices[0], slices[slices.length-1]}){
-				Vec3D center = end.getPosition();
-				for(int i=0; i<end.getVertices().length-1; i++){
-					mesh.addFace(center, end.getVertex(i), end.getVertex(i+1), new Vec2D(), new Vec2D(), new Vec2D());
-				}
-			}
+			Slice a = slices[0];
+			for(int i=MAX_SIDES_LENGTH-2; i>=0; i--) mesh.addFace(a.getPosition(), a.getVertex((i+1)%(MAX_SIDES_LENGTH-1)), a.getVertex(i), new Vec2D(), new Vec2D(), new Vec2D());
+
+			Slice b = slices[slices.length-1];
+			for(int i=0; i<MAX_SIDES_LENGTH-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(MAX_SIDES_LENGTH-1)), new Vec2D(), new Vec2D(), new Vec2D());
 		}
 
 
