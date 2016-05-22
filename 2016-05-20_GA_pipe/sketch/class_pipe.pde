@@ -4,14 +4,13 @@ import toxi.geom.mesh.*;
 public class Pipe{
 	public final int MAX_SIDES_LENGTH = 40;
 
-	private Vec3D[] path, original_path;
+	private Path path;
 	private float[] radiuses;
 	private TriangleMesh mesh;
 
 	// -------------------------------------------------------------------------
-	public Pipe(Vec3D[] path, Curve radiuses, int n_slices){
+	public Pipe(Path path, Curve radiuses, int n_slices){
 		this.path = path;
-		this.original_path = path;
 
 		this.radiuses = radiuses
 							.interpolate(n_slices)
@@ -31,7 +30,7 @@ public class Pipe{
 	// -------------------------------------------------------------------------
 	// GENERATORS
 	private Slice[] slicer(int n){
-		Vec3D[] path = this.interpolatePath(n+1);
+		Vec3D[] path = this.getPath().interpolatePath(n+1).getPoints();
 		Slice[] slices = new Slice[n];
 
 
@@ -55,6 +54,13 @@ public class Pipe{
 
 	private TriangleMesh triangulate(Slice[] slices, boolean... closeEnds){
 		TriangleMesh mesh = new TriangleMesh();
+
+		// DEBUG / TEST RANDOM DISPLACEMENT
+		// for(int i=0; i<slices.length; i++){
+		// 	for(int j=1; j<slices[i].getVertices().length-1; j++){
+		// 		slices[i].getVertex(j).jitter(10);
+		// 	}
+		// }
 
 		for(int u=0; u<MAX_SIDES_LENGTH-1; u++){
 			for(int v=0; v<slices.length-1; v++){
@@ -94,45 +100,19 @@ public class Pipe{
 
 	// -------------------------------------------------------------------------
 	// DATA MANIPULATION
-	public Vec3D[] interpolatePath(int resolution){
-		// create an array of 3 curves for each Vec3D components
-		Curve[] curve = new Curve[3];
-
-		Vec3D[] path = this.getOriginalPath();
-		float[][] curves_values = new float[curve.length][path.length];
-		for(int i=0; i<path.length; i++){
-			Vec3D v = path[i];
-			curves_values[0][i] = v.x;
-			curves_values[1][i] = v.y;
-			curves_values[2][i] = v.z;
-		}
-
-		for(int i=0; i<curve.length; i++){
-			curve[i] = new Curve(curves_values[i]);
-			curve[i].interpolate(resolution);
-		}
-
-		Vec3D[] interpolated_path = new Vec3D[curve[0].size()];
-		for(int i=0; i<interpolated_path.length; i++){
-			interpolated_path[i] = new Vec3D(curve[0].getValue(i), curve[1].getValue(i), curve[2].getValue(i));
-		}
-
-		return interpolated_path;
-	}
 
 
 
 	// -------------------------------------------------------------------------
 	// SETTERS
-	public Pipe setPath(Vec3D[] path){ this.path = path; return this; }
+	public Pipe setPath(Path path){ this.path = path; return this; }
 	public Pipe setMesh(TriangleMesh mesh){ this.mesh = mesh; return this; }
 	public Pipe setRadiuses(float[] radiuses){ this.radiuses = radiuses; return this; }
 
 
 	// -------------------------------------------------------------------------
 	// GETTERS
-	public Vec3D[] getPath(){ return this.path; }
-	public Vec3D[] getOriginalPath(){ return this.original_path; }
+	public Path getPath(){ return this.path; }
 
 	public float[] getRadiuses(){ return this.radiuses; }
 	public float getRadius(int index){ return this.radiuses[index]; }
