@@ -1,3 +1,6 @@
+import toxi.geom.*;
+import toxi.geom.mesh.*;
+
 public class Pipe{
 	public final int MAX_SIDES_LENGTH = 40;
 
@@ -43,19 +46,16 @@ public class Pipe{
 		return slices;
 	}
 
-	private TriangleMesh triangulate(Slice[] slices){
+	private TriangleMesh triangulate(Slice[] slices, boolean... closeEnds){
 		TriangleMesh mesh = new TriangleMesh();
 
 		for(int u=0; u<MAX_SIDES_LENGTH-1; u++){
-
 			for(int v=0; v<slices.length-1; v++){
-
 				Vec3D
 					a = slices[v].getVertex(u),
 					b = slices[v].getVertex(u+1),
 					c = slices[v+1].getVertex(u+1),
 					d = slices[v+1].getVertex(u);
-
 				Vec2D
 					uvA = new Vec2D(norm(u, 0, MAX_SIDES_LENGTH), norm(v, 0, slices.length)),
 					uvB = new Vec2D(norm(u+1, 0, MAX_SIDES_LENGTH), norm(v, 0, slices.length)),
@@ -66,6 +66,16 @@ public class Pipe{
 				mesh.addFace(c, d, a, uvC, uvD, uvA);
 			}
 		}
+
+		if(closeEnds.length>0 && closeEnds[0]){
+			for(Slice end : new Slice[]{slices[0], slices[slices.length-1]}){
+				Vec3D center = end.getPosition();
+				for(int i=0; i<end.getVertices().length-1; i++){
+					mesh.addFace(center, end.getVertex(i), end.getVertex(i+1), new Vec2D(), new Vec2D(), new Vec2D());
+				}
+			}
+		}
+
 
 		mesh.computeFaceNormals();
 		mesh.computeVertexNormals();
