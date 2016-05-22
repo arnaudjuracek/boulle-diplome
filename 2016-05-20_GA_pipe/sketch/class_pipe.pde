@@ -53,8 +53,8 @@ public class Pipe{
 			for(int v=0; v<slices.length-1; v++){
 				Vec3D
 					a = slices[v].getVertex(u),
-					b = slices[v].getVertex(u+1),
-					c = slices[v+1].getVertex(u+1),
+					b = slices[v].getVertex((u+1)%(MAX_SIDES_LENGTH-1)),
+					c = slices[v+1].getVertex((u+1)%(MAX_SIDES_LENGTH-1)),
 					d = slices[v+1].getVertex(u);
 				Vec2D
 					uvA = new Vec2D(norm(u, 0, MAX_SIDES_LENGTH), norm(v, 0, slices.length)),
