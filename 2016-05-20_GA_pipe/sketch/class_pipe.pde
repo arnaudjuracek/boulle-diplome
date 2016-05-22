@@ -2,16 +2,17 @@ import toxi.geom.*;
 import toxi.geom.mesh.*;
 
 public class Pipe{
-	public final int MAX_SIDES_LENGTH = 40;
+	public final int SIDES_RESOLUTION = 10;
 
 	private Path path;
-	private Curve radiuses;
+	private Curve radiuses, sides;
 	private TriangleMesh mesh;
 
 	// -------------------------------------------------------------------------
-	public Pipe(Path path, Curve radiuses, int n_slices){
+	public Pipe(Path path, Curve radiuses, Curve sides, int n_slices){
 		this.path = path.interpolatePath(n_slices+1).smooth(path.getSmoothCoef());
 		this.radiuses = radiuses.interpolate(n_slices).smooth(radiuses.getSmoothCoef());
+		this.sides = sides.interpolate(n_slices).smooth(sides.getSmoothCoef());
 
 		this.setMesh(
 			this.triangulate(
@@ -37,11 +38,11 @@ public class Pipe{
 			// create the slice,
 			// turn it to face the direction of the current segment
 			// and move it to its right interpolate position
-			Slice s = new Slice(this.getRadius(i), 100);
+			Slice s = new Slice(this.getRadius(i), int(this.getSideLength(i)));
 				s.lookAt(a, b);
 				s.moveTo(a);
 
-			slices[i] = s.computeVertices().interpolateVertices(MAX_SIDES_LENGTH);
+			slices[i] = s.computeVertices().interpolateVertices(SIDES_RESOLUTION);
 
 		}
 
@@ -54,22 +55,22 @@ public class Pipe{
 		// DEBUG / TEST RANDOM DISPLACEMENT
 		// for(int i=0; i<slices.length; i++){
 		// 	for(int j=1; j<slices[i].getVertices().length-1; j++){
-		// 		slices[i].getVertex(j).jitter(10);
+		// 		slices[i].getVertex(j).jitter(5);
 		// 	}
 		// }
 
-		for(int u=0; u<MAX_SIDES_LENGTH-1; u++){
+		for(int u=0; u<SIDES_RESOLUTION-1; u++){
 			for(int v=0; v<slices.length-1; v++){
 				Vec3D
 					a = slices[v].getVertex(u),
-					b = slices[v].getVertex((u+1)%(MAX_SIDES_LENGTH-1)),
-					c = slices[v+1].getVertex((u+1)%(MAX_SIDES_LENGTH-1)),
+					b = slices[v].getVertex((u+1)%(SIDES_RESOLUTION-1)),
+					c = slices[v+1].getVertex((u+1)%(SIDES_RESOLUTION-1)),
 					d = slices[v+1].getVertex(u);
 				Vec2D
-					uvA = new Vec2D(norm(u, 0, MAX_SIDES_LENGTH), norm(v, 0, slices.length)),
-					uvB = new Vec2D(norm(u+1, 0, MAX_SIDES_LENGTH), norm(v, 0, slices.length)),
-					uvC = new Vec2D(norm(u+1, 0, MAX_SIDES_LENGTH), norm(v+1, 0, slices.length)),
-					uvD = new Vec2D(norm(u, 0, MAX_SIDES_LENGTH), norm(v+1, 0, slices.length));
+					uvA = new Vec2D(norm(u, 0, SIDES_RESOLUTION), norm(v, 0, slices.length)),
+					uvB = new Vec2D(norm(u+1, 0, SIDES_RESOLUTION), norm(v, 0, slices.length)),
+					uvC = new Vec2D(norm(u+1, 0, SIDES_RESOLUTION), norm(v+1, 0, slices.length)),
+					uvD = new Vec2D(norm(u, 0, SIDES_RESOLUTION), norm(v+1, 0, slices.length));
 
 				mesh.addFace(a, b, c, uvA, uvB, uvC);
 				mesh.addFace(c, d, a, uvC, uvD, uvA);
@@ -78,23 +79,17 @@ public class Pipe{
 
 		if(closeEnds.length>0 && closeEnds[0]){
 			Slice a = slices[0];
-			for(int i=MAX_SIDES_LENGTH-2; i>=0; i--) mesh.addFace(a.getPosition(), a.getVertex((i+1)%(MAX_SIDES_LENGTH-1)), a.getVertex(i), new Vec2D(), new Vec2D(), new Vec2D());
+			for(int i=SIDES_RESOLUTION-2; i>=0; i--) mesh.addFace(a.getPosition(), a.getVertex((i+1)%(SIDES_RESOLUTION-1)), a.getVertex(i), new Vec2D(), new Vec2D(), new Vec2D());
 
 			Slice b = slices[slices.length-1];
-			for(int i=0; i<MAX_SIDES_LENGTH-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(MAX_SIDES_LENGTH-1)), new Vec2D(), new Vec2D(), new Vec2D());
+			for(int i=0; i<SIDES_RESOLUTION-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(SIDES_RESOLUTION-1)), new Vec2D(), new Vec2D(), new Vec2D());
 		}
-
 
 		mesh.computeFaceNormals();
 		mesh.computeVertexNormals();
 
 		return mesh;
 	}
-
-
-
-	// -------------------------------------------------------------------------
-	// DATA MANIPULATION
 
 
 
@@ -111,6 +106,10 @@ public class Pipe{
 	public Curve getRadiusesCurve(){ return this.radiuses; }
 	public float[] getRadiuses(){ return this.radiuses.getValues(); }
 	public float getRadius(int index){ return this.radiuses.getValue(index); }
+
+	public Curve getSidesLengthCurve(){ return this.sides; }
+	public float[] getSidesLength(){ return this.sides.getValues(); }
+	public float getSideLength(int index){ return this.sides.getValue(index); }
 
 	public TriangleMesh getMesh(){ return this.mesh; }
 
