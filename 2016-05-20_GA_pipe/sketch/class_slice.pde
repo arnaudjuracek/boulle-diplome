@@ -55,29 +55,31 @@ public class Slice{
 	}
 
 	public Slice interpolateVertices(int n){
-		// create an array of 3 curves for each Vec3D components
-		Curve[] curve = new Curve[3];
+		if(n!=this.getOriginalVertices().length){
+			// create an array of 3 curves for each Vec3D components
+			Curve[] curve = new Curve[3];
 
-		Vec3D[] vertices = this.getOriginalVertices();
-		float[][] curves_values = new float[curve.length][vertices.length];
-		for(int i=0; i<vertices.length; i++){
-			Vec3D v = vertices[i];
-			curves_values[0][i] = v.x;
-			curves_values[1][i] = v.y;
-			curves_values[2][i] = v.z;
-		}
+			Vec3D[] vertices = this.getOriginalVertices();
+			float[][] curves_values = new float[curve.length][vertices.length];
+			for(int i=0; i<vertices.length; i++){
+				Vec3D v = vertices[i];
+				curves_values[0][i] = v.x;
+				curves_values[1][i] = v.y;
+				curves_values[2][i] = v.z;
+			}
 
-		for(int i=0; i<curve.length; i++){
-			curve[i] = new Curve(curves_values[i]);
-			curve[i].interpolate(n);
-		}
+			for(int i=0; i<curve.length; i++){
+				curve[i] = new Curve(curves_values[i]);
+				curve[i].interpolate(n);
+			}
 
-		Vec3D[] interpolated_vertices = new Vec3D[curve[0].size()];
-		for(int i=0; i<interpolated_vertices.length; i++){
-			interpolated_vertices[i] = new Vec3D(curve[0].getValue(i), curve[1].getValue(i), curve[2].getValue(i));
-		}
+			Vec3D[] interpolated_vertices = new Vec3D[curve[0].size()];
+			for(int i=0; i<interpolated_vertices.length; i++){
+				interpolated_vertices[i] = new Vec3D(curve[0].getValue(i), curve[1].getValue(i), curve[2].getValue(i));
+			}
 
-		return this.setVertices(interpolated_vertices);
+			return this.setVertices(interpolated_vertices);
+		}else return this;
 	}
 
 
