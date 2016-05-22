@@ -10,8 +10,8 @@ public class Pipe{
 
 	// -------------------------------------------------------------------------
 	public Pipe(Path path, Curve radiuses, int n_slices){
-		this.path = path.interpolatePath(n_slices+1).smooth(.9);
-		this.radiuses = radiuses.interpolate(n_slices).smooth(0.3);
+		this.path = path.interpolatePath(n_slices+1).smooth(path.getSmoothCoef());
+		this.radiuses = radiuses.interpolate(n_slices).smooth(radiuses.getSmoothCoef());
 
 		this.setMesh(
 			this.triangulate(

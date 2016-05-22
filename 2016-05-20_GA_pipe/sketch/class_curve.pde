@@ -17,13 +17,29 @@ public class Curve{
 
 	private float[] values, original_values;
 	private InterpolateStrategy interpolation;
-
+	private float smooth_coef;
 
 	// -------------------------------------------------------------------------
 	Curve(float[] values){
 		this.interpolation = new LinearInterpolation();
 		this.original_values = values;
 		this.values = values;
+	}
+
+	Curve(float[] values, InterpolateStrategy interpolation){
+		this(values);
+		this.setInterpolation(interpolation);
+	}
+
+	Curve(float[] values, float smooth_coef){
+		this(values);
+		this.setSmoothCoef(smooth_coef);
+	}
+
+	Curve(float[] values, InterpolateStrategy interpolation, float smooth_coef){
+		this(values);
+		this.setInterpolation(interpolation);
+		this.setSmoothCoef(smooth_coef);
 	}
 
 
@@ -62,14 +78,16 @@ public class Curve{
 		// exponential smoothing algorithm implementation
 		// @see https://en.wikipedia.org/wiki/Exponential_smoothing
 
-		float[] values = this.getValues();
-		float[] smoothed = new float[values.length];
+		if(coef>0){
+			float[] values = this.getValues();
+			float[] smoothed = new float[values.length];
 
-		smoothed[0] = values[0];
-		for(int i=1; i<values.length; i++)
-			smoothed[i] = (1-coef)*values[i] + coef*smoothed[i-1];
+			smoothed[0] = values[0];
+			for(int i=1; i<values.length; i++)
+				smoothed[i] = (1-coef)*values[i] + coef*smoothed[i-1];
 
-		return this.setValues(smoothed);
+			return this.setSmoothCoef(coef).setValues(smoothed);
+		}else return this;
 	}
 
 
@@ -79,7 +97,7 @@ public class Curve{
 	public Curve setValues(float[] values){ this.values = values; return this; }
 	public Curve setOriginalValues(float[] values){ this.original_values = values; return this; }
 	public Curve setInterpolation(InterpolateStrategy itrp){ this.interpolation = itrp; return this; }
-
+	public Curve setSmoothCoef(float coef){ this.smooth_coef = coef; return this; }
 
 
 	// -------------------------------------------------------------------------
@@ -102,6 +120,8 @@ public class Curve{
 		for(float v : this.getValues()) if(v<min) min = v;
 		return min;
 	}
+
+	public float getSmoothCoef(){ return this.smooth_coef; }
 
 
 

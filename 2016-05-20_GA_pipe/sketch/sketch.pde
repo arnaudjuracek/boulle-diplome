@@ -32,9 +32,10 @@ void setup(){
 				new Vec3D(random(-width, width), random(-height, height), random(-width, width)),
 				new Vec3D(random(-width, width), random(-height, height), random(-width, width)),
 				new Vec3D(random(-width, width), random(-height, height), random(-width, width))
-			}
+			},
+			0.9
 		),
-		new Curve(radiuses).setInterpolation(new CircularInterpolation()),
+		new Curve(radiuses, new CircularInterpolation(), .9),
 		100
 	);
 }
