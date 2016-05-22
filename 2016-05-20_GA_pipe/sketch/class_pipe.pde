@@ -10,7 +10,7 @@ public class Pipe{
 
 	// -------------------------------------------------------------------------
 	public Pipe(Path path, Curve radiuses, int n_slices){
-		this.path = path;
+		this.path = path.interpolatePath(n_slices+1).smooth(.9);
 
 		this.radiuses = radiuses
 							.interpolate(n_slices)
@@ -30,7 +30,7 @@ public class Pipe{
 	// -------------------------------------------------------------------------
 	// GENERATORS
 	private Slice[] slicer(int n){
-		Vec3D[] path = this.getPath().interpolatePath(n+1).getPoints();
+		Vec3D[] path = this.getPath().getPoints();
 		Slice[] slices = new Slice[n];
 
 

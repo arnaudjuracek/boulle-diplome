@@ -21,7 +21,7 @@ void setup(){
 	textureMode(NORMAL);
 
 	float[] radiuses = new float[int(random(1, 100))];
-	for(int i=0; i<radiuses.length; i++) radiuses[i] = random(50, 100);
+	for(int i=0; i<radiuses.length; i++) radiuses[i] = random(0, 300);
 
 	pipe = new Pipe(
 		new Path(
@@ -70,11 +70,10 @@ void draw(){
 		point(a.x, a.y, a.z);
 	}
 
-	// fill(255); noStroke();
-	strokeWeight(1); stroke(0, 50);
-	gfx.mesh(pipe.getMesh(), false);
+	fill(255); noStroke();
+	// strokeWeight(1); stroke(0, 50); gfx.mesh(pipe.getMesh(), false);
 	// gfx.meshNormalMapped(pipe.getMesh(), true, 100);
-	// gfx.texturedMesh(pipe.getMesh(), tex, true);
+	if(mousePressed) gfx.texturedMesh(pipe.getMesh(), tex, true);
 }
 
 void keyPressed(){
