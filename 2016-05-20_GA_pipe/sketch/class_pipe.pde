@@ -13,10 +13,17 @@ public class Pipe{
 		this.path = path;
 		this.original_path = path;
 
-		this.radiuses = radiuses.interpolate(n_slices).smooth(0.3).getValues();
+		this.radiuses = radiuses
+							.interpolate(n_slices)
+							.smooth(0.3)
+							.getValues();
 
-		Slice[] slices = this.slicer(n_slices);
-		this.setMesh(this.triangulate(slices));
+		this.setMesh(
+			this.triangulate(
+				this.slicer(n_slices),
+				true
+			)
+		);
 	}
 
 
