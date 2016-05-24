@@ -32,22 +32,28 @@ public class Wave{
 	private float[] values;
 
 	// -------------------------------------------------------------------------
+	public Wave(){ this(Wave.CONSTANTWAVE, 0, 0.1f, -1, 1, 100); }
+
 	public Wave(int waveType, float offset, float frequency, float min, float max, int resolution){
-		this.wave = this.createWave(waveType, offset, frequency, null);
+		this.wave = this.create(waveType, offset, frequency, null);
 		this.values = this.convertWaveToArray(min, max, resolution);
 	}
 
-	public Wave(){ this(Wave.CONSTANTWAVE, 0, 0.1f, -1, 1, 3); }
+	public Wave(AbstractWave wave, float min, float max, int resolution){
+		this.wave = wave;
+		this.values = this.convertWaveToArray(min, max, resolution);
+	}
+
 	public Wave(int waveType, float min, float max, int resolution){ this(waveType, 0, 0.1f, min, max, resolution); }
 
 
 
 	// -------------------------------------------------------------------------
 	// GENERATORS
-	private AbstractWave createWave(int waveType, float offset, float frequency, AbstractWave fmod){
+	private AbstractWave create(int waveType, float offset, float frequency, AbstractWave fmod){
 		AbstractWave wave = null;
 
-		// default fmod if createWave(int waveType, float frequency, null)
+		// default fmod if create(int waveType, float frequency, null)
 		if(fmod==null) fmod = new ConstantWave(0);
 
 		switch(waveType){
