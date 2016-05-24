@@ -91,6 +91,22 @@ public class Pipe{
 		return mesh;
 	}
 
+	private TriangleMesh morphTo(TriangleMesh b, float t){
+		TriangleMesh a = this.getMesh().copy();
+
+		for(int i=0; i<a.getFaces().size()-1; i++){
+			Face fa = a.faces.get(i), fb = b.faces.get(i);
+			fa.a.interpolateToSelf(fb.a, t);
+			fa.b.interpolateToSelf(fb.b, t);
+			fa.c.interpolateToSelf(fb.c, t);
+		}
+
+		a.computeFaceNormals();
+		a.computeVertexNormals();
+
+		return a;
+	}
+
 
 
 	// -------------------------------------------------------------------------
