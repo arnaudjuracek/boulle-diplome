@@ -2,21 +2,23 @@ import toxi.geom.*;
 import toxi.geom.mesh.*;
 
 public class Pipe{
-	public final int SIDES_RESOLUTION = 10;
+	public final int
+		U_RESOLUTION = 10,
+		V_RESOLUTION = 50;
 
 	private Path path;
 	private Curve radiuses, sides;
 	private TriangleMesh mesh;
 
 	// -------------------------------------------------------------------------
-	public Pipe(Path path, Curve radiuses, Curve sides, int n_slices){
-		this.path = path.interpolatePath(n_slices+1).smooth(path.getSmoothCoef());
-		this.radiuses = radiuses.interpolate(n_slices).smooth(radiuses.getSmoothCoef());
-		this.sides = sides.interpolate(n_slices).smooth(sides.getSmoothCoef());
+	public Pipe(Path path, Curve radiuses, Curve sides){
+		this.path = path.interpolatePath(V_RESOLUTION+1).smooth(path.getSmoothCoef());
+		this.radiuses = radiuses.interpolate(V_RESOLUTION).smooth(radiuses.getSmoothCoef());
+		this.sides = sides.interpolate(V_RESOLUTION).smooth(sides.getSmoothCoef());
 
 		this.setMesh(
 			this.triangulate(
-				this.slicer(n_slices),
+				this.slicer(V_RESOLUTION),
 				true
 			)
 		);
@@ -42,7 +44,7 @@ public class Pipe{
 				s.lookAt(a, b);
 				s.moveTo(a);
 
-			slices[i] = s.computeVertices().interpolateVertices(SIDES_RESOLUTION);
+			slices[i] = s.computeVertices().interpolateVertices(U_RESOLUTION);
 
 		}
 
@@ -59,18 +61,18 @@ public class Pipe{
 		// 	}
 		// }
 
-		for(int u=0; u<SIDES_RESOLUTION-1; u++){
+		for(int u=0; u<U_RESOLUTION-1; u++){
 			for(int v=0; v<slices.length-1; v++){
 				Vec3D
 					a = slices[v].getVertex(u),
-					b = slices[v].getVertex((u+1)%(SIDES_RESOLUTION-1)),
-					c = slices[v+1].getVertex((u+1)%(SIDES_RESOLUTION-1)),
+					b = slices[v].getVertex((u+1)%(U_RESOLUTION-1)),
+					c = slices[v+1].getVertex((u+1)%(U_RESOLUTION-1)),
 					d = slices[v+1].getVertex(u);
 				Vec2D
-					uvA = new Vec2D(norm(u, 0, SIDES_RESOLUTION), norm(v, 0, slices.length)),
-					uvB = new Vec2D(norm(u+1, 0, SIDES_RESOLUTION), norm(v, 0, slices.length)),
-					uvC = new Vec2D(norm(u+1, 0, SIDES_RESOLUTION), norm(v+1, 0, slices.length)),
-					uvD = new Vec2D(norm(u, 0, SIDES_RESOLUTION), norm(v+1, 0, slices.length));
+					uvA = new Vec2D(norm(u, 0, U_RESOLUTION), norm(v, 0, slices.length)),
+					uvB = new Vec2D(norm(u+1, 0, U_RESOLUTION), norm(v, 0, slices.length)),
+					uvC = new Vec2D(norm(u+1, 0, U_RESOLUTION), norm(v+1, 0, slices.length)),
+					uvD = new Vec2D(norm(u, 0, U_RESOLUTION), norm(v+1, 0, slices.length));
 
 				mesh.addFace(a, b, c, uvA, uvB, uvC);
 				mesh.addFace(c, d, a, uvC, uvD, uvA);
@@ -79,10 +81,10 @@ public class Pipe{
 
 		if(closeEnds.length>0 && closeEnds[0]){
 			Slice a = slices[0];
-			for(int i=SIDES_RESOLUTION-2; i>=0; i--) mesh.addFace(a.getPosition(), a.getVertex((i+1)%(SIDES_RESOLUTION-1)), a.getVertex(i), new Vec2D(), new Vec2D(), new Vec2D());
+			for(int i=U_RESOLUTION-2; i>=0; i--) mesh.addFace(a.getPosition(), a.getVertex((i+1)%(U_RESOLUTION-1)), a.getVertex(i), new Vec2D(), new Vec2D(), new Vec2D());
 
 			Slice b = slices[slices.length-1];
-			for(int i=0; i<SIDES_RESOLUTION-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(SIDES_RESOLUTION-1)), new Vec2D(), new Vec2D(), new Vec2D());
+			for(int i=0; i<U_RESOLUTION-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(U_RESOLUTION-1)), new Vec2D(), new Vec2D(), new Vec2D());
 		}
 
 		mesh.computeFaceNormals();
