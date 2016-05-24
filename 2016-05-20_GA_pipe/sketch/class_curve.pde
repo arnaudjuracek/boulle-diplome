@@ -20,6 +20,8 @@ public class Curve{
 	private float smooth_coef;
 
 	// -------------------------------------------------------------------------
+	Curve(float value){ this(new float[]{value});}
+
 	Curve(float[] values){
 		this.interpolation = new LinearInterpolation();
 		this.original_values = values;
