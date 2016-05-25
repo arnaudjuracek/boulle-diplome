@@ -72,6 +72,19 @@ public class Path{
 		}else return this;
 	}
 
+	public Path cross(Path p){
+		if(this.getOriginalPoints().length < p.getOriginalPoints().length) this.interpolatePath(p.getOriginalPoints().length);
+		else if(this.getOriginalPoints().length > p.getOriginalPoints().length) p.interpolatePath(this.getOriginalPoints().length);
+
+		Vec3D[] points = new Vec3D[this.getOriginalPoints().length];
+		float r = random(points.length);
+		for(int i=0; i<points.length; i++){
+			// segment swapping method
+			points[i] = (i>r) ? this.getOriginalPoint(i) : p.getOriginalPoint(i);
+
+		}
+		return new Path(points);
+	}
 
 
 	// -------------------------------------------------------------------------
