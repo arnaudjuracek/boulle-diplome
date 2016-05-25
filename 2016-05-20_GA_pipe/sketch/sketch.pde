@@ -1,7 +1,6 @@
 import toxi.processing.*;
 import java.util.Random;
 import java.util.Iterator;
-import peasy.*;
 
 public static final float EPSILON = 0.00001f;
 public ToxiclibsSupport gfx;
@@ -9,7 +8,7 @@ public ToxiclibsSupport gfx;
 public boolean
 	D_PATH = false,
 	D_WIREFRAME = false,
-	D_NORMAL = true,
+	D_NORMAL = false,
 	D_TEX = true,
 	D_BGWHITE = true;
 
@@ -23,7 +22,6 @@ void setup(){
 	size(1200, 600, OPENGL);
 		smooth();
 	gfx = new ToxiclibsSupport(this);
-	PeasyCam cam = new PeasyCam(this, width);
 
 	TEX = loadImage("data/tex.jpg");
 	textureMode(NORMAL);
@@ -39,9 +37,8 @@ void draw(){
 	// ambientLight(100, 100, 100);
 	directionalLight(127, 127, 127, 0, 1, 1);
 
-	resetMatrix();
 	pushMatrix();
-		// translate(0, height/2, 0);
+		translate(0, height/2, -width - mouseX*2);
 		population.display(-width, width*2);
 	popMatrix();
 
