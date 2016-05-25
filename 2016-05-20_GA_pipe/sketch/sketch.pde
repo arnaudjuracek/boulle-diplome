@@ -52,5 +52,5 @@ void keyPressed(){
 	if(key == 'w') D_WIREFRAME = !D_WIREFRAME;
 	if(key == 'c') D_BGWHITE = !D_BGWHITE;
 	if(key == ' ') population.reproduce(population.getSelected());
-	if(key == 'e') population.getSelected().getPipe().export();
+	if(key == 'e') population.getSelected().getPipe().export(50);
 }

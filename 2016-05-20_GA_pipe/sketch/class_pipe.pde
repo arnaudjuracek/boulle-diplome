@@ -155,5 +155,6 @@ public class Pipe{
 
 	public void export(){ this.export(sketchPath("data/untitled.obj"), 10); }
 	public void export(String path){ this.export(path, 10); }
+	public void export(float shellThickness){ this.export(sketchPath("data/untitled.obj"), shellThickness); }
 
 }
