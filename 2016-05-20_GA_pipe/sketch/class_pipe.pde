@@ -9,6 +9,7 @@ public class Pipe{
 	private Path path;
 	private Curve radiuses, sides;
 	private TriangleMesh mesh;
+	private AABB aabb;
 
 	// -------------------------------------------------------------------------
 	public Pipe(Path path, Curve radiuses, Curve sides){
@@ -16,12 +17,7 @@ public class Pipe{
 		this.radiuses = radiuses.interpolate(V_RESOLUTION).smooth(radiuses.getSmoothCoef());
 		this.sides = sides.interpolate(V_RESOLUTION).smooth(sides.getSmoothCoef());
 
-		this.setMesh(
-			this.triangulate(
-				this.slicer(V_RESOLUTION),
-				true
-			)
-		);
+		this.setMesh( this.triangulate( this.slicer(V_RESOLUTION), true ) );
 	}
 
 
@@ -130,5 +126,9 @@ public class Pipe{
 	public float getSideLength(int index){ return this.sides.getValue(index); }
 
 	public TriangleMesh getMesh(){ return this.mesh; }
+	public AABB getAABB(){
+		if(this.aabb==null) this.aabb = this.getMesh().getBoundingBox();
+		return this.aabb;
+	}
 
 }
