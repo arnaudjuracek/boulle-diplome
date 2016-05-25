@@ -138,4 +138,17 @@ public class Pipe{
 		return this.aabb;
 	}
 
+
+
+	// -------------------------------------------------------------------------
+	// FILE
+	public boolean export(String path){
+		println(path);
+		return true;
+	}
+
+	public boolean export(){
+		return this.export("coucou.obj");
+	}
+
 }
