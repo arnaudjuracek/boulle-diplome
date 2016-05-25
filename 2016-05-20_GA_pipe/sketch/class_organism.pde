@@ -1,5 +1,6 @@
 public class Organism{
 
+	private Population population;
 	private Dna dna;
 	private Organism[] parents;
 	private Pipe pipe;
@@ -7,7 +8,8 @@ public class Organism{
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
 	// define parents, translate genotype onto phenotype
-	public Organism(Dna dna, Organism mom, Organism dad){
+	public Organism(Population pop, Dna dna, Organism mom, Organism dad){
+		this.population = pop;
 		this.dna = dna;
 		this.parents = new Organism[2];
 		this.parents[0] = mom;
@@ -18,15 +20,15 @@ public class Organism{
 
 	}
 
-	public Organism(Dna dna){ this(dna, null, null); }
-	public Organism(){ this(new Dna(), null, null); }
+	public Organism(Population pop, Dna dna){ this(pop, dna, null, null); }
+	public Organism(Population pop){ this(pop, new Dna(), null, null); }
 
 	public Organism cross(Organism o, float mutationRate, float mutationAmp){
 		// Mate their genes into a child, then mutate it
 		Dna childDNA = this.getDna().recombinate(o.getDna());
 		childDNA.mutate(mutationRate, mutationAmp);
 
-		return new Organism(childDNA, this, o);
+		return new Organism(this.getPopulation(), childDNA, this, o);
 	}
 
 
@@ -38,34 +40,57 @@ public class Organism{
 	// private int P_size = 20;
 
 	private void P_define(){
-		this.pipe = new Pipe(
-			new Path(
-				new Vec3D[]{
-					new Vec3D(0, height, 0),
-					new Vec3D(0, -height, 0),
-					new Vec3D(random(-width, width), random(-height, height), random(-width, width)),
-					new Vec3D(random(-width, width), random(-height, height), random(-width, width))
-				}, .9
-			),
-			// new Curve(new Wave(Wave.FMSQUAREWAVE, 0, .2f, 0, 300, 50).getValues(), .9),
-			new Curve(
-				new Wave(
-					new Wave().create(Wave.FMSINEWAVE, 0, .1f, new Wave().create(Wave.FMSAWTOOTHWAVE, 0, .5f, null)),
-					0, 600, 50
-				).getValues(), .9),
-			new Curve(10),
-			// new Curve(new Wave(Wave.FMSINEWAVE, 0, .1f, 3, 5, 50).getValues(), .6),
-			50
-		);
+		if(this.getParent(0) == null || this.getParent(1) == null){
+			this.pipe = new Pipe(
+				new Path(
+					new Vec3D[]{
+						new Vec3D(0, height, 0),
+						new Vec3D(0, -height, 0),
+						new Vec3D(random(-200, 200), -height*1.5, random(-200, 200)),
+					}, this.getDna().getNextGene(0, 1)
+				),
+				new Curve(
+					new Wave(
+						int(random(0, 4)),
+						random(0, 100),
+						random(100, 600),
+						V_RESOLUTION
+					).getValues(), this.getDna().getNextGene(0, 1)),
+				new Curve(
+					new Wave(
+						int(random(0, 4)),
+						random(3, 5),
+						random(5, U_RESOLUTION),
+						V_RESOLUTION
+					).getValues(), this.getDna().getNextGene(0, 1))
+			);
+		}else{
+			Pipe
+				dad = this.getParent(0).getPipe(),
+				mom = this.getParent(1).getPipe();
+
+			Vec3D[] path = dad.getPath().cross( (Path) mom.getPath() ).getOriginalPoints();
+			Curve radiuses = dad.getRadiusesCurve().cross( (Curve) mom.getRadiusesCurve() );
+			Curve sides = dad.getSidesLengthCurve().cross( (Curve) mom.getSidesLengthCurve() );
+
+			this.pipe = new Pipe(
+				new Path( path, this.getDna().getNextGene(.1, 1) ),
+				radiuses.smooth(this.getDna().getNextGene(0, 1)),
+				sides.smooth(this.getDna().getNextGene(0, 1))
+			);
+		}
 	}
 
 
 
 	// -------------------------------------------------------------------------
 	// GETTER
+	public Population getPopulation(){ return this.population; }
 	public Dna getDna(){ return this.dna; }
 	public Organism[] getParents(){ return this.parents; }
+	public Organism getParent(int index){ return this.parents[index]; }
 	public Pipe getPipe(){ return this.pipe; }
+
 
 	// -------------------------------------------------------------------------
 	// UI handling
@@ -101,12 +126,12 @@ public class Organism{
 			noFill();
 			gfx.mesh(pipe.getMesh(), false);
 		}else if(D_NORMAL){
+			strokeWeight(1);
 			gfx.meshNormalMapped(pipe.getMesh(), true, 100);
 		}else if(D_TEX){
 			noStroke();
 			fill(255);
-			gfx.mesh(pipe.getMesh(), true);
-			// gfx.texturedMesh(pipe.getMesh(), get(), true);
+			gfx.texturedMesh(pipe.getMesh(), TEX, true);
 		}else{
 			noStroke();
 			fill(255);
