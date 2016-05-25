@@ -51,14 +51,14 @@ public class Organism{
 				),
 				new Curve(
 					new Wave(
-						int(random(0, 4)),
-						random(0, 100),
+						int(random(0, 5)),
+						random(20, 100),
 						random(100, 600),
 						V_RESOLUTION
 					).getValues(), this.getDna().getNextGene(0, 1)),
 				new Curve(
 					new Wave(
-						int(random(0, 4)),
+						int(random(0, 5)),
 						random(3, 5),
 						random(5, U_RESOLUTION),
 						V_RESOLUTION
@@ -104,8 +104,9 @@ public class Organism{
 
 	// -------------------------------------------------------------------------
 	// UI handling
-	public void display(){
+	public void display(TriangleMesh p_mesh, float t){
 		Pipe pipe = this.getPipe();
+		TriangleMesh mesh = pipe.morphTo(p_mesh, t);
 
 		if(D_PATH){
 			stroke(0);
@@ -134,18 +135,18 @@ public class Organism{
 			strokeWeight(1);
 			stroke(0, 50);
 			noFill();
-			gfx.mesh(pipe.getMesh(), false);
+			gfx.mesh(mesh, false);
 		}else if(D_NORMAL){
 			strokeWeight(1);
-			gfx.meshNormalMapped(pipe.getMesh(), true, 100);
+			gfx.meshNormalMapped(mesh, true, 100);
 		}else if(D_TEX){
 			noStroke();
 			fill(255);
-			gfx.texturedMesh(pipe.getMesh(), TEX, true);
+			gfx.texturedMesh(mesh, TEX, true);
 		}else{
 			noStroke();
 			fill(255);
-			gfx.mesh(pipe.getMesh(), true);
+			gfx.mesh(mesh, true);
 		}
 
 	}
