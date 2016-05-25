@@ -112,6 +112,19 @@ public class Curve{
 		return new Curve(values);
 	}
 
+	public Curve mutate(float mutationRate, float mutationAmp){
+		float
+			min = this.getMinValue(),
+			max = this.getMaxValue();
+		float[] values = this.getValues();
+
+		for(int i=0; i<values.length; i++){
+			if(random(1) < mutationRate)
+				values[i] = constrain(values[i] + random(-mutationAmp, mutationAmp), min, max);
+		}
+		return this.setValues(values);
+	}
+
 
 
 	// -------------------------------------------------------------------------
