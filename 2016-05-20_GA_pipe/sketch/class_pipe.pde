@@ -10,6 +10,7 @@ public class Pipe{
 	private Curve radiuses, sides;
 	private TriangleMesh mesh;
 	private AABB aabb;
+	private Sphere boundingSphere;
 
 	// -------------------------------------------------------------------------
 	public Pipe(Path path, Curve radiuses, Curve sides){
@@ -27,7 +28,6 @@ public class Pipe{
 	private Slice[] slicer(int n){
 		Vec3D[] path = this.getPath().getPoints();
 		Slice[] slices = new Slice[n];
-
 
 		// slice once at the begining of each segment of the path
 		for(int i=0; i<path.length-1; i++){
@@ -126,6 +126,12 @@ public class Pipe{
 	public float getSideLength(int index){ return this.sides.getValue(index); }
 
 	public TriangleMesh getMesh(){ return this.mesh; }
+
+	public Sphere getBoundingSphere(){
+		if(this.boundingSphere==null) this.boundingSphere = this.getMesh().getBoundingSphere();
+		return this.boundingSphere;
+	}
+
 	public AABB getAABB(){
 		if(this.aabb==null) this.aabb = this.getMesh().getBoundingBox();
 		return this.aabb;
