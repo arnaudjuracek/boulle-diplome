@@ -86,6 +86,10 @@ public class Path{
 		return new Path(points);
 	}
 
+	public Path mutate(float mutationRate, float mutationAmp){
+		return this;
+	}
+
 
 	// -------------------------------------------------------------------------
 	// SETTERS

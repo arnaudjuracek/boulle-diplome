@@ -66,10 +66,10 @@ public class Pipe{
 					c = slices[v+1].getVertex((u+1)%(U_RESOLUTION-1)),
 					d = slices[v+1].getVertex(u);
 				Vec2D
-					uvA = new Vec2D(norm(u, 0, U_RESOLUTION), norm(v, 0, slices.length)),
-					uvB = new Vec2D(norm(u+1, 0, U_RESOLUTION), norm(v, 0, slices.length)),
-					uvC = new Vec2D(norm(u+1, 0, U_RESOLUTION), norm(v+1, 0, slices.length)),
-					uvD = new Vec2D(norm(u, 0, U_RESOLUTION), norm(v+1, 0, slices.length));
+					uvA = new Vec2D(norm(u, 0, U_RESOLUTION), 1 - norm(v, 0, slices.length)),
+					uvB = new Vec2D(norm(u+1, 0, U_RESOLUTION), 1 - norm(v, 0, slices.length)),
+					uvC = new Vec2D(norm(u+1, 0, U_RESOLUTION), 1 - norm(v+1, 0, slices.length)),
+					uvD = new Vec2D(norm(u, 0, U_RESOLUTION), 1 - norm(v+1, 0, slices.length));
 
 				mesh.addFace(a, b, c, uvA, uvB, uvC);
 				mesh.addFace(c, d, a, uvC, uvD, uvA);
@@ -136,6 +136,19 @@ public class Pipe{
 	public AABB getAABB(){
 		if(this.aabb==null) this.aabb = this.getMesh().getBoundingBox();
 		return this.aabb;
+	}
+
+
+
+	// -------------------------------------------------------------------------
+	// FILE
+	public boolean export(String path){
+		println(path);
+		return true;
+	}
+
+	public boolean export(){
+		return this.export("coucou.obj");
 	}
 
 }

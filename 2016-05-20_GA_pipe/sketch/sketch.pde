@@ -1,6 +1,7 @@
 import toxi.processing.*;
 import java.util.Random;
 import java.util.Iterator;
+import peasy.*;
 
 public static final float EPSILON = 0.00001f;
 public ToxiclibsSupport gfx;
@@ -8,7 +9,7 @@ public ToxiclibsSupport gfx;
 public boolean
 	D_PATH = false,
 	D_WIREFRAME = false,
-	D_NORMAL = false,
+	D_NORMAL = true,
 	D_TEX = true,
 	D_BGWHITE = true;
 
@@ -22,6 +23,7 @@ void setup(){
 	size(1200, 600, OPENGL);
 		smooth();
 	gfx = new ToxiclibsSupport(this);
+	PeasyCam cam = new PeasyCam(this, width);
 
 	TEX = loadImage("data/tex.jpg");
 	textureMode(NORMAL);
@@ -37,8 +39,9 @@ void draw(){
 	// ambientLight(100, 100, 100);
 	directionalLight(127, 127, 127, 0, 1, 1);
 
+	resetMatrix();
 	pushMatrix();
-		translate(0, height/2, -width - mouseX*2);
+		// translate(0, height/2, 0);
 		population.display(-width, width*2);
 	popMatrix();
 
@@ -51,5 +54,6 @@ void keyPressed(){
 	if(key == 't') D_TEX = !D_TEX;
 	if(key == 'w') D_WIREFRAME = !D_WIREFRAME;
 	if(key == 'c') D_BGWHITE = !D_BGWHITE;
-	if(key == ' ') population.reproduce(population.getOrganism(population.getSelector().SELECTION));
+	if(key == ' ') population.reproduce(population.getSelected());
+	if(key == 'e') population.getSelected().getPipe().export();
 }
