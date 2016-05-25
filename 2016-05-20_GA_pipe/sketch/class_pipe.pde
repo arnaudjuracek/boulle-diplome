@@ -1,15 +1,17 @@
 import toxi.geom.*;
 import toxi.geom.mesh.*;
 
+public final int
+	U_RESOLUTION = 10,
+	V_RESOLUTION = 50;
+
 public class Pipe{
-	public final int
-		U_RESOLUTION = 10,
-		V_RESOLUTION = 50;
 
 	private Path path;
 	private Curve radiuses, sides;
 	private TriangleMesh mesh;
 	private AABB aabb;
+	private Sphere boundingSphere;
 
 	// -------------------------------------------------------------------------
 	public Pipe(Path path, Curve radiuses, Curve sides){
@@ -27,7 +29,6 @@ public class Pipe{
 	private Slice[] slicer(int n){
 		Vec3D[] path = this.getPath().getPoints();
 		Slice[] slices = new Slice[n];
-
 
 		// slice once at the begining of each segment of the path
 		for(int i=0; i<path.length-1; i++){
@@ -79,8 +80,8 @@ public class Pipe{
 			Slice a = slices[0];
 			for(int i=U_RESOLUTION-2; i>=0; i--) mesh.addFace(a.getPosition(), a.getVertex((i+1)%(U_RESOLUTION-1)), a.getVertex(i), new Vec2D(), new Vec2D(), new Vec2D());
 
-			Slice b = slices[slices.length-1];
-			for(int i=0; i<U_RESOLUTION-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(U_RESOLUTION-1)), new Vec2D(), new Vec2D(), new Vec2D());
+			// Slice b = slices[slices.length-1];
+			// for(int i=0; i<U_RESOLUTION-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(U_RESOLUTION-1)), new Vec2D(), new Vec2D(), new Vec2D());
 		}
 
 		mesh.computeFaceNormals();
@@ -126,6 +127,12 @@ public class Pipe{
 	public float getSideLength(int index){ return this.sides.getValue(index); }
 
 	public TriangleMesh getMesh(){ return this.mesh; }
+
+	public Sphere getBoundingSphere(){
+		if(this.boundingSphere==null) this.boundingSphere = this.getMesh().getBoundingSphere();
+		return this.boundingSphere;
+	}
+
 	public AABB getAABB(){
 		if(this.aabb==null) this.aabb = this.getMesh().getBoundingBox();
 		return this.aabb;

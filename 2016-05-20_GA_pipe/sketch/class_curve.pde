@@ -98,6 +98,33 @@ public class Curve{
 		}else return this;
 	}
 
+	public Curve cross(Curve c){
+		if(this.size() < c.size()) this.interpolate(c.size());
+		else if(this.size() > c.size()) c.interpolate(this.size());
+
+		float[] values = new float[this.size()];
+		float r = random(values.length);
+		for(int i=0; i<values.length; i++){
+			// segment swapping method
+			values[i] = (i>r) ? this.getValue(i) : c.getValue(i);
+
+		}
+		return new Curve(values);
+	}
+
+	public Curve mutate(float mutationRate, float mutationAmp){
+		float
+			min = this.getMinValue(),
+			max = this.getMaxValue();
+		float[] values = this.getValues();
+
+		for(int i=0; i<values.length; i++){
+			if(random(1) < mutationRate)
+				values[i] = constrain(values[i] + random(-mutationAmp, mutationAmp), min, max);
+		}
+		return this.setValues(values);
+	}
+
 
 
 	// -------------------------------------------------------------------------
