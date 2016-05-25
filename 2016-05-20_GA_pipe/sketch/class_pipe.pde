@@ -1,10 +1,11 @@
 import toxi.geom.*;
 import toxi.geom.mesh.*;
 
+public final int
+	U_RESOLUTION = 10,
+	V_RESOLUTION = 50;
+
 public class Pipe{
-	public final int
-		U_RESOLUTION = 10,
-		V_RESOLUTION = 50;
 
 	private Path path;
 	private Curve radiuses, sides;
