@@ -30,13 +30,14 @@ public class Population{
 
 	// -------------------------------------------------------------------------
 	// GETTER
+	public Selector getSelector(){ return this.selector; }
+
 	public Organism[] getOrganisms(){ return this.organisms; }
 	public Organism getOrganism(int index){ return this.organisms[index]; }
+	public Organism getSelected(){ return this.getOrganism(this.getSelector().SELECTION); }
 
 	public float getMutationRate(){ return this.mutationRate; }
 	public float getMutationAmp(){ return this.mutationAmp; }
-	public Selector getSelector(){ return this.selector; }
-
 
 	// -------------------------------------------------------------------------
 	// MATING POOL REPRODUCTION :
