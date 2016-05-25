@@ -2,8 +2,7 @@ public class Population{
 
 	private Organism[] organisms;
 	private float mutationRate, mutationAmp;
-
-	private ArrayList<Organism> MATING_POOL = new ArrayList<Organism>();
+	private Selector selector;
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR :
@@ -17,6 +16,8 @@ public class Population{
 
 		// spawn a random pool of organisms
 		for(int i=0; i<this.organisms.length; i++) this.organisms[i] = new Organism();
+
+		this.selector = new Selector(this.organisms.length-1);
 	}
 
 
@@ -34,7 +35,7 @@ public class Population{
 
 	public float getMutationRate(){ return this.mutationRate; }
 	public float getMutationAmp(){ return this.mutationAmp; }
-
+	public Selector getSelector(){ return this.selector; }
 
 
 	// -------------------------------------------------------------------------
@@ -49,8 +50,6 @@ public class Population{
 			this.setOrganism(i, o);
 		}
 
-		// this.GENERATION++;
-
 		return this;
 	}
 
@@ -60,14 +59,14 @@ public class Population{
 	// UI handling
 
 	public void display(float fromX, float targetX){
-		// float s = (from.distanceTo(target)/this.getOrganisms().length)/margin;
+		this.getSelector().update();
 
 		for(int i=0; i<this.getOrganisms().length; i++){
 			float x = map(i, 0, this.getOrganisms().length-1, fromX-width, targetX+width);
 
 			pushMatrix();
 				translate(x, 0, -width);
-				rotateY(frameCount*.03);
+				if(this.getSelector().SELECTION==i) rotateY(frameCount*.03);
 				this.getOrganism(i).display();
 			popMatrix();
 		}
