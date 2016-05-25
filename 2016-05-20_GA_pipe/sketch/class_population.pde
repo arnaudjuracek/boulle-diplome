@@ -15,7 +15,7 @@ public class Population{
 		this.setMutationAmp(mutation_amp);
 
 		// spawn a random pool of organisms
-		for(int i=0; i<this.organisms.length; i++) this.organisms[i] = new Organism();
+		for(int i=0; i<this.organisms.length; i++) this.organisms[i] = new Organism(this);
 
 		this.selector = new Selector(this.organisms.length-1);
 	}
@@ -66,7 +66,8 @@ public class Population{
 
 			pushMatrix();
 				translate(x, 0, -width);
-				if(this.getSelector().SELECTION==i) rotateY(frameCount*.03);
+				if(this.getSelector().SELECTION==i) scale(map(sin(frameCount*.05), -1, 1, 1.2, 1.5));
+				rotateY(frameCount*.03);
 				this.getOrganism(i).display();
 			popMatrix();
 		}

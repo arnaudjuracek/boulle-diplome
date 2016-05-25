@@ -1,45 +1,46 @@
-import peasy.*;
 import toxi.processing.*;
 import java.util.Random;
 import java.util.Iterator;
 
 public static final float EPSILON = 0.00001f;
 public ToxiclibsSupport gfx;
-public PeasyCam cam;
 
 public boolean
 	D_PATH = false,
 	D_WIREFRAME = false,
 	D_NORMAL = false,
-	D_TEX = true;
+	D_TEX = true,
+	D_BGWHITE = true;
 
 
 public Population population;
+public PImage TEX;
 
 // void settings(){ fullScreen(OPENGL); }
 
 void setup(){
-	size(1000, 800, OPENGL);
+	size(1200, 600, OPENGL);
 		smooth();
-	cam = new PeasyCam(this, 2500);
 	gfx = new ToxiclibsSupport(this);
 
-	population = new Population(5, .01, 1);
+	TEX = loadImage("data/tex.jpg");
+	textureMode(NORMAL);
+
+	population = new Population(7, .2, 1);
 }
 
 void draw(){
 	surface.setTitle(int(frameRate) + "fps");
-	background(255);
+	background(int(D_BGWHITE)*255);
 
-	cam.beginHUD();
-		rotateX(PI*1.5);
-		ambientLight(100, 100, 100);
-		directionalLight(200, 200, 200, 0, -1, -1);
-	cam.endHUD();
+	lights();
+	// ambientLight(100, 100, 100);
+	directionalLight(127, 127, 127, 0, 1, 1);
 
-	noFill(); stroke(100); strokeWeight(1); box(width*2, height*2, width*2);
-
-	population.display(new Vec3D(-width, 0, 0), new Vec3D(width, 0, 0));
+	pushMatrix();
+		translate(0, height/2, -width - mouseX*2);
+		population.display(-width, width*2);
+	popMatrix();
 
 }
 
@@ -49,4 +50,6 @@ void keyPressed(){
 	if(key == 'n') D_NORMAL = !D_NORMAL;
 	if(key == 't') D_TEX = !D_TEX;
 	if(key == 'w') D_WIREFRAME = !D_WIREFRAME;
+	if(key == 'c') D_BGWHITE = !D_BGWHITE;
+	if(key == ' ') population.reproduce(population.getOrganism(population.getSelector().SELECTION));
 }

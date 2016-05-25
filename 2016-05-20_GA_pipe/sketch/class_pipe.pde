@@ -80,8 +80,8 @@ public class Pipe{
 			Slice a = slices[0];
 			for(int i=U_RESOLUTION-2; i>=0; i--) mesh.addFace(a.getPosition(), a.getVertex((i+1)%(U_RESOLUTION-1)), a.getVertex(i), new Vec2D(), new Vec2D(), new Vec2D());
 
-			Slice b = slices[slices.length-1];
-			for(int i=0; i<U_RESOLUTION-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(U_RESOLUTION-1)), new Vec2D(), new Vec2D(), new Vec2D());
+			// Slice b = slices[slices.length-1];
+			// for(int i=0; i<U_RESOLUTION-1; i++) mesh.addFace(b.getPosition(), b.getVertex(i), b.getVertex((i+1)%(U_RESOLUTION-1)), new Vec2D(), new Vec2D(), new Vec2D());
 		}
 
 		mesh.computeFaceNormals();

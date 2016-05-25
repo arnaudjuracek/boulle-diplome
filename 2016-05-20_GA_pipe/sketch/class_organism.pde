@@ -69,9 +69,19 @@ public class Organism{
 				dad = this.getParent(0).getPipe(),
 				mom = this.getParent(1).getPipe();
 
-			Vec3D[] path = dad.getPath().cross( (Path) mom.getPath() ).getOriginalPoints();
-			Curve radiuses = dad.getRadiusesCurve().cross( (Curve) mom.getRadiusesCurve() );
-			Curve sides = dad.getSidesLengthCurve().cross( (Curve) mom.getSidesLengthCurve() );
+			float
+				mutationRate = this.getPopulation().getMutationRate(),
+				mutationAmp = this.getPopulation().getMutationAmp();
+
+			Vec3D[] path =
+				dad.getPath().cross( (Path) mom.getPath() )
+					.mutate(mutationRate, mutationAmp)
+					.getOriginalPoints();
+
+			Curve radiuses = dad.getRadiusesCurve().cross( (Curve) mom.getRadiusesCurve() ).mutate(mutationRate, mutationAmp);
+			if(random(1) < mutationRate) radiuses = new Curve(new Wave(int(random(0, 4)), random(0, 100), random(100, 600), V_RESOLUTION ).getValues());
+
+			Curve sides = dad.getSidesLengthCurve().cross( (Curve) mom.getSidesLengthCurve() ).mutate(mutationRate, mutationAmp);
 
 			this.pipe = new Pipe(
 				new Path( path, this.getDna().getNextGene(.1, 1) ),
