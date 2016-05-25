@@ -47,7 +47,7 @@ public class Organism{
 						new Vec3D(0, height, 0),
 						new Vec3D(0, -height, 0),
 						new Vec3D(random(-200, 200), -height*1.5, random(-200, 200)),
-					}, this.getDna().getNextGene(0, 1)
+					}, this.getDna().getNextGene(0, .9)
 				),
 				new Curve(
 					new Wave(
@@ -55,14 +55,14 @@ public class Organism{
 						random(20, 100),
 						random(100, 600),
 						V_RESOLUTION
-					).getValues(), this.getDna().getNextGene(0, 1)),
+					).getValues(), this.getDna().getNextGene(0, .9)),
 				new Curve(
 					new Wave(
 						int(random(0, 5)),
 						random(3, 5),
 						random(5, U_RESOLUTION),
 						V_RESOLUTION
-					).getValues(), this.getDna().getNextGene(0, 1))
+					).getValues(), this.getDna().getNextGene(0, .9))
 			);
 		}else{
 			Pipe
@@ -79,14 +79,12 @@ public class Organism{
 					.getOriginalPoints();
 
 			Curve radiuses = dad.getRadiusesCurve().cross( (Curve) mom.getRadiusesCurve() ).mutate(mutationRate, mutationAmp);
-			if(random(1) < mutationRate) radiuses = new Curve(new Wave(int(random(0, 4)), random(0, 100), random(100, 600), V_RESOLUTION ).getValues());
-
 			Curve sides = dad.getSidesLengthCurve().cross( (Curve) mom.getSidesLengthCurve() ).mutate(mutationRate, mutationAmp);
 
 			this.pipe = new Pipe(
-				new Path( path, this.getDna().getNextGene(.1, 1) ),
-				radiuses.smooth(this.getDna().getNextGene(0, 1)),
-				sides.smooth(this.getDna().getNextGene(0, 1))
+				new Path( path, this.getDna().getNextGene(0, .9) ),
+				radiuses.smooth(this.getDna().getNextGene(0, .9)),
+				sides.smooth(this.getDna().getNextGene(0, .9))
 			);
 		}
 	}
