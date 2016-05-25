@@ -142,13 +142,18 @@ public class Pipe{
 
 	// -------------------------------------------------------------------------
 	// FILE
-	public boolean export(String path){
-		println(path);
-		return true;
+	public void export(String path, float shellThickness){
+		Converter.hemeshToToxi(
+			new HEM_Shell().setThickness(shellThickness).apply(
+				Converter.toxiToHemesh(
+					this.getMesh()
+				)
+			)
+		).saveAsOBJ(path);
+		println("Saved as " + path + ".");
 	}
 
-	public boolean export(){
-		return this.export("coucou.obj");
-	}
+	public void export(){ this.export(sketchPath("data/untitled.obj"), 10); }
+	public void export(String path){ this.export(path, 10); }
 
 }
