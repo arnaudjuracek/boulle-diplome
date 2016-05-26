@@ -26,19 +26,18 @@ void setup(){
 	TEX = loadImage("data/tex.jpg");
 	textureMode(NORMAL);
 
-	population = new Population(7, .2, 1);
+	population = new Population(5, .5, 1);
 }
 
 void draw(){
 	surface.setTitle(int(frameRate) + "fps");
 	background(int(D_BGWHITE)*255);
 
-	lights();
-	// ambientLight(100, 100, 100);
+	ambientLight(100, 100, 100);
 	directionalLight(127, 127, 127, 0, 1, 1);
 
 	pushMatrix();
-		translate(0, height/2, -width - mouseX*2);
+		translate(0, height/2, -zoom_out*2);
 		population.display(-width, width*2);
 	popMatrix();
 
@@ -52,5 +51,8 @@ void keyPressed(){
 	if(key == 'w') D_WIREFRAME = !D_WIREFRAME;
 	if(key == 'c') D_BGWHITE = !D_BGWHITE;
 	if(key == ' ') population.reproduce(population.getSelected());
-	if(key == 'e') population.getSelected().getPipe().export(50);
+	if(key == 'e') population.getSelected().getPipe().export(30);
 }
+
+float zoom_out;
+void mouseWheel(MouseEvent event){ zoom_out += event.getCount(); }

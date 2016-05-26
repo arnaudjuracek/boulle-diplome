@@ -20,28 +20,36 @@ public class Curve{
 	private float smooth_coef;
 
 	// -------------------------------------------------------------------------
-	Curve(float value){ this(new float[]{value});}
+	public Curve(float value){ this(new float[]{value});}
 
-	Curve(float[] values){
+	public Curve(float[] values){
 		this.interpolation = new LinearInterpolation();
 		this.original_values = values;
 		this.values = values;
 	}
 
-	Curve(float[] values, InterpolateStrategy interpolation){
+	public Curve(float[] values, InterpolateStrategy interpolation){
 		this(values);
 		this.setInterpolation(interpolation);
 	}
 
-	Curve(float[] values, float smooth_coef){
+	public Curve(float[] values, float smooth_coef){
 		this(values);
 		this.setSmoothCoef(smooth_coef);
 	}
 
-	Curve(float[] values, InterpolateStrategy interpolation, float smooth_coef){
+	public Curve(float[] values, InterpolateStrategy interpolation, float smooth_coef){
 		this(values);
 		this.setInterpolation(interpolation);
 		this.setSmoothCoef(smooth_coef);
+	}
+
+	public Curve(float min, float max, int resolution){
+		float[] values = new Wave(min, max, resolution).getValues();
+		this.original_values = values;
+		this.values = values;
+
+		this.setInterpolation(new LinearInterpolation());
 	}
 
 
