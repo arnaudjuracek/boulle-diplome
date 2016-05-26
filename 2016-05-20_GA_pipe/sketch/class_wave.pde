@@ -32,8 +32,6 @@ public class Wave{
 	private float[] values;
 
 	// -------------------------------------------------------------------------
-	public Wave(){ this(Wave.CONSTANTWAVE, 0, 0.1f, -1, 1, 100); }
-
 	public Wave(int waveType, float offset, float frequency, float min, float max, int resolution){
 		this.wave = this.create(waveType, offset, frequency, null);
 		this.values = this.convertWaveToArray(min, max, resolution);
@@ -45,6 +43,11 @@ public class Wave{
 	}
 
 	public Wave(int waveType, float min, float max, int resolution){ this(waveType, 0, 0.1f, min, max, resolution); }
+
+	public Wave(float min, float max, int resolution){ // FULL RANDOM
+		this.wave = this.create(null);
+		this.values = this.convertWaveToArray(min, max, resolution);
+	}
 
 
 
@@ -66,6 +69,8 @@ public class Wave{
 
 		return wave;
 	}
+
+	private AbstractWave create(AbstractWave fmod){ return this.create(int(random(5)), random(TWO_PI), sq(random(1)), fmod); }
 
 	public float[] convertWaveToArray(float min, float max, int resolution){
 		float[] values = new float[resolution];
