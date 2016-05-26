@@ -163,17 +163,17 @@ public class Pipe{
 
 	// -------------------------------------------------------------------------
 	// FILE
-	public void export(String path, float shellThickness){
+	public void export(String path, String name, float shellThickness){
 		HET_Export.saveToOBJ(
 			new HEM_Shell().setThickness(shellThickness).apply(
 				Converter.toxiToHemesh(this.getMesh().copy().rotateX(PI))
-			), path, "Name2");
+			), path, name);
 
-		println("Saved as " + path + ".");
+		println("Saved as " + path + name + ".obj");
 	}
 
-	public void export(){ this.export(sketchPath("data/untitled.obj"), 10); }
-	public void export(String path){ this.export(path, 10); }
-	public void export(float shellThickness){ this.export(sketchPath("data/untitled.obj"), shellThickness); }
+	public void export(){ this.export(sketchPath("data/"), "untitled", 10); }
+	public void export(String path, String name){ this.export(path, name, 10); }
+	public void export(float shellThickness){ this.export(sketchPath("data/"), "untitled", shellThickness); }
 
 }
