@@ -33,9 +33,10 @@ void draw(){
 	surface.setTitle(int(frameRate) + "fps");
 	background(int(D_BGWHITE)*255);
 
-	ambientLight(100, 100, 100);
+	ambientLight(127, 127, 127);
 	directionalLight(127, 127, 127, 0, 1, 1);
 
+	translate(scene_offset.x, scene_offset.y);
 	pushMatrix();
 		translate(0, height/2, -zoom_out*2);
 		population.display(-width, width*2);
@@ -54,5 +55,10 @@ void keyPressed(){
 	if(key == 'e') population.getSelected().getPipe().export(30);
 }
 
-float zoom_out;
+float zoom_out = 1500;
+Vec2D scene_offset = new Vec2D();
 void mouseWheel(MouseEvent event){ zoom_out += event.getCount(); }
+void mouseDragged(){
+	scene_offset.x += mouseX - pmouseX;
+	scene_offset.y += mouseY - pmouseY;
+}
