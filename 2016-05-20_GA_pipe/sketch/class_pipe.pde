@@ -2,7 +2,7 @@ import toxi.geom.*;
 import toxi.geom.mesh.*;
 
 public final int
-	U_RESOLUTION = 10,
+	U_RESOLUTION = 20,
 	V_RESOLUTION = 50;
 
 public class Pipe{
@@ -54,7 +54,7 @@ public class Pipe{
 		// DEBUG / TEST RANDOM DISPLACEMENT
 		// for(int i=0; i<slices.length; i++){
 		// 	for(int j=1; j<slices[i].getVertices().length-1; j++){
-		// 		slices[i].getVertex(j).jitter(5);
+		// 		slices[i].getVertex(j).jitter(10);
 		// 	}
 		// }
 
@@ -93,11 +93,32 @@ public class Pipe{
 	private TriangleMesh morphTo(TriangleMesh b, float t){
 		TriangleMesh a = this.getMesh().copy();
 
-		for(int i=0; i<a.getFaces().size()-1; i++){
-			Face fa = a.faces.get(i), fb = b.faces.get(i);
-			fa.a.interpolateToSelf(fb.a, t);
-			fa.b.interpolateToSelf(fb.b, t);
-			fa.c.interpolateToSelf(fb.c, t);
+		int MODE = 0;
+		switch(MODE){
+			case 0 :
+				for(int i=0; i<a.getFaces().size(); i++){
+					Face fa = a.faces.get(i), fb = b.faces.get(i);
+					fa.a.interpolateToSelf(fb.a, t);
+					fa.b.interpolateToSelf(fb.b, t);
+					fa.c.interpolateToSelf(fb.c, t);
+				}
+			break;
+			case 1 :
+				for(int i=0; i<map(t, 0, 1, 0, a.getFaces().size()); i++){
+					Face fa = a.faces.get(i), fb = b.faces.get(i);
+					fa.a.interpolateToSelf(fb.a, t);
+					fa.b.interpolateToSelf(fb.b, t);
+					fa.c.interpolateToSelf(fb.c, t);
+				}
+			break;
+			case 2 :
+				for(int i=0; i<map(t, 0, 1, 0, a.getFaces().size()); i++){
+					Face fa = a.faces.get(i), fb = b.faces.get(i);
+					fa.a.interpolateToSelf(fb.a, map(sin(i),-1,1,0,t));
+					fa.b.interpolateToSelf(fb.b, map(sin(i),-1,1,0,t));
+					fa.c.interpolateToSelf(fb.c, map(sin(i),-1,1,0,t));
+				}
+			break;
 		}
 
 		a.computeFaceNormals();
@@ -143,13 +164,11 @@ public class Pipe{
 	// -------------------------------------------------------------------------
 	// FILE
 	public void export(String path, float shellThickness){
-		Converter.hemeshToToxi(
+		HET_Export.saveToOBJ(
 			new HEM_Shell().setThickness(shellThickness).apply(
-				Converter.toxiToHemesh(
-					this.getMesh()
-				)
-			)
-		).saveAsOBJ(path);
+				Converter.toxiToHemesh(this.getMesh().copy().rotateX(PI))
+			), path, "Name2");
+
 		println("Saved as " + path + ".");
 	}
 
