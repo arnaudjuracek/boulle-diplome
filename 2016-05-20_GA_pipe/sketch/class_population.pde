@@ -61,10 +61,10 @@ public class Population{
 
 	// -------------------------------------------------------------------------
 	// UI handling
-	private float morph_t = 0, morph_counter = 0, morph_duration = 100;
+	private float morph_counter = 0, morph_duration = 120;
 
 	public void display(float fromX, float targetX){
-		morph_t = 1 - pow(2, -10*(morph_counter++)/morph_duration);
+		float morph_t = 1 - pow(2, -10*(morph_counter++)/morph_duration);
 
 		this.getSelector().update();
 
@@ -72,9 +72,9 @@ public class Population{
 			float x = map(i, 0, this.getOrganisms().length-1, fromX-width, targetX+width);
 
 			pushMatrix();
-				translate(x, 0, -width);
-				if(this.getSelector().SELECTION==i) scale(map(sin(frameCount*.05), -1, 1, 1.2, 1.5));
-				rotateY(frameCount*.01);
+				translate(x, 0, 0);
+				if(this.getSelector().SELECTION==i) scale(map(sin(frameCount*.05), -1, 1, 1.1, 1.2));
+				rotateY((frameCount*.01)%TWO_PI);
 				this.getOrganism(i).display(this.p_organisms[i].getPipe().getMesh(), 1 - morph_t);
 			popMatrix();
 		}
