@@ -41,28 +41,20 @@ public class Organism{
 
 	private void P_define(){
 		if(this.getParent(0) == null || this.getParent(1) == null){
+			this.getDna().getNextGene();
+			this.getDna().getNextGene();
+
+			Vec3D[] path = new Vec3D[4];
+			for(int i=0; i<path.length; i++) path[i] = new Vec3D(
+															int(i>1) * (100*sin(random(TWO_PI))),
+															map(i, 0, path.length, height, -height*2),
+															int(i>1) * (100*sin(random(TWO_PI)))
+														);
+
 			this.pipe = new Pipe(
-				new Path(
-					new Vec3D[]{
-						new Vec3D(0, height, 0),
-						new Vec3D(0, -height, 0),
-						new Vec3D(random(-200, 200), -height*1.5, random(-200, 200)),
-					}, this.getDna().getNextGene(0, .9)
-				),
-				new Curve(
-					new Wave(
-						int(random(0, 5)),
-						random(20, 100),
-						random(100, 600),
-						V_RESOLUTION
-					).getValues(), this.getDna().getNextGene(0, .9)),
-				new Curve(
-					new Wave(
-						int(random(0, 5)),
-						random(3, 5),
-						random(5, U_RESOLUTION),
-						V_RESOLUTION
-					).getValues(), this.getDna().getNextGene(0, .9))
+				new Path(path, this.getDna().getNextGene(0, .9)),
+				new Curve(50, 400, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9)),
+				new Curve(3, U_RESOLUTION, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
 			);
 		}else{
 			Pipe
@@ -83,8 +75,12 @@ public class Organism{
 
 			this.pipe = new Pipe(
 				new Path( path, this.getDna().getNextGene(0, .9) ),
-				radiuses.smooth(this.getDna().getNextGene(0, .9)),
-				sides.smooth(this.getDna().getNextGene(0, .9))
+				(this.getDna().getNextGene() < this.getPopulation().getMutationRate())
+					? new Curve(50, 400, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
+					: radiuses.smooth(this.getDna().getNextGene(0, .9)),
+				(this.getDna().getNextGene() < this.getPopulation().getMutationRate())
+					? new Curve(3, U_RESOLUTION, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
+					: sides.smooth(this.getDna().getNextGene(0, .9))
 			);
 		}
 	}
@@ -107,7 +103,7 @@ public class Organism{
 		TriangleMesh mesh = pipe.morphTo(p_mesh, t);
 
 		if(D_PATH){
-			stroke(0);
+			stroke(int(!D_BGWHITE)*255);
 			for(int i=0; i<pipe.getPath().getPoints().length-1; i++){
 				Vec3D a = pipe.getPath().getPoint(i);
 				Vec3D b = pipe.getPath().getPoint(i+1);
@@ -131,7 +127,7 @@ public class Organism{
 
 		}else if(D_WIREFRAME && !D_NORMAL){
 			strokeWeight(1);
-			stroke(0, 50);
+			stroke(int(!D_BGWHITE)*255, 50);
 			noFill();
 			gfx.mesh(mesh, false);
 		}else if(D_NORMAL){
