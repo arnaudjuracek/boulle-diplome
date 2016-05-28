@@ -3,7 +3,11 @@ import java.util.Random;
 import java.util.Iterator;
 
 public final float EPSILON = 0.00001f;
+public PApplet PAPPLET = this;
 public ToxiclibsSupport gfx;
+public PGraphics render;
+
+public Tree tree;
 
 public final float
 	MUTATION_RATE = 0.5f,
@@ -20,17 +24,19 @@ public boolean
 public Population population;
 public PImage TEX;
 
-// void settings(){ fullScreen(OPENGL); }
+void settings(){
+	size(1200, 600, OPENGL);
+	// fullScreen(OPENGL);
+}
 
 void setup(){
-	size(1200, 600, OPENGL);
-		smooth();
 	gfx = new ToxiclibsSupport(this);
 
-	TEX = loadImage("data/tex.jpg");
+	TEX = loadImage("data/grid.jpg");
 	textureMode(NORMAL);
 
 	population = new Population(5, MUTATION_RATE, MUTATION_AMP);
+	tree = new Tree(this, population, 600, 400);
 }
 
 void draw(){
@@ -45,18 +51,24 @@ void draw(){
 		translate(0, height/2, -zoom_out*2);
 		population.display(-width, width*2);
 	popMatrix();
-
 }
 
 void keyPressed(){
-	if(key == 'r') setup();
+	if(key == 'r'){
+		population = new Population(population.getOrganisms().length, population.getMutationRate(), population.getMutationAmp());
+		tree.reset();
+	}
 	if(key == 'p') D_PATH = !D_PATH;
 	if(key == 'n') D_NORMAL = !D_NORMAL;
 	if(key == 't') D_TEX = !D_TEX;
 	if(key == 'w') D_WIREFRAME = !D_WIREFRAME;
 	if(key == 'c') D_BGWHITE = !D_BGWHITE;
-	if(key == ' ') population.reproduce(population.getSelected());
 	if(key == 'e') population.getSelected().getPipe().export(30);
+	if(key == ' '){
+		Organism s = population.getSelected();
+		population.reproduce(s);
+		tree.add(s);
+	}
 }
 
 float zoom_out = 1500;
