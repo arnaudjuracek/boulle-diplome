@@ -2,8 +2,12 @@ import toxi.processing.*;
 import java.util.Random;
 import java.util.Iterator;
 
-public static final float EPSILON = 0.00001f;
+public final float EPSILON = 0.00001f;
 public ToxiclibsSupport gfx;
+
+public final float
+	MUTATION_RATE = 0.5f,
+	MUTATION_AMP = 10.0f;
 
 public boolean
 	D_PATH = false,
@@ -26,7 +30,7 @@ void setup(){
 	TEX = loadImage("data/tex.jpg");
 	textureMode(NORMAL);
 
-	population = new Population(5, .5, 1);
+	population = new Population(5, MUTATION_RATE, MUTATION_AMP);
 }
 
 void draw(){
