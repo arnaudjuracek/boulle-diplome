@@ -67,13 +67,12 @@ public class Population{
 		float morph_t = 1 - pow(2, -10*(morph_counter++)/morph_duration);
 
 		this.getSelector().update();
-
 		for(int i=0; i<this.getOrganisms().length; i++){
 			float x = map(i, 0, this.getOrganisms().length-1, fromX-width, targetX+width);
 
 			pushMatrix();
 				translate(x, 0, 0);
-				if(this.getSelector().SELECTION==i) scale(map(sin(frameCount*.05), -1, 1, 1.1, 1.2));
+				translate(0, -this.getSelector().TRANSITION[i]*600, 0);
 				rotateY((frameCount*.01)%TWO_PI);
 				this.getOrganism(i).display(this.p_organisms[i].getPipe().getMesh(), 1 - morph_t);
 			popMatrix();
