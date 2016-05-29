@@ -94,32 +94,34 @@ public class Pipe{
 		TriangleMesh a = this.getMesh().copy();
 
 		int MODE = 0;
-		switch(MODE){
-			case 0 :
-				for(int i=0; i<a.getFaces().size(); i++){
-					Face fa = a.faces.get(i), fb = b.faces.get(i);
-					fa.a.interpolateToSelf(fb.a, t);
-					fa.b.interpolateToSelf(fb.b, t);
-					fa.c.interpolateToSelf(fb.c, t);
-				}
-			break;
-			case 1 :
-				for(int i=0; i<map(t, 0, 1, 0, a.getFaces().size()); i++){
-					Face fa = a.faces.get(i), fb = b.faces.get(i);
-					fa.a.interpolateToSelf(fb.a, t);
-					fa.b.interpolateToSelf(fb.b, t);
-					fa.c.interpolateToSelf(fb.c, t);
-				}
-			break;
-			case 2 :
-				for(int i=0; i<map(t, 0, 1, 0, a.getFaces().size()); i++){
-					Face fa = a.faces.get(i), fb = b.faces.get(i);
-					fa.a.interpolateToSelf(fb.a, map(sin(i),-1,1,0,t));
-					fa.b.interpolateToSelf(fb.b, map(sin(i),-1,1,0,t));
-					fa.c.interpolateToSelf(fb.c, map(sin(i),-1,1,0,t));
-				}
-			break;
-		}
+		try{
+			switch(MODE){
+				case 0 :
+					for(int i=0; i<a.getFaces().size(); i++){
+						Face fa = a.faces.get(i), fb = b.faces.get(i);
+						fa.a.interpolateToSelf(fb.a, t);
+						fa.b.interpolateToSelf(fb.b, t);
+						fa.c.interpolateToSelf(fb.c, t);
+					}
+				break;
+				case 1 :
+					for(int i=0; i<map(t, 0, 1, 0, a.getFaces().size()); i++){
+						Face fa = a.faces.get(i), fb = b.faces.get(i);
+						fa.a.interpolateToSelf(fb.a, t);
+						fa.b.interpolateToSelf(fb.b, t);
+						fa.c.interpolateToSelf(fb.c, t);
+					}
+				break;
+				case 2 :
+					for(int i=0; i<map(t, 0, 1, 0, a.getFaces().size()); i++){
+						Face fa = a.faces.get(i), fb = b.faces.get(i);
+						fa.a.interpolateToSelf(fb.a, map(sin(i),-1,1,0,t));
+						fa.b.interpolateToSelf(fb.b, map(sin(i),-1,1,0,t));
+						fa.c.interpolateToSelf(fb.c, map(sin(i),-1,1,0,t));
+					}
+				break;
+			}
+		}catch(IndexOutOfBoundsException e){ println(e); }
 
 		a.computeFaceNormals();
 		a.computeVertexNormals();
