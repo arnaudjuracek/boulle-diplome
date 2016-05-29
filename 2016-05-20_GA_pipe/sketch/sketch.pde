@@ -36,7 +36,7 @@ void setup(){
 	textureMode(NORMAL);
 
 	population = new Population(5, MUTATION_RATE, MUTATION_AMP);
-	tree = new Tree(this, population, 600, 400);
+	// tree = new Tree(this, population, 600, 400);
 }
 
 void draw(){
@@ -56,7 +56,7 @@ void draw(){
 void keyPressed(){
 	if(key == 'r'){
 		population = new Population(population.getOrganisms().length, population.getMutationRate(), population.getMutationAmp());
-		tree.reset();
+		if(tree!=null) tree.reset();
 	}
 	if(key == 'p') D_PATH = !D_PATH;
 	if(key == 'n') D_NORMAL = !D_NORMAL;
@@ -66,7 +66,7 @@ void keyPressed(){
 	if(key == 'e') population.getSelected().getPipe().export(30);
 	if(key == ' '){
 		Organism s = population.getSelected();
-		tree.add(s);
+		if(tree!=null) tree.add(s);
 		population.reproduce(s);
 	}
 }
