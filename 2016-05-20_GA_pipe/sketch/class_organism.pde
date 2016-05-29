@@ -90,8 +90,11 @@ public class Organism{
 	// GETTER
 	public Population getPopulation(){ return this.population; }
 	public Dna getDna(){ return this.dna; }
+
 	public Organism[] getParents(){ return this.parents; }
 	public Organism getParent(int index){ return this.parents[index]; }
+	public boolean hasParents(){ return (this.getParents()!=null && this.getParent(0)!=null && this.getParent(1)!=null); }
+
 	public Pipe getPipe(){ return this.pipe; }
 
 
@@ -144,26 +147,30 @@ public class Organism{
 	}
 
 	public PImage createThumbnail(int width, int height){
-
-		float s = (min(height, width) - 100) / (this.getPipe().getBoundingSphere().radius*2);
+		float
+			s = min(height, width) / (this.getPipe().getBoundingSphere().radius*2);
+			s -= s*.15;
 
 		PGraphics _g = createGraphics(width, height, OPENGL);
-			_g.beginDraw();
-				ToxiclibsSupport _gfx = new ToxiclibsSupport(PAPPLET, _g);
-				TriangleMesh mesh = this.getPipe().getMesh();
-				_g.ambientLight(127, 127, 127);
-				_g.textureMode(NORMAL);
-				_g.directionalLight(127, 127, 127, 0, 1, 1);
-				_g.translate(_g.width/2, _g.height/2, 0);
-				_g.noStroke();
-				_g.scale(s);
-				_gfx.texturedMesh(mesh, TEX, true);
-			_g.endDraw();
+		ToxiclibsSupport _gfx = new ToxiclibsSupport(PAPPLET, _g);
+		TriangleMesh mesh = this.getPipe().getMesh();
+		_g.beginDraw();
+			_g.ambientLight(127, 127, 127);
+			_g.textureMode(NORMAL);
+			_g.directionalLight(127, 127, 127, 0, 1, 1);
+
+			_g.translate(_g.width/2, _g.height/2, 0);
+			_g.scale(s);
+
+			_g.noStroke();
+			_g.fill(255);
+			_gfx.texturedMesh(mesh, TEX, true);
+		_g.endDraw();
 
 		PGraphics pg = createGraphics(_g.width, _g.height);
-			pg.beginDraw();
-				pg.image(_g.get(), 0, 0);
-			pg.endDraw();
+		pg.beginDraw();
+			pg.image(_g.get(), 0, 0);
+		pg.endDraw();
 		return pg.get();
 	}
 

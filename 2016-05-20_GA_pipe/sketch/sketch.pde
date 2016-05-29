@@ -66,8 +66,8 @@ void keyPressed(){
 	if(key == 'e') population.getSelected().getPipe().export(30);
 	if(key == ' '){
 		Organism s = population.getSelected();
-		population.reproduce(s);
 		tree.add(s);
+		population.reproduce(s);
 	}
 }
 
