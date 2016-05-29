@@ -1,6 +1,5 @@
 public class Organism{
 
-	private Population population;
 	private Dna dna;
 	private Organism[] parents;
 	private Pipe pipe;
@@ -8,8 +7,7 @@ public class Organism{
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
 	// define parents, translate genotype onto phenotype
-	public Organism(Population pop, Dna dna, Organism mom, Organism dad){
-		this.population = pop;
+	public Organism(Dna dna, Organism mom, Organism dad){
 		this.dna = dna;
 		this.parents = new Organism[2];
 		this.parents[0] = mom;
@@ -19,15 +17,15 @@ public class Organism{
 		this.P_define();
 	}
 
-	public Organism(Population pop, Dna dna){ this(pop, dna, null, null); }
-	public Organism(Population pop){ this(pop, new Dna(), null, null); }
+	public Organism(Dna dna){ this(dna, null, null); }
+	public Organism(){ this(new Dna(), null, null); }
 
 	public Organism cross(Organism o, float mutationRate, float mutationAmp){
 		// Mate their genes into a child, then mutate it
 		Dna childDNA = this.getDna().recombinate(o.getDna());
 		childDNA.mutate(mutationRate, mutationAmp);
 
-		return new Organism(this.getPopulation(), childDNA, this, o);
+		return new Organism(childDNA, this, o);
 	}
 
 
@@ -60,24 +58,20 @@ public class Organism{
 				dad = this.getParent(0).getPipe(),
 				mom = this.getParent(1).getPipe();
 
-			float
-				mutationRate = this.getPopulation().getMutationRate(),
-				mutationAmp = this.getPopulation().getMutationAmp();
-
 			Vec3D[] path =
 				dad.getPath().cross( (Path) mom.getPath() )
-					.mutate(mutationRate, mutationAmp)
+					.mutate(MUTATION_RATE, MUTATION_AMP)
 					.getOriginalPoints();
 
-			Curve radiuses = dad.getRadiusesCurve().cross( (Curve) mom.getRadiusesCurve() ).mutate(mutationRate, mutationAmp);
-			Curve sides = dad.getSidesLengthCurve().cross( (Curve) mom.getSidesLengthCurve() ).mutate(mutationRate, mutationAmp);
+			Curve radiuses = dad.getRadiusesCurve().cross( (Curve) mom.getRadiusesCurve() ).mutate(MUTATION_RATE, MUTATION_AMP);
+			Curve sides = dad.getSidesLengthCurve().cross( (Curve) mom.getSidesLengthCurve() ).mutate(MUTATION_RATE, MUTATION_AMP);
 
 			this.pipe = new Pipe(
 				new Path( path, this.getDna().getNextGene(0, .9) ),
-				(this.getDna().getNextGene() < this.getPopulation().getMutationRate())
+				(this.getDna().getNextGene() < MUTATION_RATE)
 					? new Curve(50, 400, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
 					: radiuses.smooth(this.getDna().getNextGene(0, .9)),
-				(this.getDna().getNextGene() < this.getPopulation().getMutationRate())
+				(this.getDna().getNextGene() < MUTATION_RATE)
 					? new Curve(3, U_RESOLUTION, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
 					: sides.smooth(this.getDna().getNextGene(0, .9))
 			);
@@ -88,7 +82,6 @@ public class Organism{
 
 	// -------------------------------------------------------------------------
 	// GETTER
-	public Population getPopulation(){ return this.population; }
 	public Dna getDna(){ return this.dna; }
 
 	public Organism[] getParents(){ return this.parents; }

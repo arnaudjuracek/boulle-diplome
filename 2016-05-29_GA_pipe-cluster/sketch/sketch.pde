@@ -1,12 +1,16 @@
 import toxi.processing.*;
+import peasy.*;
 
 public final float EPSILON = 0.00001f;
 public PApplet PAPPLET = this;
 public ToxiclibsSupport gfx;
+public PeasyCam cam;
 
 public final float
 	MUTATION_RATE = 0.5f,
 	MUTATION_AMP = 10.0f;
+
+public int TBN_WIDTH, TBN_HEIGHT;
 
 public boolean
 	D_PATH = false,
@@ -15,39 +19,54 @@ public boolean
 	D_TEX = true,
 	D_BGWHITE = true;
 
-public Clusters clusters;
 public PImage TEX;
+public Clusters clusters;
 
 void setup(){
 	size(1200, 800, OPENGL);
 	gfx = new ToxiclibsSupport(this);
+	cam = new PeasyCam(this, 2000);
 
 	TEX = loadImage("data/grid.jpg");
 	textureMode(NORMAL);
 
-	clusters = new Clusters(new Population(100, MUTATION_RATE, MUTATION_AMP));
+	int cols = 5;
+	int rows = 5;
+	TBN_WIDTH = int(width/cols);
+	TBN_HEIGHT = int(height/rows);
+
+	Organism[] organisms = new Organism[cols*rows];
+	for(int i=0; i<organisms.length; i++){
+		Organism o = new Organism();
+		organisms[i] = o.cross(new Organism(), MUTATION_RATE, MUTATION_AMP);
+	}
+
+	clusters = new Clusters(organisms);
 }
 
 void draw(){
 	surface.setTitle(int(frameRate) + "fps");
 	background(int(D_BGWHITE)*255);
 
-	ambientLight(127, 127, 127);
-	directionalLight(127, 127, 127, 0, 1, 1);
+	if(clusters.getCurrent()!=null){
+		cam.beginHUD();
+			clusters.displayClusters();
+			ambientLight(127, 127, 127);
+			directionalLight(127, 127, 127, 0, 1, 1);
 
-	pushMatrix();
-		translate(scene_offset.x, scene_offset.y);
-		pushMatrix();
-			translate(0, height/2, -zoom_out*2);
-			clusters.displayCurrent();
-		popMatrix();
-	popMatrix();
+			textSize(50); textAlign(RIGHT, BOTTOM); fill(0);
+			text(clusters.current_index + "/" + clusters.getOrganisms().length, width-20, height-20);
+		cam.endHUD();
 
-	clusters.displayClusters();
+		clusters.displayCurrent();
+	}else{
+		cam.beginHUD();
+			clusters.displayAll(TBN_WIDTH, TBN_HEIGHT);
+		cam.endHUD();
+	}
 }
 
 void keyPressed(){
-	if(key == 'r') setup();
 	if(key == 'p') D_PATH = !D_PATH;
 	if(key == 'n') D_NORMAL = !D_NORMAL;
 	if(key == 't') D_TEX = !D_TEX;
@@ -58,12 +77,4 @@ void keyPressed(){
 
 void mousePressed(){
 	for(Cluster c : clusters.getClusters()) if(c.HOVER) clusters.addTo(clusters.getCurrent(), c);
-}
-
-float zoom_out = 1500;
-Vec2D scene_offset = new Vec2D();
-void mouseWheel(MouseEvent event){ zoom_out += event.getCount(); }
-void mouseDragged(){
-	scene_offset.x += mouseX - pmouseX;
-	scene_offset.y += mouseY - pmouseY;
 }

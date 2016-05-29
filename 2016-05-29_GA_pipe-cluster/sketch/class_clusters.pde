@@ -2,12 +2,12 @@ public class Clusters{
 
 	private Organism[] organisms;
 	private Organism current;
-	private int current_index = 0;
+	private int current_index = -1;
 	private ArrayList<Cluster> clusters;
 
 	// -------------------------------------------------------------------------
-	public Clusters(Population population){
-		this.organisms = population.getOrganisms();
+	public Clusters(Organism[] organisms){
+		this.organisms = organisms;
 		this.clusters = new ArrayList<Cluster>();
 		this.current = this.getNextOrganism();
 
@@ -33,10 +33,10 @@ public class Clusters{
 	// GETTER
 	public Organism[] getOrganisms(){ return this.organisms; }
 	public Organism getOrganism(int index){ return this.organisms[index]; }
-	public Organism getFirstOrganism(){ return this.organisms[0]; }
-	public Organism getNextOrganism(){ return this.organisms[(this.current_index++)]; }
-	public Organism getLastOrganism(){ return this.organisms[this.organisms.length-1]; }
-	public Organism getRandomOrganism(){ return this.organisms[int(random(this.organisms.length))]; }
+	public Organism getNextOrganism(){
+		if(this.current_index++ < this.organisms.length-1) return this.organisms[this.current_index];
+		else return null;
+	}
 	public Organism getCurrent(){ return this.current; }
 
 	public ArrayList<Cluster> getClusters(){ return this.clusters; }
@@ -55,11 +55,26 @@ public class Clusters{
 		int y = 0;
 		for(int i=0; i<this.getClusters().size(); i++){
 			Cluster c = this.getCluster(i);
-			if((x+=200)>=width-200){
-				x = 0;
-				y += 200;
-			}
 			c.display(x, y);
+			if((x+=TBN_WIDTH)>width-TBN_WIDTH){
+				x = 0;
+				y += TBN_HEIGHT;
+			}
+		}
+	}
+
+	public void displayAll(int w, int h){
+		noLoop();
+		int x = 0;
+		int y = 0;
+		for(Cluster c : this.getClusters()){
+			for(Organism o : c.getOrganisms()){
+				image(o.createThumbnail(w, h), x, y);
+				if((x+=w)>width-w){
+					x = 0;
+					y += h;
+				}
+			}
 		}
 	}
 

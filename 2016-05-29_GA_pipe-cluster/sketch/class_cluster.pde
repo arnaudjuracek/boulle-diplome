@@ -8,13 +8,14 @@ public class Cluster{
 	public Cluster(Organism o){
 		this.organisms = new ArrayList<Organism>();
 		this.add(o);
-		this.thumbnail = o.createThumbnail(200, 200);
+		this.thumbnail = o.createThumbnail(TBN_WIDTH, TBN_HEIGHT);
 	}
 
 
 
 	// -------------------------------------------------------------------------
 	public Cluster add(Organism o){ this.organisms.add(o); return this; }
+
 
 
 	// -------------------------------------------------------------------------
@@ -24,13 +25,22 @@ public class Cluster{
 
 	public PImage getThumbnail(){ return this.thumbnail; }
 
+
+
 	// -------------------------------------------------------------------------
 	// UI handling
 	public void display(int x, int y){
-		this.HOVER = is_hover(x, y);
-		image(this.getThumbnail(), x, y);
-
-		// println(this.getOrganisms().size());
+		if(this.HOVER=is_hover(x,y)){
+			strokeWeight(3);
+			stroke(0);
+			noFill();
+			rect(x, y, this.getThumbnail().width, this.getThumbnail().height);
+			image(this.getThumbnail(), x, y);
+			textAlign(CENTER, CENTER);
+			textSize(20);
+			fill(0);
+			text(this.getOrganisms().size(), x + this.getThumbnail().width/2, y + this.getThumbnail().height/2);
+		}else image(this.getThumbnail(), x, y);
 	}
 
 	public boolean is_hover(int x, int y){
