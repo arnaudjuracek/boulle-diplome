@@ -72,8 +72,17 @@ public class Population{
 
 			pushMatrix();
 				translate(x, 0, 0);
-				translate(0, -this.getSelector().TRANSITION[i]*600, 0);
 				rotateY((frameCount*.01)%TWO_PI);
+				// if(this.getSelector().TRANSITION[i] > .01){
+				// 	Vec3D size = this.getOrganism(i).getPipe().getAABB().getExtent();
+				// 	pushMatrix();
+				// 		translate(0, 600-this.getSelector().TRANSITION[i]*300, 0);
+				// 		stroke(0, this.getSelector().TRANSITION[i]*255);
+				// 		fill(255, this.getSelector().TRANSITION[i]*255);
+				// 		box(size.x*2, this.getSelector().TRANSITION[i]*600, size.z*2);
+				// 	popMatrix();
+				// }
+				translate(0, -this.getSelector().TRANSITION[i]*600, 0);
 				this.getOrganism(i).display(this.p_organisms[i].getPipe().getMesh(), 1 - morph_t);
 			popMatrix();
 		}
