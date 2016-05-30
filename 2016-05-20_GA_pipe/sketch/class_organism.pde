@@ -1,9 +1,12 @@
+public static final char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+
 public class Organism{
 
 	private Population population;
 	private Dna dna;
 	private Organism[] parents;
 	private Pipe pipe;
+	private String name;
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
@@ -17,6 +20,8 @@ public class Organism{
 
 		// map GENES to phenotype
 		this.P_define();
+
+		this.name = this.createName();
 	}
 
 	public Organism(Population pop, Dna dna){ this(pop, dna, null, null); }
@@ -84,12 +89,21 @@ public class Organism{
 		}
 	}
 
+	public String createName(){
+		this.getDna().getNextGene(); // this gene is used for the 6th letter of the name
+		String name = "";
+		for(float g : this.getDna().getGenes()) name += alphabet[int(map(g, 0, 1, 0, alphabet.length-1))];
+		Character.toUpperCase(name.charAt(0));
+
+		return name;
+	}
 
 
 	// -------------------------------------------------------------------------
 	// GETTER
 	public Population getPopulation(){ return this.population; }
 	public Dna getDna(){ return this.dna; }
+	public String getName(){ return this.name; }
 
 	public Organism[] getParents(){ return this.parents; }
 	public Organism getParent(int index){ return this.parents[index]; }

@@ -10,7 +10,7 @@ public PGraphics render;
 public Tree tree;
 
 public final float
-	MUTATION_RATE = 0.5f,
+	MUTATION_RATE = 0.1f,
 	MUTATION_AMP = 10.0f;
 
 public boolean
@@ -36,7 +36,7 @@ void setup(){
 	textureMode(NORMAL);
 
 	population = new Population(5, MUTATION_RATE, MUTATION_AMP);
-	// tree = new Tree(this, population, 600, 400);
+	tree = new Tree(this, population);
 }
 
 void draw(){
@@ -51,6 +51,11 @@ void draw(){
 		translate(0, height/2, -zoom_out*2);
 		population.display(-width, width*2);
 	popMatrix();
+
+
+	if(frameCount%2==0){
+		println(population.getSelected().getName());
+	}
 }
 
 void keyPressed(){
