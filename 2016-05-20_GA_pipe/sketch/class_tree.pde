@@ -8,13 +8,13 @@ public class Tree{
 	private ArrayList<Organism> organisms;
 
 	// -------------------------------------------------------------------------
-	public Tree(PApplet parent, Population population, int width, int height){
+	public Tree(PApplet parent, Population population){
 		this.parent = parent;
 		this.population = population;
 		this.organisms = new ArrayList<Organism>();
 
-		// this.frame = new Frame(this, this.width, this.height);
-		this.frame = new Frame(this, 0);
+		// this.frame = new Frame(this, 800, 400);
+		this.frame = new Frame(this, 1);
 		this.width = this.frame.getWidth();
 		this.height = this.frame.getHeight();
 	}
@@ -26,6 +26,7 @@ public class Tree{
 	public Tree add(Organism o){
 		this.organisms.add(o);
 		this.frame.setG(this.render_familyTree(o));
+		// this.frame.setG(this.render_grid(o));
 		return this;
 	}
 
@@ -80,7 +81,8 @@ public class Tree{
 			 		offsetY = 0,
 			 		size = min(w/2, h/2);
 
-			 	color c = this.getOrganisms().contains(o) ? color(200, 0, 100) : color(255);
+			 	// color c = this.getOrganisms().contains(o) ? color(200, 0, 100) : color(255);
+			 	color c = color(255);
 
 			 	pg.noFill();
 			 	pg.strokeWeight(5);

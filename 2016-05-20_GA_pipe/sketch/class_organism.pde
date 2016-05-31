@@ -1,4 +1,33 @@
-public static final char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+// public static final char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+public static final String[] alphabet = {
+	"ba", "be", "bi", "bo", "bu", "by",
+	"ca", "ce", "ci", "co", "cu", "cy",
+	"da", "de", "di", "do", "du", "dy",
+	"fa", "fe", "fi", "fo", "fu", "fy",
+	"ga", "ge", "gi", "go", "gu", "gy",
+	"ha", "he", "hi", "ho", "hu", "hy",
+	"ja", "je", "ji", "jo", "ju", "jy",
+	"ka", "ke", "ki", "ko", "ku", "ky",
+	"la", "le", "li", "lo", "lu", "ly",
+	"ma", "me", "mi", "mo", "mu", "my",
+	"na", "ne", "ni", "no", "nu", "ny",
+	"pa", "pe", "pi", "po", "pu", "py",
+	"qua", "que", "qui", "quo", "qu",
+	"ra", "re", "ri", "ro", "ru", "ry",
+	"sa", "se", "si", "so", "su", "sy",
+	"ta", "te", "ti", "to", "tu", "ty",
+	"va", "ve", "vi", "vo", "vu", "vy",
+	"wa", "we", "wi", "wo", "wu", "wy",
+	"xa", "xe", "xi", "xo", "xu", "xy",
+	"za", "ze", "zi", "zo", "zu", "zy",
+
+	"pha", "phe", "phi", "pho", "phu",
+	"cha", "che", "chi", "cho", "chu",
+	"cla", "cle", "cli", "clo", "clu",
+	"sta", "ste", "sti", "sto", "stu",
+	"psa", "pse", "psi", "pso", "psu",
+	"fla", "fle", "fli", "flo", "flu"
+};
 
 public class Organism{
 
@@ -7,6 +36,7 @@ public class Organism{
 	private Organism[] parents;
 	private Pipe pipe;
 	private String name;
+	private Material material;
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR
@@ -20,8 +50,8 @@ public class Organism{
 
 		// map GENES to phenotype
 		this.P_define();
-
 		this.name = this.createName();
+		this.material = this.createMaterial();
 	}
 
 	public Organism(Population pop, Dna dna){ this(pop, dna, null, null); }
@@ -89,13 +119,23 @@ public class Organism{
 		}
 	}
 
-	public String createName(){
-		this.getDna().getNextGene(); // this gene is used for the 6th letter of the name
+	private String createName(){
+		// this.getDna().getNextGene(); // this gene is used for the 6th letter of the name
 		String name = "";
-		for(float g : this.getDna().getGenes()) name += alphabet[int(map(g, 0, 1, 0, alphabet.length-1))];
-		Character.toUpperCase(name.charAt(0));
+		for(int i=0; i<3; i++){
+			name += alphabet[int(this.getDna().getNextGene(0, alphabet.length-1))];
+		}
+		name = name.substring(0, 1).toUpperCase() + name.substring(1);
 
 		return name;
+	}
+
+	private Material createMaterial(){
+		float[] material_genes = new float[6];
+		for(int i=0; i<material_genes.length; i++)
+			material_genes[i] = this.getDna().getNextGene(0,1);
+
+		return new Material(material_genes);
 	}
 
 
@@ -104,6 +144,7 @@ public class Organism{
 	public Population getPopulation(){ return this.population; }
 	public Dna getDna(){ return this.dna; }
 	public String getName(){ return this.name; }
+	public Material getMaterial(){ return this.material; }
 
 	public Organism[] getParents(){ return this.parents; }
 	public Organism getParent(int index){ return this.parents[index]; }

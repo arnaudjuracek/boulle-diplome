@@ -10,8 +10,8 @@ public PGraphics render;
 public Tree tree;
 
 public final float
-	MUTATION_RATE = 0.1f,
-	MUTATION_AMP = 10.0f;
+	MUTATION_RATE = 0.2f,
+	MUTATION_AMP = 1.0f;
 
 public boolean
 	D_PATH = false,
@@ -51,14 +51,11 @@ void draw(){
 		translate(0, height/2, -zoom_out*2);
 		population.display(-width, width*2);
 	popMatrix();
-
-
-	if(frameCount%2==0){
-		println(population.getSelected().getName());
-	}
 }
 
 void keyPressed(){
+	println(population.getSelected().getName() + " : " + population.getSelected().getMaterial().getStr());
+
 	if(key == 'r'){
 		population = new Population(population.getOrganisms().length, population.getMutationRate(), population.getMutationAmp());
 		if(tree!=null) tree.reset();
