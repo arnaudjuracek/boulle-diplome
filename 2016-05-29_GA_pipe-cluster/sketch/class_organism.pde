@@ -70,10 +70,10 @@ public class Organism{
 				new Path( path, this.getDna().getNextGene(0, .9) ),
 				(this.getDna().getNextGene() < MUTATION_RATE)
 					? new Curve(50, 400, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
-					: radiuses.smooth(this.getDna().getNextGene(0, .9)),
+					: radiuses.smooth(this.getDna().getNextGene(0, .1)),
 				(this.getDna().getNextGene() < MUTATION_RATE)
 					? new Curve(3, U_RESOLUTION, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
-					: sides.smooth(this.getDna().getNextGene(0, .9))
+					: sides.smooth(this.getDna().getNextGene(0, .1))
 			);
 		}
 	}

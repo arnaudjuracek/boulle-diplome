@@ -70,14 +70,16 @@ public class Wave{
 		return wave;
 	}
 
-	private AbstractWave create(AbstractWave fmod){ return this.create(int(random(5)), random(TWO_PI), sq(random(1)), fmod); }
+	private AbstractWave create(AbstractWave fmod){ return this.create(int(random(6)), random(TWO_PI), random(.6), fmod); }
 
 	public float[] convertWaveToArray(float min, float max, int resolution){
 		float[] values = new float[resolution];
 
-		this.getWave().reset();
-		for(int i=0; i<values.length; i++){
-			values[i] = map(this.getWave().update(), -1, 1, min, max);
+		if(this.getWave()!=null){
+			this.getWave().reset();
+			for(int i=0; i<values.length; i++) values[i] = map(this.getWave().update(), -1, 1, min, max);
+		}else{
+			for(int i=0; i<values.length; i++) values[i] = map(i, 0, values.length, min, max);
 		}
 
 		return values;

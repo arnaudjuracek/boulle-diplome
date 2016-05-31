@@ -10,8 +10,8 @@ public PGraphics render;
 public Tree tree;
 
 public final float
-	MUTATION_RATE = 0.2f,
-	MUTATION_AMP = 1.0f;
+	MUTATION_RATE = 0.6f,
+	MUTATION_AMP = 0.5f;
 
 public boolean
 	D_PATH = false,
@@ -25,7 +25,7 @@ public Population population;
 public PImage TEX;
 
 void settings(){
-	size(1200, 600, OPENGL);
+	size(displayWidth-100, int(displayWidth/2), OPENGL);
 	// fullScreen(OPENGL);
 }
 
@@ -51,11 +51,18 @@ void draw(){
 		translate(0, height/2, -zoom_out*2);
 		population.display(-width, width*2);
 	popMatrix();
+
+	fill(0);
+	textAlign(CENTER, BOTTOM);
+	textSize(24);
+	text(population.getSelected().getName() + " : " + population.getSelected().getMaterial().getStr(), int(width/2), height-30);
+
+	textSize(16);
+	textAlign(LEFT, BOTTOM);
+	text(population.getGeneration(), 30, height-30);
 }
 
 void keyPressed(){
-	println(population.getSelected().getName() + " : " + population.getSelected().getMaterial().getStr());
-
 	if(key == 'r'){
 		population = new Population(population.getOrganisms().length, population.getMutationRate(), population.getMutationAmp());
 		if(tree!=null) tree.reset();
@@ -65,8 +72,9 @@ void keyPressed(){
 	if(key == 't') D_TEX = !D_TEX;
 	if(key == 'w') D_WIREFRAME = !D_WIREFRAME;
 	if(key == 'c') D_BGWHITE = !D_BGWHITE;
-	if(key == 'e') population.getSelected().getPipe().export(30);
+	if(key == 'e') population.getSelected().export(30);
 	if(key == ' '){
+		population.export(sketchPath("export/"));
 		Organism s = population.getSelected();
 		if(tree!=null) tree.add(s);
 		population.reproduce(s);

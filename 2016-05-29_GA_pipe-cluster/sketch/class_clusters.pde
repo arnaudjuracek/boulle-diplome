@@ -67,13 +67,21 @@ public class Clusters{
 		noLoop();
 		int x = 0;
 		int y = 0;
-		for(Cluster c : this.getClusters()){
-			for(Organism o : c.getOrganisms()){
-				image(o.createThumbnail(w, h), x, y);
-				if((x+=w)>width-w){
-					x = 0;
-					y += h;
-				}
+		// for(Cluster c : this.getClusters()){
+		// 	for(Organism o : c.getOrganisms()){
+		// 		image(o.createThumbnail(w, h), x, y);
+		// 		if((x+=w)>width-w){
+		// 			x = 0;
+		// 			y += h;
+		// 		}
+		// 	}
+		// }
+
+		for(Organism o : this.getOrganisms()){
+			image(o.createThumbnail(w, h), x, y);
+			if((x+=w)>width-w){
+				x = 0;
+				y += h;
 			}
 		}
 	}

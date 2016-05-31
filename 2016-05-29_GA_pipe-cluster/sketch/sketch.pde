@@ -23,7 +23,8 @@ public PImage TEX;
 public Clusters clusters;
 
 void setup(){
-	size(1200, 800, OPENGL);
+	// size(1200, 800, OPENGL);
+	fullScreen(OPENGL);
 	gfx = new ToxiclibsSupport(this);
 	cam = new PeasyCam(this, 2000);
 
@@ -48,6 +49,20 @@ void draw(){
 	surface.setTitle(int(frameRate) + "fps");
 	background(int(D_BGWHITE)*255);
 
+	// int cols = 10;
+	// int rows = 10;
+	// TBN_WIDTH = int(width/cols);
+	// TBN_HEIGHT = int(height/rows);
+
+	// Organism[] organisms = new Organism[cols*rows];
+	// for(int i=0; i<organisms.length; i++){
+	// 	Organism o = new Organism();
+	// 	organisms[i] = o.cross(new Organism(), MUTATION_RATE, MUTATION_AMP);
+	// }
+
+	// clusters = new Clusters(organisms);
+
+
 	if(clusters.getCurrent()!=null){
 		cam.beginHUD();
 			clusters.displayClusters();
@@ -64,6 +79,8 @@ void draw(){
 			clusters.displayAll(TBN_WIDTH, TBN_HEIGHT);
 		cam.endHUD();
 	}
+
+	// loop();
 }
 
 void keyPressed(){
