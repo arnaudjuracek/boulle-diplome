@@ -139,6 +139,7 @@ public class Organism{
 	}
 
 
+
 	// -------------------------------------------------------------------------
 	// GETTER
 	public Population getPopulation(){ return this.population; }
@@ -151,6 +152,21 @@ public class Organism{
 	public boolean hasParents(){ return (this.getParents()!=null && this.getParent(0)!=null && this.getParent(1)!=null); }
 
 	public Pipe getPipe(){ return this.pipe; }
+
+
+
+	// -------------------------------------------------------------------------
+	// FILE
+	public void export(String path, float shellThickness){
+		this.getPipe().export(path, this.getName().toLowerCase(), shellThickness);
+		println("===");
+		println(this.getName() + " :");
+		println(this.getMaterial().getStr());
+		println("===");
+	}
+
+	public void export(float shellThickness){ this.export(sketchPath("data/"), shellThickness); }
+
 
 
 	// -------------------------------------------------------------------------
