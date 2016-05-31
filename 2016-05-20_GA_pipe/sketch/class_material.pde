@@ -2,9 +2,9 @@ public class Material{
 
 	private final String[]
 		COLORS = {
-			"blue", "red", "pink", "yellow", "orange", "purple", "brown", "green", "black", "gray", "white", "golden"},
+			"blue", "red", "pink", "yellow", "orange", "purple", "green", "black", "gray", "white", "golden"},
 		MATERIALS = {
-			"iron", "bronze", "silver", "gold", "wood", "plastic", "silicon", "wool", "fabric", "ceramic", "aluminium", "chocolate", "glass", "cork", "rubber", "marble", "concrete"},
+			"crystal", "iron", "bronze", "silver", "gold", "wood", "plastic", "silicon", "wool", "fabric", "ceramic", "aluminium", "chocolate", "glass", "cork", "rubber", "marble", "concrete", "cardboard", "paper", "hairs", "fur"},
 		PARTS = {
 			"top", "bottom", "middle", "top half", "bottom half", "left half", "right half"},
 		TECHNICS = {
@@ -12,7 +12,7 @@ public class Material{
 			"[actions] [materials], with some touch of painted [colors]",
 			"[actions] [materials], with a [colors] gradient"},
 		ACTIONS = {
-			"turned", "casted", "hand sculpted", "organically grown"},
+			"turned", "casted", "hand sculpted", "organically grown", "CNC milled", "laser cut", "vacuum formed"},
 		SENTENCES = {
 			// "Hello my name is [name] !",
 			// "My [parts] is made of [colors] [materials]",
