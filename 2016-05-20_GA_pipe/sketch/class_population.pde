@@ -3,6 +3,7 @@ public class Population{
 	private Organism[] organisms, p_organisms;
 	private float mutationRate, mutationAmp;
 	private Selector selector;
+	private int generation;
 
 	// -------------------------------------------------------------------------
 	// CONSTRUCTOR :
@@ -39,12 +40,14 @@ public class Population{
 
 	public float getMutationRate(){ return this.mutationRate; }
 	public float getMutationAmp(){ return this.mutationAmp; }
+	public int getGeneration(){ return this.generation; }
 
 	// -------------------------------------------------------------------------
 	// MATING POOL REPRODUCTION :
 	// reproduce the organisms placed in the mating pool between each others,
 	// thus creating a new generation of the population
 	private Population reproduce(Organism stallion){
+		this.generation++;
 		this.morph_counter = 0;
 		this.p_organisms = this.getOrganisms().clone();
 
@@ -57,6 +60,17 @@ public class Population{
 		return this;
 	}
 
+
+	// -------------------------------------------------------------------------
+	// FILE
+	public void export(String path){
+		char[] chars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+		for(int i=0; i<this.getOrganisms().length; i++){
+			String name = this.generation + "_" + chars[i];
+			if(this.getOrganism(i)==this.getSelected()) name += "-stallion";
+			this.getOrganism(i).getPipe().export(path, name, 10);
+		}
+	}
 
 
 	// -------------------------------------------------------------------------

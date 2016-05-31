@@ -174,8 +174,8 @@ public class Pipe{
 		println("Saved as " + path + name + ".obj");
 	}
 
-	public void export(){ this.export(sketchPath("data/"), "untitled", 10); }
+	public void export(){ this.export(sketchPath("export/"), "untitled", 10); }
 	public void export(String path, String name){ this.export(path, name, 10); }
-	public void export(float shellThickness){ this.export(sketchPath("data/"), "untitled", shellThickness); }
+	public void export(float shellThickness){ this.export(sketchPath("export/"), "untitled", shellThickness); }
 
 }
