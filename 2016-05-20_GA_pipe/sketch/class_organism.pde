@@ -17,8 +17,6 @@ public static final String[] alphabet = {
 	"sa", "se", "si", "so", "su", "sy",
 	"ta", "te", "ti", "to", "tu", "ty",
 	"va", "ve", "vi", "vo", "vu", "vy",
-	"wa", "we", "wi", "wo", "wu", "wy",
-	"xa", "xe", "xi", "xo", "xu", "xy",
 	"za", "ze", "zi", "zo", "zu", "zy",
 
 	"pha", "phe", "phi", "pho", "phu",
@@ -75,19 +73,16 @@ public class Organism{
 
 	private void P_define(){
 		if(this.getParent(0) == null || this.getParent(1) == null){
-			this.getDna().getNextGene();
-			this.getDna().getNextGene();
-
 			Vec3D[] path = new Vec3D[4];
 			for(int i=0; i<path.length; i++) path[i] = new Vec3D(
-															int(i>1) * (100*sin(random(TWO_PI))),
+															int(i>1) * (this.getDna().getNextGene(0, 100)*sin(random(TWO_PI))),
 															map(i, 0, path.length, height, -height*2),
-															int(i>1) * (100*sin(random(TWO_PI)))
+															int(i>1) * (this.getDna().getNextGene(0, 100)*sin(random(TWO_PI)))
 														);
 
 			this.pipe = new Pipe(
 				new Path(path, this.getDna().getNextGene(0, .9)),
-				new Curve(50, 400, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9)),
+				new Curve(this.getDna().getNextGene(50, 200), this.getDna().getNextGene(200, 400), V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9)),
 				new Curve(3, U_RESOLUTION, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
 			);
 		}else{
@@ -109,10 +104,10 @@ public class Organism{
 
 			this.pipe = new Pipe(
 				new Path( path, this.getDna().getNextGene(0, .9) ),
-				(this.getDna().getNextGene() < this.getPopulation().getMutationRate())
-					? new Curve(50, 400, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
+				(this.getDna().getNextGene() < MUTATION_RATE*.1)
+					? new Curve(this.getDna().getNextGene(50, 200), this.getDna().getNextGene(200, 400), V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
 					: radiuses.smooth(this.getDna().getNextGene(0, .9)),
-				(this.getDna().getNextGene() < this.getPopulation().getMutationRate())
+				(this.getDna().getNextGene() < MUTATION_RATE*.1)
 					? new Curve(3, U_RESOLUTION, V_RESOLUTION).smooth(this.getDna().getNextGene(0, .9))
 					: sides.smooth(this.getDna().getNextGene(0, .9))
 			);
@@ -165,7 +160,7 @@ public class Organism{
 		println("===");
 	}
 
-	public void export(float shellThickness){ this.export(sketchPath("data/"), shellThickness); }
+	public void export(float shellThickness){ this.export(sketchPath("export/"), shellThickness); }
 
 
 
