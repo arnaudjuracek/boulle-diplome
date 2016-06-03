@@ -14,7 +14,7 @@ public class Tree{
 		this.organisms = new ArrayList<Organism>();
 
 		// this.frame = new Frame(this, 800, 400);
-		this.frame = new Frame(this, 1);
+		this.frame = new Frame(this, 0);
 		this.width = this.frame.getWidth();
 		this.height = this.frame.getHeight();
 	}
@@ -81,22 +81,29 @@ public class Tree{
 			 		offsetY = 0,
 			 		size = min(w/2, h/2);
 
-			 	// color c = this.getOrganisms().contains(o) ? color(200, 0, 100) : color(255);
-			 	color c = color(255);
-
 			 	pg.noFill();
-			 	pg.strokeWeight(5);
-			 	pg.stroke(c);
+			 	pg.strokeWeight(map(size, 0, min(width, height), 1, 10));
+			 	pg.stroke(255);
 
 				pg.ellipse((w/2) + offsetX, (h+h/2) + offsetY, size, size);
 
 				if(this.getLastOrganism() != o){
-					pg.bezier(
-						(w/2) + offsetX, offsetY + (h+h/2) + (size/2),
-						(w/2) + offsetX, offsetY + (h*2),
-						(is_left) ? (w + offsetX*2) : (offsetX*2), (offsetY*2) + (h*2),
-						(is_left) ? (w + offsetX*2) : (offsetX*2), (offsetY*2) + (h*2 + h/2)
-					);
+					if(this.getOrganisms().contains(o)){
+						pg.bezier(
+							(w/2) + offsetX, offsetY + (h+h/2) + (size/2),
+							(w/2) + offsetX, offsetY + (h*2),
+							(is_left) ? (w + offsetX*2) : (offsetX*2), (offsetY*2) + (h*2),
+							(is_left) ? (w + offsetX*2) : (offsetX*2), (offsetY*2) + (h*2 + h/2)
+						);
+					}else{
+						for(float t=0; t<1; t+=.05){
+							PVector da = new PVector(bezierPoint((w/2) + offsetX, (w/2) + offsetX, (is_left) ? (w + offsetX*2) : (offsetX*2), (is_left) ? (w + offsetX*2) : (offsetX*2), t ), bezierPoint(offsetY + (h+h/2) + (size/2), offsetY + (h*2), (offsetY*2) + (h*2), (offsetY*2) + (h*2 + h/2), t ) );
+							t +=.025;
+							PVector db = new PVector( bezierPoint((w/2) + offsetX, (w/2) + offsetX, (is_left) ? (w + offsetX*2) : (offsetX*2), (is_left) ? (w + offsetX*2) : (offsetX*2), t ), bezierPoint(offsetY + (h+h/2) + (size/2), offsetY + (h*2), (offsetY*2) + (h*2), (offsetY*2) + (h*2 + h/2), t ) );
+							pg.line(da.x, da.y, db.x, db.y);
+						}
+
+					}
 				}
 
 			// RECURSION !
