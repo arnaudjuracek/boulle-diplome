@@ -26,8 +26,8 @@ public class Selector{
 
 		if((keyPressed && !pKeyPressed) || (keyPressed && this.COUNTER > this.COUNTER_MAX)){
 			int k = -1;
-			if(keyCode == LEFT || key == 'q') k = 0;
-			if(keyCode == RIGHT || key == 'z') k = 1;
+			if(keyCode == RIGHT || key == 'q') k = 0;
+			if(keyCode == LEFT || key == 'z') k = 1;
 
 			switch(k){
 				case 0 :
