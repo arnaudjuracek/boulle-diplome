@@ -63,14 +63,16 @@ public class Population{
 
 	// -------------------------------------------------------------------------
 	// FILE
-	public void export(String path){
+	public void export(String path, float shellThickness){
 		char[] chars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 		for(int i=0; i<this.getOrganisms().length; i++){
 			String name = this.generation + "_" + chars[i];
 			if(this.getOrganism(i)==this.getSelected()) name += "-stallion";
-			this.getOrganism(i).getPipe().export(path, name, 10);
+			this.getOrganism(i).getPipe().export(path, name, shellThickness);
 		}
 	}
+
+	public void export(String path){ this.export(path, 10); }
 
 
 	// -------------------------------------------------------------------------

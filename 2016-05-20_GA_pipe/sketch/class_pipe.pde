@@ -1,5 +1,6 @@
 import toxi.geom.*;
 import toxi.geom.mesh.*;
+import java.nio.file.Files;
 
 public final int
 	U_RESOLUTION = 20,
@@ -170,6 +171,12 @@ public class Pipe{
 			new HEM_Shell().setThickness(shellThickness).apply(
 				Converter.toxiToHemesh(this.getMesh().copy().rotateX(PI))
 			), path, name);
+
+		try{
+			Files.deleteIfExists(new File(path + name + ".mtl").toPath());
+		}catch (IOException x) {
+			System.err.println(x);
+		}
 
 		println("Saved as " + path + name + ".obj");
 	}

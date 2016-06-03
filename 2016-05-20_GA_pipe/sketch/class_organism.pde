@@ -153,11 +153,17 @@ public class Organism{
 	// -------------------------------------------------------------------------
 	// FILE
 	public void export(String path, float shellThickness){
-		this.getPipe().export(path, this.getName().toLowerCase(), shellThickness);
-		println("===");
-		println(this.getName() + " :");
-		println(this.getMaterial().getStr());
-		println("===");
+		String name = this.getName().toLowerCase();
+
+		this.getPipe().export(path, name, shellThickness);
+
+		PrintWriter txt = createWriter(path + name + ".txt");
+		txt.println(this.getName() + " : ");
+		txt.println("\"" + this.getMaterial().getStr() + "\"");
+	  	txt.flush();
+	  	txt.close();
+		println("Saved as " + path + name + ".txt");
+
 	}
 
 	public void export(float shellThickness){ this.export(sketchPath("export/"), shellThickness); }
