@@ -126,7 +126,7 @@ public class Organism{
 	}
 
 	private Material createMaterial(){
-		float[] material_genes = new float[6];
+		float[] material_genes = new float[9];
 		for(int i=0; i<material_genes.length; i++)
 			material_genes[i] = this.getDna().getNextGene(0,1);
 
