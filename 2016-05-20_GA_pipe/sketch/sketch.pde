@@ -36,7 +36,7 @@ void setup(){
 	textureMode(NORMAL);
 
 	population = new Population(5, MUTATION_RATE, MUTATION_AMP);
-	tree = new Tree(this, population);
+	//tree = new Tree(this, population);
 }
 
 void draw(){
@@ -73,8 +73,8 @@ void keyPressed(){
 	if(key == 'w') D_WIREFRAME = !D_WIREFRAME;
 	if(key == 'c') D_BGWHITE = !D_BGWHITE;
 	if(key == 'e') population.getSelected().export(30);
-	if(key == ' '){
-		population.export(sketchPath("export/"));
+	if(key == ' ' || key =='s'){
+		// population.export(sketchPath("export/"), 30);
 		Organism s = population.getSelected();
 		if(tree!=null) tree.add(s);
 		population.reproduce(s);

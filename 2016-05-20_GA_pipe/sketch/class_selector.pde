@@ -25,12 +25,16 @@ public class Selector{
 		this.COUNTER = (keyPressed) ? this.COUNTER+1 : 0;
 
 		if((keyPressed && !pKeyPressed) || (keyPressed && this.COUNTER > this.COUNTER_MAX)){
-			switch(keyCode){
-				case RIGHT :
+			int k = -1;
+			if(keyCode == LEFT || key == 'q') k = 0;
+			if(keyCode == RIGHT || key == 'z') k = 1;
+
+			switch(k){
+				case 0 :
 					this.SELECTION = ++this.SELECTION%(this.LENGTH+1);
 					break;
 
-				case LEFT :
+				case 1 :
 					this.SELECTION = (this.SELECTION>0) ? this.SELECTION-1 : this.LENGTH;
 					break;
 			}
