@@ -1,6 +1,4 @@
 import toxi.processing.*;
-import java.util.Random;
-import java.util.Iterator;
 
 public final float EPSILON = 0.00001f;
 public PApplet PAPPLET = this;
