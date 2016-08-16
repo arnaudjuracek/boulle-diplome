@@ -1,8 +1,8 @@
 supershapes
 =====
-![preview](fluryba.jpg?raw=true "preview")
+`🌱💻 — a study of evolutionary systems in product design.` — [http://supershapes.arnaudjuracek.fr](http://supershapes.arnaudjuracek.fr/)
 
-*A study of evolutionnary systems in product design.* — [http://supershapes.arnaudjuracek.fr](http://supershapes.arnaudjuracek.fr/)
+![preview](fluryba.jpg?raw=true "preview")
 
 ### About
 > L’algorithme permet de mettre en place des systèmes chargés de résoudre des problèmes ; d’instruction en instruction, son exécution mécanique répond à l’intention qui justifie son existence.
@@ -12,6 +12,13 @@ supershapes
 > Supershapes favorise une émergence esthétique au travers d’un système algorithmique créatif.
 > La relation homme-algorithme devient une symbiose à la fois computationnelle et sensible.
 
+### Disclaimer
+Despite being untitled *supershapes*, this project isn't all about supershapes. The name stuck after experimenting with Paul Bourke's [Supershapes (Superformula)](http://paulbourke.net/geometry/supershape/) paper (March 2002).
+
+Most of the genetic algorithms are inspired by Daniel Shiffman's [Nature of Code](http://natureofcode.com/book/). If you want to learn more about GAs, don't listen to me, listen to him.
+
+### Usage
+Each directory contains a single Processing sketch exploring one aspect of the evolution of shapes, and its implication regarding the practice of product design. The whole project being quite empirical, use those sketches at your own risks. If you want to learn more about a specific sketch, check the code (or even better, read Daniel Shiffman's [Nature of Code](http://natureofcode.com/book/) ).
 
 ### Contributors
 Gaëtan Moren
